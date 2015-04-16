@@ -18,8 +18,28 @@
 	var dataLoaded = function (error, datingdata) {
 
 	    if (!error) {
-	    	console.log(datingdata)
 
+			data = d3.nest()
+				.key(function(d) { return d.wave;})
+				.rollup(function(d) { 
+					return d;
+				})
+				.entries(datingdata);
+
+			var datalength = data.length;
+
+			for (var i =0; i < datalength; i++) {
+				var data_row = d3.nest()
+					.key(function(d) { return d.iid;})
+					.rollup(function(d) {
+						return d;
+					})
+					.entries(data[i]["values"]);
+				//console.log(data[i])
+				data[i] = data_row;
+			}
+
+		console.log(data)
 	    }
 	}
 
@@ -30,12 +50,11 @@
 	        .defer(d3.csv, '/data/SpeedDating.csv') // metadata
 	        .await(dataLoaded); // function that uses files
 
-	console.log(1)
 
 	}
 
 	startHere();
-	
+
 </script>
 </body>
 </html>
