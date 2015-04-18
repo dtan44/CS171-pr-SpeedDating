@@ -3,21 +3,35 @@
 	<meta charset="utf-8">
 	<title>Speed Dating</title>
 
+	<!--Libraries-->
     <script src="library/d3/d3.min.js" charset="utf-8"></script>
     <script src="library/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
     <script src="library/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
-    <script src="library/queue/queue.min.js" charset="utf-8"></script>
-    
+    <script src="http://d3js.org/queue.v1.min.js"></script>
+
+    <!--Stylesheets-->
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+
+    <!--Font-->
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+
+    <!-- vis classes-->
+    <script src = "js/prefvis.js"></script>
     <script src = "js/nodevis.js"></script>
-    
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
 
 	<style>
 	</style>
 </head>
 <body>
-    
-    <div class="col-md-9" id="nodevis" style="background:lightblue">
+	<div class="row">
+		<div id="prefVis">
+			<br>
+			<span style="background-color:lightgray"></span>
+			<br>
+		</div>
+	</div>
+
+	<div class="col-md-9" id="nodevis" style="background:lightblue">
 		<div class="dropdown dropdown-dark">
 			<select name="two" class="dropdown-select" onchange="changewave(value)">
 				<option value="">Wave</option>
@@ -46,161 +60,28 @@
 		</div>
     </div>
 
+
 	<script>
 
-	$(function(){ 
+	  $(function(){ 
 
-		var allData = [];
+      var allData = [];
 
-		// call this function after Data is loaded, reformatted and bound to the variables
-		var initVis = function(){
-                var MyEventHandler = new Object();
+      // call this function after Data is loaded, reformatted and bound to the variables
+      var initVis = function(){
 
-                //TODO: Instantiate all Vis Objects here
-                node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
+      	var MyEventHandler = new Object();
 
-		}
+     	var pref_vis = new PrefVis(d3.select("#prefVis"), allData);
+     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
+      }
 
-		// call this function after both files are loaded -- error should be "null" if no error
-		var dataLoaded = function (error, datingdata) {
-
-			if (!error) {
-
-				var data = []; 
-				var datingdatalength = datingdata.length;
-
-				for (var i = 0; i < datingdatalength; i++) {
-				var temp = {
-					iid: datingdata[i].iid,
-					age: datingdata[i].age,
-					gender: datingdata[i].gender,
-					race: datingdata[i].race, 
-					goal: datingdata[i].goal,
-					career_c: datingdata[i].career_c,
-					wave: datingdata[i].wave,
-					round: datingdata[i].round,
-					you_call: datingdata[i].you_call,
-					them_call: datingdata[i].them_call,
-					date_3: datingdata[i].date_3,
-
-				start_pref: {
-					// what the person looks for in the opposite sex (100 points)
-					attr1_1: datingdata[i].attr1_1,
-					sinc1_1: datingdata[i].sinc1_1,
-					intel1_1: datingdata[i].intel1_1,
-					fun1_1: datingdata[i].fun1_1,
-					amb1_1: datingdata[i].amb1_1,
-					shar1_1: datingdata[i].shar1_1,
-					// what the person thinks the opposite sex looks for (100 points)
-					attr2_1: datingdata[i].attr2_1,
-					sinc2_1: datingdata[i].sinc2_1,
-					intel2_1: datingdata[i].intel2_1,
-					fun2_1: datingdata[i].fun2_1,
-					amb2_1: datingdata[i].amb2_1,
-					shar2_1: datingdata[i].shar2_1,
-					// how the person rate him/herself (scale 1-10)
-					attr3_1: datingdata[i].attr3_1,
-					sinc3_1: datingdata[i].sinc3_1,
-					intel3_1: datingdata[i].intel3_1,
-					fun3_1: datingdata[i].fun3_1,
-					amb3_1: datingdata[i].amb3_1,
-					// how the person thinks others perceive him/her (scale 1-10)
-					attr5_1: datingdata[i].attr5_1,
-					sinc5_1: datingdata[i].sinc5_1,
-					intel5_1: datingdata[i].intel5_1,
-					fun5_1: datingdata[i].fun5_1,
-					amb5_1: datingdata[i].amb5_1
-				},
-
-				half_pref: {
-					// what the person looks for in the opposite sex (scale 1-10)
-					attr1_s: datingdata[i].attr1_s,
-					sinc1_s: datingdata[i].sinc1_s,
-					intel1_s: datingdata[i].intel1_s,
-					fun1_s: datingdata[i].fun1_s,
-					amb1_s: datingdata[i].amb1_s,
-					// how the person rate him/herself (scale 1-10)
-					attr3_s: datingdata[i].attr3_s,
-					sinc3_s: datingdata[i].sinc3_s,
-					intel3_s: datingdata[i].intel3_s,
-					fun3_s: datingdata[i].fun3_s,
-					amb3_s: datingdata[i].amb3_s
-				},
-
-				day_pref: {
-					// what the person looks for in the opposite sex (100 points)
-					attr1_2: datingdata[i].attr1_2,
-					sinc1_2: datingdata[i].sinc1_2,
-					intel1_2: datingdata[i].intel1_2,
-					fun1_2: datingdata[i].fun1_2,
-					amb1_2: datingdata[i].amb1_2,
-					shar1_2: datingdata[i].shar1_2,
-					// what the person thinks the opposite sex looks for (100 points)
-					attr2_2: datingdata[i].attr2_2,
-					sinc2_2: datingdata[i].sinc2_2,
-					intel2_2: datingdata[i].intel2_2,
-					fun2_2: datingdata[i].fun2_2,
-					amb2_2: datingdata[i].amb2_2,
-					shar2_2: datingdata[i].shar2_2,
-					// how the person rate him/herself (scale 1-10)
-					attr3_2: datingdata[i].attr3_2,
-					sinc3_2: datingdata[i].sinc3_2,
-					intel3_2: datingdata[i].intel3_2,
-					fun3_2: datingdata[i].fun3_2,
-					amb3_2: datingdata[i].amb3_2,
-					// how the person thinks others perceive him/her (scale 1-10)
-					attr5_2: datingdata[i].attr5_2,
-					sinc5_2: datingdata[i].sinc5_2,
-					intel5_2: datingdata[i].intel5_2,
-					fun5_2: datingdata[i].fun5_2,
-					amb5_2: datingdata[i].amb5_2
-				},
-
-				week_pref: {
-					// what the person looks for in the opposite sex (100 points)
-					attr1_3: datingdata[i].attr1_3,
-					sinc1_3: datingdata[i].sinc1_3,
-					intel1_3: datingdata[i].intel1_3,
-					fun1_3: datingdata[i].fun1_3,
-					amb1_3: datingdata[i].amb1_3,
-					shar1_3: datingdata[i].shar1_3,
-					// what the person thinks the opposite sex looks for (scale 1-10)
-					attr2_3: datingdata[i].attr2_3,
-					sinc2_3: datingdata[i].sinc2_3,
-					intel2_3: datingdata[i].intel2_3,
-					fun2_3: datingdata[i].fun2_3,
-					amb2_3: datingdata[i].amb2_3,
-					shar2_3: datingdata[i].shar2_3,
-					// how the person rate him/herself (scale 1-10)
-					attr3_3: datingdata[i].attr3_3,
-					sinc3_3: datingdata[i].sinc3_3,
-					intel3_3: datingdata[i].intel3_3,
-					fun3_3: datingdata[i].fun3_3,
-					amb3_3: datingdata[i].amb3_3,
-					// how the person thinks others perceive him/her (scale 1-10)
-					attr5_3: datingdata[i].attr5_3,
-					sinc5_3: datingdata[i].sinc5_3,
-					intel5_3: datingdata[i].intel5_3,
-					fun5_3: datingdata[i].fun5_3,
-					amb5_3: datingdata[i].amb5_3
-				},
-
-				people: []
-
-<<<<<<< HEAD
-			}
-			data.push(temp);
-		}
-
-		var ratings = [];
-=======
-<script>
-	// call this function after both files are loaded -- error should be "null" if no error
+      // call this function after both files are loaded -- error should be "null" if no error
 	var dataLoaded = function (error, datingdata) {
 
 	  if (!error) {
 
-	    var data = []; 
+			var data = []; 
 
 	    for (var i = 0; i < datingdata.length; i++) {
 	      var temp = {
@@ -385,84 +266,22 @@
 	    initVis();
 	    }
 	}
->>>>>>> origin/master
 
-		for (var i = 0; i < datingdatalength; i++) {
-			var temp = {
-				wave: datingdata[i].wave,
-				iid: datingdata[i].iid,
+      var startHere = function(){
+				queue()
+    			.defer(d3.csv, 'data/SpeedDating.csv')
+    			.await(dataLoaded);
+      }
 
-				order: datingdata[i].order,
-				pid: datingdata[i].pid,
-				match: datingdata[i].match,
-				samerace: datingdata[i].samerace,
+      startHere();
+	  })
 
-				age_o: datingdata[i].age_o,
-				race_o: datingdata[i].race_o,
-				pf_o_attr: datingdata[i].pf_o_attr,
-				dec_o: datingdata[i].dec_o,
-				attr_o: datingdata[i].attr_o,
-
-				dec: datingdata[i].dec,
-				attr: datingdata[i].attr,
-				sinc: datingdata[i].sinc,
-				intel: datingdata[i].intel,
-				fun: datingdata[i].fun,
-				amb: datingdata[i].amb,
-				shar: datingdata[i].shar,
-				like: datingdata[i].like,
-				prob: datingdata[i].prob,
-			}
-			ratings.push(temp);
-		}
-
-		for (var i = 0; i < data.length; i++) {
-			for (var j = 0; j < ratings.length; j++) {
-				if (data[i].iid == ratings[j].iid) {
-					data[i]["people"].push(ratings[j]);
-				}
-			}
-		}
-
-		var reformatted_data = [];
-		var j = 0;
-		reformatted_data.push(data[j]);
-
-		for (var i = 1; i < data.length; i++) {
-			if (data[i].iid != data[j].iid) {
-				reformatted_data.push(data[i]);
-				j = i;
-			}
-		}
-
-		allData = d3.nest()
-			.key(function(d) { return d.wave;})
-			.rollup(function(d) { 
-				return d;
-			})
-			.entries(reformatted_data);
-
-
-		initVis();
-		}
-		}
-
-		var startHere = function(){
-			queue()
-				.defer(d3.csv, 'data/SpeedDating.csv')
-				.await(dataLoaded);
-		}
-
-		startHere();
-	})
-
-	function changewave(value) {
+	  function changewave(value) {
 		if (value != "") {
-			console.log(1)
 			node_vis.wrangleData(value);
 			node_vis.updateVis();
 		}
-	}
+	  } 
 		
 	</script>
 </body>
