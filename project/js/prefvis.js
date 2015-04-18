@@ -91,7 +91,7 @@ PrefVis.prototype.updateVis = function(){
 
     var color = d3.scale.ordinal()
                         .domain(categories)
-                        .range(["blue", "#87CEFA", "red", "pink"]);
+                        .range(["pink", "red", "#87CEFA", "blue"]);
 
     var layers = d3.layout.stack()(headers.map(function(d) {
         return that.displayData.map(function(c) {
