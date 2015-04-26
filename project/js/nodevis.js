@@ -6,14 +6,28 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.displayData = [];
 
 
-    this.width = 650;
-    this.height = 330;
+    this.width = 800;
+    this.height = 450;
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
     this.wave = 1 - 1;
 
     this.tick = function(e) {
-        that.graph_update(10);
+
+        var k = .1 * e.alpha;
+
+        that.graph.nodes.forEach(function(o, i) {
+            if (o.gender == '1') {
+                o.y += (60 - o.y) * k;
+                o.x += (i*20 - o.x) * k * .1;
+            }
+            else {
+                o.y += (450 - o.y) * k;
+                o.x += (i*80 - o.x) * k * .1;
+            }
+        });
+
+        that.graph_update(40);
     }
     
     this.graph_update = function(duration) {
@@ -31,6 +45,36 @@ NodeVis = function(_parentElement, _data, _eventHandler){
             .attr("transform", function(d) { 
                 return "translate("+d.x+","+d.y+")"; 
           });
+    }
+
+    // run when node is mouse-overed
+    this.mouseovered = function(d) {
+        that.node
+            .each(function(n) { n.target = n.source = false; });
+
+        that.link
+            .classed("link--target", function(l) { if (l.target === d) return true; })
+            .classed("link--source", function(l) { if (l.source === d) return true; })
+
+        that.node
+            .classed("node--target", function(n) { return n.target; })
+            .classed("node--source", function(n) { return n.source; });
+    }
+
+    // run when node is mouse-outed
+    this.mouseouted = function(d) {
+        that.link
+          .classed("link--target", false)
+          .classed("link--source", false);
+
+        that.node
+          .classed("node--target", false)
+          .classed("node--source", false);
+    }
+
+    // run when node clicked
+    this.nodeclick = function(node) {
+        $(that.eventHandler).trigger('nodeclick', node);
     }
 
     this.getID = function(id) {
@@ -58,11 +102,13 @@ NodeVis.prototype.initVis = function(){
     
     this.force = d3.layout.force()
         .size([that.width, that.height])
-        .on("tick", this.tick)
+        .on("tick", that.tick)
         .on("start", function(d) {})
         .on("end", function(d) {})
         .linkDistance(that.width/4)
-        .linkStrength(0.1)
+        .charge(-80)
+        .linkStrength(0.01)
+        .friction(0.4)
         .start();
     // filter, aggregate, modify data
     this.wrangleData(that.wave);
@@ -89,8 +135,13 @@ NodeVis.prototype.wrangleData= function(wave){
  * @param _options -- only needed if different kinds of updates are needed
  */
 NodeVis.prototype.updateVis = function(){
+
+    this.force
+        .stop()
+
     this.graph.nodes = this.displayData;
 
+    this.graph.links.length = 0
     this.graph.nodes.forEach(function(d, i) {
         for (c=0,e=d.people.length;c<e;c++){
             if (d.people[c].match == "1") {
@@ -99,17 +150,13 @@ NodeVis.prototype.updateVis = function(){
         }
     })
 
-    // links not removing for some reason
-    d3.selectAll(".link").style('display', 'none')
-
-
     // add and bind links
-   this.link = this.svg.selectAll(".link")
+    this.link = this.svg.selectAll(".link")
         .data(that.graph.links);
 
-    this.link.enter().append("line")
+    this.link.enter()
+        .insert("line", ".node")
         .attr("class", "link")
-        .style('stroke', 'white')
 
     this.link.exit()
         .remove()
@@ -120,12 +167,16 @@ NodeVis.prototype.updateVis = function(){
     
     this.node.enter()
         .append("g").attr("class", "node")
+        .on("mouseover", that.mouseovered)
+        .on("mouseout", that.mouseouted)
+        .on("click", that.nodeclick);
 
     // append node points
     this.node.append("circle")
-        .attr('r', 3)
+        .attr('r', 6)
         .style("fill", function(d) {if (d.gender == 0){return "DeepPink"} else {return "blue"} } )
-    
+
+
     this.node.exit()
         .remove()
 
@@ -136,23 +187,9 @@ NodeVis.prototype.updateVis = function(){
 
 
     this.force
-        .stop()
         .nodes(this.graph.nodes)
         .links(this.graph.links)
         .start()
-    
-    that.node.classed("fixed", true)
-
-    this.graph.nodes.forEach(function(d, i){
-        d.x = i*20
-        if (d.gender == '0') {
-            d.y = 300
-        }
-        else {
-            d.y = 100
-        }
-    })
-    this.tick()
 }
 
 /**
