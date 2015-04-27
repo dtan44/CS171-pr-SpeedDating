@@ -227,6 +227,11 @@ NodeVis.prototype.updateVis = function(){
     this.node.exit()
         .remove()
 
+    this.link.attr('x1', function(d) { return d.source.x; })
+        .attr('y1', function(d) { return d.source.y; })
+        .attr('x2', function(d) { return d.target.x; })
+        .attr('y2', function(d) { return d.target.y; });
+
 
     this.force
         .nodes(this.graph.nodes)
@@ -235,14 +240,14 @@ NodeVis.prototype.updateVis = function(){
 
     this.force.stop()
 
-    var position = 0;
+    this.position = 0;
     this.graph.nodes.forEach(function(d, i){
-        if (parseInt(d.id) > position) {
-            position = parseInt(d.id);
+        if (parseInt(d.id) > that.position) {
+            that.position = parseInt(d.id);
         }
     })
 
-    this.widthScale.domain([0, position])
+    this.widthScale.domain([0, that.position])
 
     this.graph.nodes.forEach(function(d, i){
         if (d.gender == '1') {
