@@ -8,10 +8,12 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     this.width = 800;
     this.height = 450;
+    this.smallwidth = 180;
+    this.smallheight = 450;
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
     this.wave = 1 - 1;
-    this.widthScale = d3.scale.linear().range([0, this.width*.9])
+    this.widthScale = d3.scale.linear().range([20, this.width*.95])
 
     this.tick = function(e) {
 
@@ -75,7 +77,8 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     // run when node clicked
     this.nodeclick = function(node) {
-        $(that.eventHandler).trigger('nodeclick', node);
+        var pass = [node.iid, that.displayData];
+        $(that.eventHandler).trigger('nodeclick', pass);
     }
 
     this.getID = function(id) {
@@ -110,7 +113,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
  * Method that sets up the SVG and the variables
  */
 NodeVis.prototype.initVis = function(){
-console.log(this.data)
+
     that = this; // read about the this
 
     this.svg = this.parentElement.append('svg')
@@ -133,6 +136,16 @@ console.log(this.data)
         .attr("class", "tooltip")
         .style("opacity", 1e-6);
 
+    this.smallsvg = d3.select('#personalbox').append('svg')
+        .attr('width', that.smallwidth)
+        .attr('height', that.smallheight)
+    
+    this.toptext = that.smallsvg.append("text")
+      .attr('fill', 'white')
+      .text('Information')
+      .attr('y', 20)
+      .attr('x', that.smallwidth/2)
+      .attr('text-anchor', "middle")
 
     // filter, aggregate, modify data
     this.wrangleData(that.wave);

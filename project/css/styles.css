@@ -48,6 +48,19 @@ div.tooltip {
   pointer-events: none;         
 }
 
+#personalbox {
+  display: inline-block;
+  height: 483px;
+  width: 200px;
+  background: black;
+}
+
+.information {
+    margin-left: auto;
+    margin-right: auto;
+    width: 6em
+}
+
 /*
  * Copyright (c) 2012-2013 Thibaut Courouble
  * http://www.cssflow.com
@@ -74,7 +87,7 @@ body {
 }
 
 .dropdown {
-  display: inline-block;
+  display: block;
   position: relative;
   overflow: hidden;
   height: 28px;
