@@ -10,7 +10,8 @@
     <script src="http://d3js.org/queue.v1.min.js"></script>
 
     <!--Stylesheets-->
-    <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="library/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
 
     <!--Font-->
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -74,6 +75,10 @@
 
      	var pref_vis = new PrefVis(d3.select("#prefVis"), allData);
      	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
+
+     	$(MyEventHandler).bind("nodeclick", function(event, node){
+     		console.log(node)
+     	})
       }
 
       // call this function after both files are loaded -- error should be "null" if no error
@@ -86,6 +91,7 @@
 	    for (var i = 0; i < datingdata.length; i++) {
 	      var temp = {
 	        iid: datingdata[i].iid,
+	        id: datingdata[i].id,
 	        age: datingdata[i].age,
 	        gender: datingdata[i].gender,
 	        race: datingdata[i].race, 
@@ -277,7 +283,9 @@
 	  })
 
 	  function changewave(value) {
-		if (value != "") {
+	  	value -= 1;
+
+		if (value !== "") {
 			node_vis.wrangleData(value);
 			node_vis.updateVis();
 		}
