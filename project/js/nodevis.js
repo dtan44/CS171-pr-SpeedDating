@@ -110,7 +110,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
  * Method that sets up the SVG and the variables
  */
 NodeVis.prototype.initVis = function(){
-
+console.log(this.data)
     that = this; // read about the this
 
     this.svg = this.parentElement.append('svg')
@@ -226,11 +226,6 @@ NodeVis.prototype.updateVis = function(){
 
     this.node.exit()
         .remove()
-
-    this.link.attr('x1', function(d) { return d.source.x; })
-        .attr('y1', function(d) { return d.source.y; })
-        .attr('x2', function(d) { return d.target.x; })
-        .attr('y2', function(d) { return d.target.y; });
 
 
     this.force
