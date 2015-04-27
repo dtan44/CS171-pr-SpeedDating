@@ -175,12 +175,11 @@ NodeVis.prototype.updateVis = function(){
 
     // add and bind links
     this.link = this.svg.selectAll(".link")
-        .data(that.graph.links)
+        .data(that.graph.links);
 
     this.link.enter()
         .insert("line", ".node")
         .attr("class", "link")
-
 
     this.link.exit()
         .remove()
@@ -262,7 +261,6 @@ NodeVis.prototype.updateVis = function(){
     })
 
     this.graph_update(500)
-
 }
 
 /**
