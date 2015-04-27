@@ -25,14 +25,16 @@ PrefVis.prototype.initVis = function(){
       .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-    this.x = d3.scale.ordinal()
+    this.x0 = d3.scale.ordinal()
     	.rangeRoundBands([0, this.width], .1);
+
+    this.x1 = d3.scale.ordinal();
 
     this.y = d3.scale.linear()
       .range([this.height, 0]);
 
     this.xAxis = d3.svg.axis()
-      .scale(this.x)
+      .scale(this.x0)
       .orient("bottom");
 
     this.yAxis = d3.svg.axis()
@@ -64,15 +66,6 @@ PrefVis.prototype.wrangleData= function(_filterFunction){
     // displayData should hold the data which is visualized
     this.displayData = this.filterAndAggregate(_filterFunction);
 
-    //// you might be able to pass some options,
-    //// if you don't pass options -- set the default options
-    //// the default is: var options = {filter: function(){return true;} }
-    //var options = _options || {filter: function(){return true;}};
-
-
-
-
-
 }
 
 
@@ -100,15 +93,18 @@ PrefVis.prototype.updateVis = function(){
                 y: +c[d]
             };
         });
-    }));
+    }));  
 
     var yGroupMax = d3.max(layers, function(layer) { 
         return d3.max(layer, function(d) { 
             return d.y; 
         }); 
-    });
+    });                  
 
-    this.x.domain(layers[0].map(function(d) { return d.x; }));
+    console.log(this.displayData, layers, yGroupMax)
+
+    this.x0.domain(this.displayData.map(function(d) { return d.attribute; }));
+    this.x1.domain(this.displayData).rangeRoundBands([0, this.x0.rangeBand()]);
 
     this.y.domain([0, yGroupMax]);
 
@@ -131,26 +127,30 @@ PrefVis.prototype.updateVis = function(){
         .text("# of Points");    
 
     var layer = this.svg.selectAll(".layer")
-                    .data(layers)
+                    .data(this.displayData)
                     .enter()
                     .append("g")
                     .attr("class", "layer")
                     .style("fill", function(d, i) { return color(i); });
 
-    var rect = layer.selectAll("rect")
+    var bar = layer.selectAll(".bar")
         .data(function(d) { return d; })
-        .enter()
-        .append("rect")
-        .attr("x", function(d) { return that.x(d.x); })
-        .attr("y", this.height)
-        .attr("width", that.x.rangeBand())
-        .attr("height", 0);
 
-    rect.transition()
+    var bar_enter = bar.enter().append("g");
+
+    bar_enter.append("rect");
+
+    bar.attr("class", "bar");
+
+    bar.exit()
+        .remove();
+
+    bar.selectAll("rect")
+        .transition()
         .duration(500)
         .delay(function(d, i) { return i * 10; })
-        .attr("x", function(d, i, j) { return that.x(d.x) + that.x.rangeBand() / 4 * j; })
-        .attr("width", that.x.rangeBand() / 4)
+        .attr("x", function(d) { return that.x1(d.attribute); })
+        .attr("width", that.x1.rangeBand())
         .transition()
         .attr("y", function(d) { return that.y(d.y); })
         .attr("height", function(d) { return that.height - that.y(d.y); });
