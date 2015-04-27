@@ -202,7 +202,7 @@ NodeVis.prototype.updateVis = function(){
         
     this.maleNodes
         .append('image')
-        .attr("xlink:href", "../image/male.png")
+        .attr("xlink:href", "image/male.png")
         .attr("x", -15)
         .attr("y", -15)
         .attr("width", 30)
@@ -212,7 +212,7 @@ NodeVis.prototype.updateVis = function(){
         
     this.femaleNodes
         .append('image')
-        .attr("xlink:href", "../image/female.png")
+        .attr("xlink:href", "image/female.png")
         .attr("x", -8)
         .attr("y", -8)
         .attr("width", 16)

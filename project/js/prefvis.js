@@ -108,12 +108,6 @@ PrefVis.prototype.updateVis = function(){
         }); 
     });
 
-    var yStackMax = d3.max(layers, function(layer) {
-        return d3.max(layer, function(d) {
-            return d.y0+d.y;
-        });
-    });
-
     this.x.domain(layers[0].map(function(d) { return d.x; }));
 
     this.y.domain([0, yGroupMax]);
@@ -152,22 +146,14 @@ PrefVis.prototype.updateVis = function(){
         .attr("width", that.x.rangeBand())
         .attr("height", 0);
 
-/* 
-    // stacked layout
     rect.transition()
+        .duration(500)
         .delay(function(d, i) { return i * 10; })
-        .attr("y", function(d) { return that.y(d.y0 + d.y); })
-        .attr("height", function(d) { return that.y(d.y0) - that.y(d.y0 + d.y); }); */
-
-    // grouped layout
-    rect.transition()
-          .duration(500)
-          .delay(function(d, i) { return i * 10; })
-          .attr("x", function(d, i, j) { return that.x(d.x) + that.x.rangeBand() / 4 * j; })
-          .attr("width", that.x.rangeBand() / 4)
-          .transition()
-          .attr("y", function(d) { return that.y(d.y); })
-          .attr("height", function(d) { return that.height - that.y(d.y); });
+        .attr("x", function(d, i, j) { return that.x(d.x) + that.x.rangeBand() / 4 * j; })
+        .attr("width", that.x.rangeBand() / 4)
+        .transition()
+        .attr("y", function(d) { return that.y(d.y); })
+        .attr("height", function(d) { return that.height - that.y(d.y); });
 
     var legend = this.svg.selectAll(".legend")
                      .data(categories.slice().reverse())
@@ -189,34 +175,6 @@ PrefVis.prototype.updateVis = function(){
           .style("text-anchor", "end")
           .text(function(d) { return d; });
 
-/*    // TODO: ...update scales
-
-    var bar = this.svg.selectAll(".bar")
-    	.data(this.displayData, function(d) { return d; });
-
-    var bar_enter = bar.enter().append("g");
-
-    bar_enter.append("rect");
-
-    bar.attr("class", "bar");
-
-    bar.exit()
-       .remove();
-
-    bar.selectAll("rect")
-       .attr("x", function(d, i, j) { 
-       		return that.x(that.metaData.priorities[j]["item-title"]); 
-       	})
-       .attr("width", this.x.rangeBand())
-       .style("fill", function(d, i, j) { 
-       		return that.metaData.priorities[j]["item-color"]; 
-       	})
-       .transition()
-       .duration(100)
-       .attr("y", function(d) { return that.y(d); })
-       .attr("height", function(d) { return that.height - that.y(d); }); */
-
-
 }
 
 
@@ -226,10 +184,10 @@ PrefVis.prototype.updateVis = function(){
  * be defined here.
  * @param selection
  */
-PrefVis.prototype.onSelectionChange= function (selectionStart, selectionEnd){
+PrefVis.prototype.onSelectionChange= function (wave){
 
     // TODO: call wrangle function
-    this.wrangleData(null);
+    this.wrangleData(function(d) { return d.key == wave; });
 
     this.updateVis();
 
@@ -316,7 +274,7 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
     var count_men = 0;
 
     this.data
-        // .filter(filter)
+        .filter(filter)
         .forEach(function(d) {
             // don't include waves 6-9
             if (parseInt(d.key) < 6 || parseInt(d.key) > 9) {

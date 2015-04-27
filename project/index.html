@@ -66,7 +66,7 @@
 
       	var MyEventHandler = new Object();
 
-	     	var pref_vis = new PrefVis(d3.select("#prefVis"), allData);
+	     	pref_vis = new PrefVis(d3.select("#prefVis"), allData);
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
 
 	     	$(MyEventHandler).bind("nodeclick", function(event, node){
@@ -204,6 +204,7 @@
 		if (value !== "") {
 			node_vis.wrangleData(value);
 			node_vis.updateVis();
+			pref_vis.onSelectionChange(value);
 		}
 	}
 
