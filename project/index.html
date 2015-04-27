@@ -34,25 +34,29 @@
 				<option value="3">3</option>
 				<option value="4">4</option>
 				<option value="5">5</option>
-				<option value="6">6</option>
-				<option value="7">7</option>
-				<option value="8">8</option>
-				<option value="9">9</option>
-				<option value="10">10</option>
-				<option value="11">11</option>
-				<option value="12">12</option>
-				<option value="13">13</option>
-				<option value="14">14</option>
-				<option value="15">15</option>
-				<option value="16">16</option>
-				<option value="17">17</option>
-				<option value="18">18</option>
-				<option value="19">19</option>
-				<option value="20">20</option>
-				<option value="21">21</option>
+				<option value="10">6</option>
+				<option value="11">7</option>
+				<option value="12">8</option>
+				<option value="13">9</option>
+				<option value="14">10</option>
+				<option value="15">11</option>
+				<option value="16">12</option>
+				<option value="17">13</option>
+				<option value="18">14</option>
+				<option value="19">15</option>
+				<option value="20">16</option>
+				<option value="21">17</option>
 			</select>
 		</div>
-  </div>
+  	</div>
+
+  	<div id="personalbox">
+  		<p id='information'> Information </p>
+		<p id='country'>Country:</p>
+		<p id='gdp'>GDP:</p>
+		<p id='population'>Population:</p>
+		<p id='life_expectancy'>Life Expectancy:</p>
+  	</div>
 
 
 	<script>
@@ -69,8 +73,8 @@
 	     	var pref_vis = new PrefVis(d3.select("#prefVis"), allData);
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
 
-	     	$(MyEventHandler).bind("nodeclick", function(event, node){
-	     		console.log(node)
+	     	$(MyEventHandler).bind("nodeclick", function(event, id, wavepeep){
+	     		console.log(id, wavepeep)
 	     	})
 
       }
