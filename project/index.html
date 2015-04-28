@@ -23,6 +23,13 @@
 </head>
 <body>
 	<div class="col-md-12" id="prefVis">
+		<span>Filter by Race:</span>
+      <label><input class="filter_race" type="checkbox" name="Black"></input>Black/African American</label>
+      <label><input class="filter_race" type="checkbox" name="European"></input>European/Caucasian-American</label>
+      <label><input class="filter_race" type="checkbox" name="Latino"></input>Latino/Hispanic American</label>
+      <label><input class="filter_race" type="checkbox" name="Asian"></input>Asian/Pacific Islander/Asian-American</label>
+      <label><input class="filter_race" type="checkbox" name="Native"></input>Native American</label>
+      <label><input class="filter_race" type="checkbox" name="Other"></input>Other</label>
 	</div>
 
 	<div class="col-md-9" id="nodevis" style="background:lightblue">
@@ -201,16 +208,48 @@
       startHere();
 	  })
 
+		var races_selected = {
+			"Black": false,
+			"European": false,
+			"Latino": false,
+			"Asian": false,
+			"Native": false,
+			"Other": false
+		}
+
+		function races_empty() {
+			for (var i in races_selected) {
+				if (continents_selected[i] == true)
+					return false;
+			}
+			return true;
+		};
+
+		function update_races() {
+			d3.selectAll("input").each(function(d) {
+				if(d3.select(this).attr("type") == "checkbox" && d3.select(this).node().checked)
+          races_selected[d3.select(this).attr("name")] = true;
+        if (d3.select(this).attr("type") == "checkbox" && !d3.select(this).node().checked)
+          races_selected[d3.select(this).attr("name")] = false;
+			});
+		};
+
+    // update chart if filter race button is changed
+    d3.selectAll(".filter_race").on("change", function() {
+      update_races();
+      console.log(races_selected);
+    });
+
 	  function changewave(value) {
 
 	  	value -= 1;
 
-		if (value !== "") {
-			node_vis.wrangleData(value);
-			node_vis.updateVis();
-			pref_vis.onSelectionChange(value);
+			if (value !== "") {
+				node_vis.wrangleData(value);
+				node_vis.updateVis();
+				pref_vis.onSelectionChange(value);
+			}
 		}
-	}
 
 	</script>
 </body>
