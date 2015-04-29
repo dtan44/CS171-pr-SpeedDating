@@ -4,31 +4,32 @@
 	<title>Speed Dating</title>
 
 	<!--Libraries-->
-    <script src="library/d3/d3.min.js" charset="utf-8"></script>
-    <script src="library/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
-    <script src="library/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
-    <script src="http://d3js.org/queue.v1.min.js"></script>
+  <script src="library/d3/d3.min.js" charset="utf-8"></script>
+  <script src="library/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+  <script src="library/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+  <script src="http://d3js.org/queue.v1.min.js"></script>
 
     <!--Stylesheets-->
-    <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="library/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
 
-    <!--Font-->
-    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+  <!--Font-->
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 
-    <!-- vis classes-->
-    <script src = "js/prefvis.js"></script>
-    <script src = "js/nodevis.js"></script>
+  <!-- vis classes-->
+  <script src = "js/prefvis.js"></script>
+  <script src = "js/nodevis.js"></script>
 
-	<style>
-	</style>
 </head>
 <body>
-	<div class="row">
-		<div id="prefVis">
-			<br>
-			<span style="background-color:lightgray"></span>
-			<br>
-		</div>
+	<div class="col-md-12" id="prefVis">
+		<span>Filter by Race:</span>
+      <label><input class="filter_race" type="checkbox" name="Black"></input>Black/African American</label>
+      <label><input class="filter_race" type="checkbox" name="European"></input>European/Caucasian-American</label>
+      <label><input class="filter_race" type="checkbox" name="Latino"></input>Latino/Hispanic American</label>
+      <label><input class="filter_race" type="checkbox" name="Asian"></input>Asian/Pacific Islander/Asian-American</label>
+      <label><input class="filter_race" type="checkbox" name="Native"></input>Native American</label>
+      <label><input class="filter_race" type="checkbox" name="Other"></input>Other</label>
 	</div>
 
 	<div class="col-md-9" id="nodevis" style="background:lightblue">
@@ -40,25 +41,29 @@
 				<option value="3">3</option>
 				<option value="4">4</option>
 				<option value="5">5</option>
-				<option value="6">6</option>
-				<option value="7">7</option>
-				<option value="8">8</option>
-				<option value="9">9</option>
-				<option value="10">10</option>
-				<option value="11">11</option>
-				<option value="12">12</option>
-				<option value="13">13</option>
-				<option value="14">14</option>
-				<option value="15">15</option>
-				<option value="16">16</option>
-				<option value="17">17</option>
-				<option value="18">18</option>
-				<option value="19">19</option>
-				<option value="20">20</option>
-				<option value="21">21</option>
+				<option value="10">6</option>
+				<option value="11">7</option>
+				<option value="12">8</option>
+				<option value="13">9</option>
+				<option value="14">10</option>
+				<option value="15">11</option>
+				<option value="16">12</option>
+				<option value="17">13</option>
+				<option value="18">14</option>
+				<option value="19">15</option>
+				<option value="20">16</option>
+				<option value="21">17</option>
 			</select>
 		</div>
-    </div>
+  	</div>
+
+  	<div id="personalbox">
+  		<p id='information'> Information </p>
+		<p id='country'>Country:</p>
+		<p id='gdp'>GDP:</p>
+		<p id='population'>Population:</p>
+		<p id='life_expectancy'>Life Expectancy:</p>
+  	</div>
 
 
 	<script>
@@ -66,143 +71,186 @@
 	  $(function(){ 
 
       var allData = [];
-
+     
       // call this function after Data is loaded, reformatted and bound to the variables
       var initVis = function(){
 
       	var MyEventHandler = new Object();
 
-     	var pref_vis = new PrefVis(d3.select("#prefVis"), allData);
-     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
+	     	pref_vis = new PrefVis(d3.select("#prefVis"), allData);
+	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
+
+	     	$(MyEventHandler).bind("nodeclick", function(event, id, wavepeep){
+	     		console.log(id, wavepeep)
+	     	})
+
       }
-
+      
       // call this function after both files are loaded -- error should be "null" if no error
-	var dataLoaded = function (error, datingdata) {
+			var dataLoaded = function (error, datingdata) {
 
-	  if (!error) {
-		  var attrs = ['attr','sinc','intel','fun','amb','shar'];
-		  function copy(source, target, prefix, suffix) {
-			  attrs.forEach(function(attr) {
-				  var key = attr+prefix+'_'+suffix;
-				  if (source.hasOwnProperty(key)) { //copy if the property exists
-					  target[key] = source[key];
+			  if (!error) {
+
+				  var attrs = ['attr','sinc','intel','fun','amb','shar'];
+
+				  function copy(source, target, prefix, suffix) {
+					  attrs.forEach(function(attr) {
+						  var key = attr+prefix+'_'+suffix;
+						  if (source.hasOwnProperty(key)) { // copy if the property exists
+							  target[key] = source[key];
+						  }
+					  });
 				  }
-			  });
-		  }
-		  //to unique iid entries
-		  var uniquedata = d3.map(datingdata, function(d) { return d.iid; }).values();
 
-		  var data = uniquedata.map(function(d) {
-				var temp = {
-					iid: d.iid,
-					age: d.age,
-					gender: d.gender,
-					race: d.race,
-					goal: d.goal,
-					career_c: d.career_c,
-					wave: d.wave,
-					round: d.round,
-					you_call: d.you_call,
-					them_call: d.them_call,
-					date_3: d.date_3,
+				  // to unique iid entries
+				  var uniquedata = d3.map(datingdata, function(d) { return d.iid; }).values();
+				  var data = uniquedata.map(function(d) {
+						var temp = {
+							iid: d.iid,
+							id: d.id,
+							age: d.age,
+							gender: d.gender,
+							race: d.race,
+							goal: d.goal,
+							career_c: d.career_c,
+							wave: d.wave,
+							round: d.round,
+							you_call: d.you_call,
+							them_call: d.them_call,
+							date_3: d.date_3,
+							people : []
+						};
 
-					people : []
-				};
-			  temp.start_pref = {};
-			  // what the person looks for in the opposite sex (100 points)
-			  copy(d, temp.start_pref, 1, 1);
-			  // what the person thinks the opposite sex looks for (100 points)
-			  copy(d, temp.start_pref, 2, 1);
-			  // how the person rate him/herself (scale 1-10)
-			  copy(d, temp.start_pref, 3, 1);
-			  // how the person thinks others perceive him/her (scale 1-10)
-			  copy(d, temp.start_pref, 5, 1);
+					  temp.start_pref = {};
+					  // what the person looks for in the opposite sex (100 points)
+					  copy(d, temp.start_pref, 1, 1);
+					  // what the person thinks the opposite sex looks for (100 points)
+					  copy(d, temp.start_pref, 2, 1);
+					  // how the person rate him/herself (scale 1-10)
+					  copy(d, temp.start_pref, 3, 1);
+					  // how the person thinks others perceive him/her (scale 1-10)
+					  copy(d, temp.start_pref, 5, 1);
 
-			  temp.half_pref = {};
-			  // what the person looks for in the opposite sex (scale 1-10)
-			  copy(d, temp.half_pref, 1, 's');
-			  // how the person rate him/herself (scale 1-10)
-			  copy(d, temp.half_pref, 3, 's');
+					  temp.half_pref = {};
+					  // what the person looks for in the opposite sex (scale 1-10)
+					  copy(d, temp.half_pref, 1, 's');
+					  // how the person rate him/herself (scale 1-10)
+					  copy(d, temp.half_pref, 3, 's');
 
-			  temp.day_pref = {};
-			  // what the person looks for in the opposite sex (100 points)
-			  copy(d, temp.day_pref, 1, 2);
-			  // what the person thinks the opposite sex looks for (100 points)
-			  copy(d, temp.day_pref, 2, 2);
-			  // how the person rate him/herself (scale 1-10)
-			  copy(d, temp.day_pref, 3, 2);
+					  temp.day_pref = {};
+					  // what the person looks for in the opposite sex (100 points)
+					  copy(d, temp.day_pref, 1, 2);
+					  // what the person thinks the opposite sex looks for (100 points)
+					  copy(d, temp.day_pref, 2, 2);
+					  // how the person rate him/herself (scale 1-10)
+					  copy(d, temp.day_pref, 3, 2);
+					  // how the person thinks others perceive him/her (scale 1-10)
+					  copy(d, temp.day_pref, 5, 2);
+					  
+					  temp.week_pref = {};
+					  // what the person looks for in the opposite sex (100 points)
+					  copy(d, temp.week_pref, 1, 3);
+					  // what the person thinks the opposite sex looks for (scale 1-10)
+					  copy(d, temp.week_pref, 2, 3);
+					  // how the person rate him/herself (scale 1-10)
+					  copy(d, temp.week_pref, 3, 3);
+					  // how the person thinks others perceive him/her (scale 1-10)
+					  copy(d, temp.week_pref, 5, 3);
+					  
+					  return temp;
+					});
 
-			  // how the person thinks others perceive him/her (scale 1-10)
-			  copy(d, temp.day_pref, 5, 2);
-			  temp.week_pref = {};
-			  // what the person looks for in the opposite sex (100 points)
-			  copy(d, temp.week_pref, 1, 3);
-			  // what the person thinks the opposite sex looks for (scale 1-10)
-			  copy(d, temp.week_pref, 2, 3);
-			  // how the person rate him/herself (scale 1-10)
-			  copy(d, temp.week_pref, 3, 3);
-			  // how the person thinks others perceive him/her (scale 1-10)
-			  copy(d, temp.week_pref, 5, 3);
-			  return temp;
-			});
+				var lookup = d3.map(data, function(d) { return d.iid; });
 
-		var lookup = d3.map(data, function(d) { return d.iid; });
-	    datingdata.forEach(function(d) {
-			var temp = {
-				wave: d.wave,
-				iid: d.iid,
+			  datingdata.forEach(function(d) {
+					var temp = {
+						wave: d.wave,
+						iid: d.iid,
+						id: d.id,
+						order: d.order,
+						pid: d.pid,
+						match: d.match,
+						samerace: d.samerace,
+						age_o: d.age_o,
+						race_o: d.race_o,
+						pf_o_attr: d.pf_o_attr,
+						dec_o: d.dec_o,
+						attr_o: d.attr_o,
+						dec: d.dec,
+						attr: d.attr,
+						sinc: d.sinc,
+						intel: d.intel,
+						fun: d.fun,
+						amb: d.amb,
+						shar: d.shar,
+						like: d.like,
+						prob: d.prob
+					};
 
-				order: d.order,
-				pid: d.pid,
-				match: d.match,
-				samerace: d.samerace,
+					// lookup the corresponding data entry and push the people
+					lookup.get(temp.iid).people.push(temp);
+				});
 
-				age_o: d.age_o,
-				race_o: d.race_o,
-				pf_o_attr: d.pf_o_attr,
-				dec_o: d.dec_o,
-				attr_o: d.attr_o,
+				// group by wave
+			    allData = d3.nest()
+			             .key(function(d) { return d.wave;})
+			             .entries(data);
 
-				dec: d.dec,
-				attr: d.attr,
-				sinc: d.sinc,
-				intel: d.intel,
-				fun: d.fun,
-				amb: d.amb,
-				shar: d.shar,
-				like: d.like,
-				prob: d.prob
-			};
-			//lookup the corresponding data entry and push the people
-			lookup.get(temp.iid).people.push(temp);
-		});
-		//group by wave
-	    allData = d3.nest()
-	             .key(function(d) { return d.wave;})
-	             .entries(data);
-
-	    //console.log(allData);
-
-	    initVis();
-	    }
-	}
+			    initVis();
+			  }
+			}
 
       var startHere = function(){
 				queue()
     			.defer(d3.csv, 'data/SpeedDating.csv')
     			.await(dataLoaded);
       }
-
       startHere();
 	  })
 
-	  function changewave(value) {
-		if (value != "") {
-			node_vis.wrangleData(value);
-			node_vis.updateVis();
+		var races_selected = {
+			"Black": false,
+			"European": false,
+			"Latino": false,
+			"Asian": false,
+			"Native": false,
+			"Other": false
 		}
-	  } 
-		
+
+		function races_empty() {
+			for (var i in races_selected) {
+				if (continents_selected[i] == true)
+					return false;
+			}
+			return true;
+		};
+
+		function update_races() {
+			d3.selectAll("input").each(function(d) {
+				if(d3.select(this).attr("type") == "checkbox" && d3.select(this).node().checked)
+          races_selected[d3.select(this).attr("name")] = true;
+        if (d3.select(this).attr("type") == "checkbox" && !d3.select(this).node().checked)
+          races_selected[d3.select(this).attr("name")] = false;
+			});
+		};
+
+    // update chart if filter race button is changed
+    d3.selectAll(".filter_race").on("change", function() {
+      update_races();
+      console.log(races_selected);
+    });
+
+	  function changewave(value) {
+
+	  	value -= 1;
+
+			if (value !== "") {
+				node_vis.wrangleData(value);
+				node_vis.updateVis();
+				pref_vis.onSelectionChange(value);
+			}
+		}
+
 	</script>
 </body>
 </html>
