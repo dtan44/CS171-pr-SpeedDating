@@ -2,6 +2,9 @@ PrefVis = function(_parentElement, _data){
     this.parentElement = _parentElement;
     this.data = _data;
     this.displayData = [];
+    this.filter = {
+        wave: null
+    };
 
     this.margin = {top: 20, right: 30, bottom: 200, left: 120},
     this.width = 800 - this.margin.left - this.margin.right,
@@ -109,7 +112,7 @@ PrefVis.prototype.updateVis = function(){
 
     this.svg.select(".y_axis")
         .call(this.yAxis)
-        .append("text")
+        .append("text")//SAM: keep in mind that you will add a text element per updateVis call
         .attr("transform", "rotate(-90)")
         .attr({"x": -110, "y": -70})
         .attr("dy", ".75em")
@@ -130,20 +133,17 @@ PrefVis.prototype.updateVis = function(){
                   .data(function(d) { return d.ratings; });
 
     var bar_enter = bar.enter()
-                       .append("g")
+                       .append("rect")
                        .attr("class", "bar");
 
-    bar_enter.append("rect");
-
-    bar.selectAll("rect")
-       .attr("width", this.x1.rangeBand())
+    bar.attr("width", this.x1.rangeBand())
        .attr("x", function(d) { return that.x1(d.name); })
        .style("fill", function(d) {return color(d.name); });
 
     bar.exit().remove();
 
-    bar.selectAll("rect")
-       .transition()
+    //SAM a selectAll creates a nested data-join. which may be initialized implicitly but not updated
+    bar.transition()
        .duration(500)
        .attr("y", function(d) { return that.y(d.value); })
        .attr("height", function(d) { return that.height - that.y(d.value); });
@@ -180,11 +180,21 @@ PrefVis.prototype.updateVis = function(){
  */
 PrefVis.prototype.onSelectionChange= function (wave){
 
-    // TODO: call wrangle function
-    this.wrangleData(function(d) { return d.key == wave; });
+    this.filter.wave = wave;
+    this.refilter();
+};
+PrefVis.prototype.refilter = function() {
+    var that = this;
+    this.wrangleData(function(d) {
+        //check all filter properties if they are set and if the value doesn't abort and return false
+        if (that.filter.wave != null && d.key != that.filter.wave) {
+            return false;
+        }
+        //looks like a good item: no filter said no
+        return true;
+    });
 
     this.updateVis();
-
 
 }
 
