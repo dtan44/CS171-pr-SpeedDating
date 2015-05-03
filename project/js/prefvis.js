@@ -71,8 +71,6 @@ PrefVis.prototype.wrangleData= function(_filterFunction){
 
 }
 
-
-
 /**
  * the drawing function - should use the D3 selection, enter, exit
  */
@@ -148,7 +146,7 @@ PrefVis.prototype.updateVis = function(){
        .attr("height", function(d) { return that.height - that.y(d.value); });
 
     var legend = this.svg.selectAll(".legend")
-                     .data(categories.slice().reverse())
+                     .data(categories)
                      .enter().append("g")
                      .attr("class", "legend")
                      .attr("transform", function(d, i) { 
@@ -181,7 +179,8 @@ PrefVis.prototype.onSelectionChange= function (wave){
 
     this.filter.wave = wave;
     this.refilter();
-};
+}
+
 PrefVis.prototype.onRaceChange= function (races){
 
     this.filter.races = [];
@@ -189,7 +188,16 @@ PrefVis.prototype.onRaceChange= function (races){
       if (races[i] != "")
         this.filter.races.push(races[i]);
     this.refilter();
-};
+}
+
+PrefVis.prototype.onCareerChange= function (careers){
+
+    this.filter.careers = [];
+    for (var i = 0; i < careers.length; i++)
+      if (careers[i] != "")
+        this.filter.careers.push(careers[i]); 
+    this.refilter();
+}
 
 PrefVis.prototype.refilter = function() {
     var that = this;
@@ -292,53 +300,67 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
           data[i][category] += parseFloat(source[key]);
         }
       })
-    }
+    };
 
     this.data
         .filter(filter)
         .forEach(function(d) {
           d.values.forEach(function(c) {
-            if (c.wave < 6 || c.wave > 9) {
-              if (that.filter.races == null || that.filter.races.length == 0) {
-                // female
-                if (c.gender == 0) {
-                  count_women++;
-                  // what she wants
-                  copy(c.start_pref, "real_women", 1, 1);
-                  // what she thinks he wants
-                  copy(c.start_pref, "perc_men", 2, 1);
-                }
-                // male 
-                else if (c.gender == 1) {
-                  count_men++;
-                  // what he wants
-                  copy(c.start_pref, "real_men", 1, 1);
-                  // what he thinks she wants
-                  copy(c.start_pref, "perc_women", 2, 1);
-                }
+
+            function gender_copy() {
+              // female
+              if (c.gender == 0) {
+                count_women++;
+                // what she wants
+                copy(c.start_pref, "real_women", 1, 1);
+                // what she thinks he wants
+                copy(c.start_pref, "perc_men", 2, 1);
               }
-              else {
-                for (var i = 0; i < that.filter.races.length; i++) {
-                  if (c.race == that.filter.races[i]) {
-                    // female
-                if (c.gender == 0) {
-                  count_women++;
-                  // what she wants
-                  copy(c.start_pref, "real_women", 1, 1);
-                  // what she thinks he wants
-                  copy(c.start_pref, "perc_men", 2, 1);
-                }
-                // male 
-                else if (c.gender == 1) {
-                  count_men++;
-                  // what he wants
-                  copy(c.start_pref, "real_men", 1, 1);
-                  // what he thinks she wants
-                  copy(c.start_pref, "perc_women", 2, 1);
-                }
+              // male 
+              else if (c.gender == 1) {
+                count_men++;
+                // what he wants
+                copy(c.start_pref, "real_men", 1, 1);
+                // what he thinks she wants
+                copy(c.start_pref, "perc_women", 2, 1);
+              }
+            }
+
+            var races = that.filter.races;
+            var careers = that.filter.careers;
+
+
+            if (c.wave < 6 || c.wave > 9) {
+              if ((races == null || races.length == 0) && 
+                  (careers == null || careers.length == 0)) {
+                gender_copy();
+              }
+              else if (races != null && 
+                      (careers == null || careers.length == 0)) {
+                for (var i = 0; i < races.length; i++) {
+                  if (c.race == races[i]) {
+                    gender_copy();
                   }
                 }
               }
+              else if ((races == null || races.length == 0) &&
+                        careers != null) {
+                for (var i = 0; i < careers.length; i++) {
+                  if (c.career_c == careers[i]) {
+                    gender_copy();
+                  }
+                }
+              }
+              else
+                for (var i = 0; i < careers.length; i++) {
+                  if (c.career_c == careers[i]) {
+                    for (var j = 0; j < races.length; i++) {
+                      if (c.race == races[j]) {
+                        gender_copy();
+                      }
+                    }
+                  }
+                }
             }  
           })
         }); 
