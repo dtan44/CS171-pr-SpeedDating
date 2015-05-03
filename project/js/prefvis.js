@@ -1,5 +1,6 @@
-PrefVis = function(_parentElement, _data){
+PrefVis = function(_parentElement, _data, _selectionElement){
     this.parentElement = _parentElement;
+    this.selectionElement = _selectionElement;
     this.data = _data;
     this.displayData = [];
     this.filter = {
@@ -7,8 +8,8 @@ PrefVis = function(_parentElement, _data){
     };
 
     this.margin = {top: 20, right: 30, bottom: 200, left: 120},
-    this.width = 800 - this.margin.left - this.margin.right,
-    this.height = 600 - this.margin.top - this.margin.bottom;
+    this.width = 700 - this.margin.left - this.margin.right,
+    this.height = 500 - this.margin.top - this.margin.bottom;
 
     this.initVis();
 
@@ -94,9 +95,12 @@ PrefVis.prototype.updateVis = function(){
     this.x0.domain(this.displayData.map(function(d) { return d.attribute; }));
     this.x1.domain(headers).rangeRoundBands([0, this.x0.rangeBand()]);
 
-    // var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
+    var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
 
-    this.y.domain([0, 50]);
+    if (ymax > 50)
+      this.y.domain([0, ymax]);
+    else 
+      this.y.domain([0, 50]);
 
     this.svg.select(".x_axis")
         .call(this.xAxis)
@@ -199,15 +203,24 @@ PrefVis.prototype.onCareerChange= function (careers){
     this.refilter();
 }
 
+PrefVis.prototype.onGoalChange= function (goals){
+
+    this.filter.goals = [];
+    for (var i = 0; i < goals.length; i++)
+      if (goals[i] != "")
+        this.filter.goals.push(goals[i]); 
+    this.refilter();
+}
+
 PrefVis.prototype.refilter = function() {
     var that = this;
     this.wrangleData(function(d) {
-        //check all filter properties if they are set and if the value doesn't abort and return false
-        if (that.filter.wave != null && d.key != that.filter.wave) {
-          return false;
-        }
-        //looks like a good item: no filter said no
-        return true;
+      //check all filter properties if they are set and if the value doesn't abort and return false
+      if (that.filter.wave != null && d.wave != that.filter.wave) {
+        return false;
+      }
+      //looks like a good item: no filter said no
+      return true;
     });
 
     this.updateVis();
@@ -280,7 +293,7 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
     };
 
     var shar = {
-        attribute: "Shared Interests/Hobbies",
+        attribute: "Shared Interests",
         perc_women: 0.,
         real_women: 0.,
         perc_men: 0.,
@@ -302,74 +315,61 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       })
     };
 
-    var filtered_data = this.data.filter(filter);
+    function filter_race(d) {
+      if (that.filter.races == null || that.filter.races.length == 0)
+        return true;
+      else if (that.filter.races != null && that.filter.races.length > 0) {
+        if (that.filter.races.indexOf(d.race) != -1)
+          return true;
+      }
+      return false;
+    }
 
-    function filter_race() {
+    function filter_career(d) {
+      if (that.filter.careers == null || that.filter.careers.length == 0)
+        return true;
+      else if (that.filter.careers != null && that.filter.careers.length > 0) {
+        if (that.filter.careers.indexOf(d.career_c) != -1)
+          return true;
+      }
+      return false;
+    }
 
+    function filter_goal(d) {
+      if (that.filter.goals == null || that.filter.goals.length == 0)
+        return true;
+      else if (that.filter.goals != null && that.filter.goals.length > 0) {
+        if (that.filter.goals.indexOf(d.goal) != -1)
+          return true;
+      }
+      return false;
     }
 
     this.data
         .filter(filter)
-        .forEach(function(d) {
-          d.values.forEach(function(c) {
-
-            function gender_copy() {
-              // female
-              if (c.gender == 0) {
-                count_women++;
-                // what she wants
-                copy(c.start_pref, "real_women", 1, 1);
-                // what she thinks he wants
-                copy(c.start_pref, "perc_men", 2, 1);
-              }
-              // male 
-              else if (c.gender == 1) {
-                count_men++;
-                // what he wants
-                copy(c.start_pref, "real_men", 1, 1);
-                // what he thinks she wants
-                copy(c.start_pref, "perc_women", 2, 1);
-              }
+        .filter(filter_race)
+        .filter(filter_career)
+        .filter(filter_goal)
+        .forEach(function(c) {
+          if (c.wave < 6 || c.wave > 9) {
+            // female
+            if (c.gender == 0) {
+              count_women++;
+              // what she wants
+              copy(c.start_pref, "real_women", 1, 1);
+              // what she thinks he wants
+              copy(c.start_pref, "perc_men", 2, 1);
             }
-
-            var races = that.filter.races;
-            var careers = that.filter.careers;
-
-
-            if (c.wave < 6 || c.wave > 9) {
-              if ((races == null || races.length == 0) && 
-                  (careers == null || careers.length == 0)) {
-                gender_copy();
-              }
-              else if (races != null && 
-                      (careers == null || careers.length == 0)) {
-                for (var i = 0; i < races.length; i++) {
-                  if (c.race == races[i]) {
-                    gender_copy();
-                  }
-                }
-              }
-              else if ((races == null || races.length == 0) &&
-                        careers != null) {
-                for (var i = 0; i < careers.length; i++) {
-                  if (c.career_c == careers[i]) {
-                    gender_copy();
-                  }
-                }
-              }
-              else
-                for (var i = 0; i < careers.length; i++) {
-                  if (c.career_c == careers[i]) {
-                    for (var j = 0; j < races.length; j++) {
-                      if (c.race == races[j]) {
-                        gender_copy();
-                      }
-                    }
-                  }
-                }
-            }  
-          })
-        }); 
+            // male 
+            else if (c.gender == 1) {
+              count_men++;
+              // what he wants
+              copy(c.start_pref, "real_men", 1, 1);
+              // what he thinks she wants
+              copy(c.start_pref, "perc_women", 2, 1);
+            }
+          }
+        })
 
     var women_categories = ["real_women", "perc_men"];
     var men_categories = ["real_men", "perc_women"];
@@ -381,6 +381,8 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
         attr[d] = attr[d]/count_men;
       });
     });
+
+    this.selectionElement.html(count_men+count_women+" out of 449 people");
 
     return data;
 

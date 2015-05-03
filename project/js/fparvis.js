@@ -5,7 +5,7 @@
  * @param _eventHandler -- the Eventhandling Object to emit data to
  */
 
-MParVis = function(_parentElement, _data, _eventHandler){
+FParVis = function(_parentElement, _data, _eventHandler){
     this.parentElement = _parentElement;
     this.data = _data;
     this.eventHandler = _eventHandler;
@@ -24,7 +24,7 @@ MParVis = function(_parentElement, _data, _eventHandler){
 /**
  * Method that sets up the SVG and the variables
  */
-MParVis.prototype.initVis = function(){
+FParVis.prototype.initVis = function(){
 
     var that = this; // read about the this
 
@@ -59,7 +59,7 @@ MParVis.prototype.initVis = function(){
  * @param node_id -- The ID of the node clicked
  * @param wave_peep -- Data for the entire wave
  */
-MParVis.prototype.wrangleData= function (filter) {
+FParVis.prototype.wrangleData= function (filter) {
 
     var that = this;
 
@@ -67,10 +67,10 @@ MParVis.prototype.wrangleData= function (filter) {
     // pretty simple in this case -- no modifications needed
 
     that.displayData = [
-        {"iid": 1, "gender": 0, "attractive": 25, "sincere": 38, "intelligent": 26, "fun": 14, "ambitious": 13, "share_int": 10},
-        {"iid": 2, "gender": 1, "attractive": 16, "sincere": 45, "intelligent": 18, "fun": 25, "ambitious": 40, "share_int": 5},
-        {"iid": 3, "gender": 1, "attractive": 50, "sincere": 13, "intelligent": 36, "fun": 32, "ambitious": 30, "share_int": 50},
-        {"iid": 4, "gender": 0, "attractive": 10, "sincere": 40, "intelligent": 40, "fun": 30, "ambitious": 20, "share_int": 28}
+        {"iid": 1, "gender": 0, "attractive": 5, "sincere": 10, "intelligent": 6, "fun": 7, "ambitious": 10, "share_int": 9},
+        {"iid": 2, "gender": 1, "attractive": 10, "sincere": 7, "intelligent": 8, "fun": 4, "ambitious": 5, "share_int": 2},
+        {"iid": 3, "gender": 1, "attractive": 5, "sincere": 3, "intelligent": 6, "fun": 9, "ambitious": 8, "share_int": 5},
+        {"iid": 4, "gender": 0, "attractive": 10, "sincere": 4, "intelligent": 7, "fun": 3, "ambitious": 2, "share_int": 8}
     ];
 
     that.highlightData = {"iid": 2, "gender": 1, "attractive": 16, "sincere": 45, "intelligent": 18, "fun": 25, "ambitious": 40, "share_int": 5}
@@ -80,15 +80,15 @@ MParVis.prototype.wrangleData= function (filter) {
 /**
  * The drawing function, updates the parallel coordinate graph to new data
  */
-MParVis.prototype.updateVis = function() {
+FParVis.prototype.updateVis = function() {
 
     var that = this;
 
     // Extract the list of dimensions and create a scale for each
     that.x.domain(dimensions = d3.keys(that.displayData[0]).filter(function(d) {
         return d != "iid" && d != "gender" && (that.y[d] = d3.scale.linear()
-                .domain(d3.extent(that.displayData, function(p) { return +p[d]; }))
-                .range([that.height, 0]));
+                .domain([0,10]))
+                .range([that.height, 0]);
     }));
 
     // Removes all old paths and axis
@@ -120,7 +120,7 @@ MParVis.prototype.updateVis = function() {
             if (d.iid == that.highlightData.iid) {
                 return 1
             }
-            else return .4
+            else return .5
         })
         .attr("fill", "none")
         .attr("stroke-width", 2);
@@ -152,45 +152,51 @@ MParVis.prototype.updateVis = function() {
  * @param node_id -- the ID of the node clicked
  * @param wave_peep -- data for the entire wave
  */
-MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
+FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
 
     var that = this;
 
     // Clears the old data from memory
     this.displayData = [];
+    var person;
 
-    // Stores the relevant data for selected node
     for (var i = 0; i <wave_peep.length; i++) {
         if (wave_peep[i]["iid"] == node_id) {
             that.highlightData = {
                 "iid": wave_peep[i]["iid"],
                 "gender": wave_peep[i]["gender"],
-                "attractive": wave_peep[i]["start_pref"]["attr1_1"],
-                "sincere": wave_peep[i]["start_pref"]["sinc1_1"],
-                "intelligent": wave_peep[i]["start_pref"]["intel1_1"],
-                "fun": wave_peep[i]["start_pref"]["fun1_1"],
-                "ambitious": wave_peep[i]["start_pref"]["amb1_1"],
-                "share_interests": wave_peep[i]["start_pref"]["shar1_1"]
+                "attractive": wave_peep[i]["start_pref"]["attr3_1"],
+                "sincere": wave_peep[i]["start_pref"]["sinc3_1"],
+                "intelligent": wave_peep[i]["start_pref"]["intel3_1"],
+                "fun": wave_peep[i]["start_pref"]["fun3_1"],
+                "ambitious": wave_peep[i]["start_pref"]["amb3_1"],
+                "shared_interests": wave_peep[i]["start_pref"]["shar3_1"]
             }
+
+            that.displayData.push(that.highlightData)
         }
-    };
+    }
 
     // Creates line data for each person
     for (var i = 0; i < wave_peep.length; i++) {
-        var person = {
-            "iid": wave_peep[i]["iid"],
-            "gender": wave_peep[i]["gender"],
-            "attractive": wave_peep[i]["start_pref"]["attr1_1"],
-            "sincere": wave_peep[i]["start_pref"]["sinc1_1"],
-            "intelligent": wave_peep[i]["start_pref"]["intel1_1"],
-            "fun": wave_peep[i]["start_pref"]["fun1_1"],
-            "ambitious": wave_peep[i]["start_pref"]["amb1_1"],
-            "shared_interests": wave_peep[i]["start_pref"]["shar1_1"]
-        };
+        for (var j = 0; j < wave_peep[i]["people"].length; j++) {
+            if (that.highlightData.iid == wave_peep[i]["people"][j]["pid"]) {
+                person = {
+                    "iid": wave_peep[i]["iid"],
+                    "gender": wave_peep[i]["gender"],
+                    "attractive": wave_peep[i]["people"][j]["attr"],
+                    "sincere": wave_peep[i]["people"][j]["sinc"],
+                    "intelligent": wave_peep[i]["people"][j]["intel"],
+                    "fun": wave_peep[i]["people"][j]["fun"],
+                    "ambitious": wave_peep[i]["people"][j]["amb"],
+                    "shared_interests": wave_peep[i]["people"][j]["shar"]
+                };
 
-        // Pushes relevant line data into data array
-        if (person.gender == that.highlightData.gender) {
-            that.displayData.push(person)
+                // Pushes relevant line data into data array
+                if (person.gender != that.highlightData.gender) {
+                    that.displayData.push(person)
+                }
+            }
         }
     }
 

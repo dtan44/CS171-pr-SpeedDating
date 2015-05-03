@@ -1,3 +1,32 @@
+/*
+ * Parallel Coordinates CSS
+ */
+
+svg {
+    font: 10px sans-serif;
+}
+
+.background path {
+    fill: none;
+    stroke: powderblue;
+    shape-rendering: crispEdges;
+    stroke-width: 2;
+    stroke-opacity: .8;
+}
+
+.foreground path {
+    fill: none;
+    stroke: midnightblue;
+    stroke-width: 2;
+}
+
+.axis line,
+.axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
 .node:hover {
   fill: green;
 
