@@ -304,9 +304,21 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
 
     var filtered_data = this.data.filter(filter);
 
-    function filter_race() {
-
+    function filter_race(d) {
+      if (that.filter.races != null && that.filter.races.length > 0) {
+        for (var i = 0; i < that.filter.races; i++) {
+          if (d.race == that.filter.races[i])
+            return true;
+        }
+      } 
+      return false;
     }
+
+    filtered_data.forEach(function(d) {
+      d.values.forEach(function(c) {
+        
+      })
+    })
 
     this.data
         .filter(filter)
