@@ -2,9 +2,12 @@ PrefVis = function(_parentElement, _data){
     this.parentElement = _parentElement;
     this.data = _data;
     this.displayData = [];
+    this.filter = {
+        wave: null
+    };
 
     this.margin = {top: 20, right: 30, bottom: 200, left: 120},
-    this.width = 700 - this.margin.left - this.margin.right,
+    this.width = 800 - this.margin.left - this.margin.right,
     this.height = 500 - this.margin.top - this.margin.bottom;
 
     this.initVis();
@@ -25,14 +28,16 @@ PrefVis.prototype.initVis = function(){
       .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-    this.x = d3.scale.ordinal()
+    this.x0 = d3.scale.ordinal()
     	.rangeRoundBands([0, this.width], .1);
+
+    this.x1 = d3.scale.ordinal();
 
     this.y = d3.scale.linear()
       .range([this.height, 0]);
 
     this.xAxis = d3.svg.axis()
-      .scale(this.x)
+      .scale(this.x0)
       .orient("bottom");
 
     this.yAxis = d3.svg.axis()
@@ -64,15 +69,6 @@ PrefVis.prototype.wrangleData= function(_filterFunction){
     // displayData should hold the data which is visualized
     this.displayData = this.filterAndAggregate(_filterFunction);
 
-    //// you might be able to pass some options,
-    //// if you don't pass options -- set the default options
-    //// the default is: var options = {filter: function(){return true;} }
-    //var options = _options || {filter: function(){return true;}};
-
-
-
-
-
 }
 
 
@@ -84,39 +80,25 @@ PrefVis.prototype.updateVis = function(){
 
     var that = this;
 
-    var headers = ["perc_women", "real_women", "perc_men", "real_men"];
+    var headers = d3.keys(this.displayData[0]).filter(function(key) { return key !== "attribute"; });
 
     var categories = ["what men THINK women want", "what women ACTUALLY want", 
         "what women THINK men want", "what men ACTUALLY want"];
 
     var color = d3.scale.ordinal()
-                        .domain(categories)
+                        .domain(headers)
                         .range(["pink", "red", "#87CEFA", "blue"]);
 
-    var layers = d3.layout.stack()(headers.map(function(d) {
-        return that.displayData.map(function(c) {
-            return {
-                x: c.attribute,
-                y: +c[d]
-            };
-        });
-    }));
+    this.displayData.forEach(function(d) {
+      d.ratings = headers.map(function(name) { return {name: name, value: +d[name]}; });
+    });               
 
-    var yGroupMax = d3.max(layers, function(layer) { 
-        return d3.max(layer, function(d) { 
-            return d.y; 
-        }); 
-    });
+    this.x0.domain(this.displayData.map(function(d) { return d.attribute; }));
+    this.x1.domain(headers).rangeRoundBands([0, this.x0.rangeBand()]);
 
-    var yStackMax = d3.max(layers, function(layer) {
-        return d3.max(layer, function(d) {
-            return d.y0+d.y;
-        });
-    });
+    var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
 
-    this.x.domain(layers[0].map(function(d) { return d.x; }));
-
-    this.y.domain([0, yGroupMax]);
+    this.y.domain([0, ymax]);
 
     this.svg.select(".x_axis")
         .call(this.xAxis)
@@ -129,52 +111,49 @@ PrefVis.prototype.updateVis = function(){
 
     this.svg.select(".y_axis")
         .call(this.yAxis)
-        .append("text")
+        .append("text")//SAM: keep in mind that you will add a text element per updateVis call
         .attr("transform", "rotate(-90)")
         .attr({"x": -110, "y": -70})
         .attr("dy", ".75em")
         .style("text-anchor", "end")
-        .text("# of Points");    
+        .text("# of Points");
 
-    var layer = this.svg.selectAll(".layer")
-                    .data(layers)
-                    .enter()
-                    .append("g")
-                    .attr("class", "layer")
-                    .style("fill", function(d, i) { return color(i); });
+    var attr = this.svg.selectAll(".attr")
+                   .data(this.displayData)
+                   
+    var attr_enter = attr.enter().append("g");
 
-    var rect = layer.selectAll("rect")
-        .data(function(d) { return d; })
-        .enter()
-        .append("rect")
-        .attr("x", function(d) { return that.x(d.x); })
-        .attr("y", this.height)
-        .attr("width", that.x.rangeBand())
-        .attr("height", 0);
+    attr.attr("class", "attr")
+        .attr("transform", function(d) { return "translate(" + that.x0(d.attribute) + ",0)"; });
 
-/* 
-    // stacked layout
-    rect.transition()
-        .delay(function(d, i) { return i * 10; })
-        .attr("y", function(d) { return that.y(d.y0 + d.y); })
-        .attr("height", function(d) { return that.y(d.y0) - that.y(d.y0 + d.y); }); */
+    attr.exit().remove();
 
-    // grouped layout
-    rect.transition()
-          .duration(500)
-          .delay(function(d, i) { return i * 10; })
-          .attr("x", function(d, i, j) { return that.x(d.x) + that.x.rangeBand() / 4 * j; })
-          .attr("width", that.x.rangeBand() / 4)
-          .transition()
-          .attr("y", function(d) { return that.y(d.y); })
-          .attr("height", function(d) { return that.height - that.y(d.y); });
+    var bar = attr.selectAll(".bar")
+                  .data(function(d) { return d.ratings; });
+
+    var bar_enter = bar.enter()
+                       .append("rect")
+                       .attr("class", "bar");
+
+    bar.attr("width", this.x1.rangeBand())
+       .attr("x", function(d) { return that.x1(d.name); })
+       .style("fill", function(d) {return color(d.name); });
+
+    bar.exit().remove();
+
+    //SAM a selectAll creates a nested data-join. which may be initialized implicitly but not updated
+    bar.transition()
+       .duration(500)
+       .attr("y", function(d) { return that.y(d.value); })
+       .attr("height", function(d) { return that.height - that.y(d.value); });
 
     var legend = this.svg.selectAll(".legend")
                      .data(categories.slice().reverse())
                      .enter().append("g")
                      .attr("class", "legend")
                      .attr("transform", function(d, i) { 
-                        return "translate(-20,"+i*20+")"; });
+                        return "translate(-20,"+i*20+")"; 
+                      });
 
     legend.append("rect")
           .attr("x", this.width - 18)
@@ -189,34 +168,6 @@ PrefVis.prototype.updateVis = function(){
           .style("text-anchor", "end")
           .text(function(d) { return d; });
 
-/*    // TODO: ...update scales
-
-    var bar = this.svg.selectAll(".bar")
-    	.data(this.displayData, function(d) { return d; });
-
-    var bar_enter = bar.enter().append("g");
-
-    bar_enter.append("rect");
-
-    bar.attr("class", "bar");
-
-    bar.exit()
-       .remove();
-
-    bar.selectAll("rect")
-       .attr("x", function(d, i, j) { 
-       		return that.x(that.metaData.priorities[j]["item-title"]); 
-       	})
-       .attr("width", this.x.rangeBand())
-       .style("fill", function(d, i, j) { 
-       		return that.metaData.priorities[j]["item-color"]; 
-       	})
-       .transition()
-       .duration(100)
-       .attr("y", function(d) { return that.y(d); })
-       .attr("height", function(d) { return that.height - that.y(d); }); */
-
-
 }
 
 
@@ -226,13 +177,32 @@ PrefVis.prototype.updateVis = function(){
  * be defined here.
  * @param selection
  */
-PrefVis.prototype.onSelectionChange= function (selectionStart, selectionEnd){
+PrefVis.prototype.onSelectionChange= function (wave){
 
-    // TODO: call wrangle function
-    this.wrangleData(null);
+    this.filter.wave = wave;
+    this.refilter();
+};
+PrefVis.prototype.onRaceChange= function (races){
+
+    this.filter.races = [];
+    for (var i = 0; i < races.length; i++)
+      if (races[i] != "")
+        this.filter.races.push(races[i]);
+    this.refilter();
+};
+
+PrefVis.prototype.refilter = function() {
+    var that = this;
+    this.wrangleData(function(d) {
+        //check all filter properties if they are set and if the value doesn't abort and return false
+        if (that.filter.wave != null && d.key != that.filter.wave) {
+          return false;
+        }
+        //looks like a good item: no filter said no
+        return true;
+    });
 
     this.updateVis();
-
 
 }
 
@@ -260,9 +230,6 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
     }
 
     var that = this;
-
-    // start_pref, half_pref, day_pref, week_pref
-    // what men think women want, what women want, what women think men want, what men want
 
     var attr = {
         attribute: "Attractive",
@@ -315,134 +282,78 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
     var count_women = 0;
     var count_men = 0;
 
+    var attrs = ['attr','sinc','intel','fun','amb','shar'];
+    var data = [attr, sinc, intel, fun, amb, shar];
+
+    function copy(source, category, prefix, suffix) {
+      attrs.forEach(function(attr, i) {
+        var key = attr+prefix+'_'+suffix;
+        if (!isNaN(parseFloat(source[key]))) {
+          data[i][category] += parseFloat(source[key]);
+        }
+      })
+    }
+
     this.data
-        // .filter(filter)
+        .filter(filter)
         .forEach(function(d) {
-            // don't include waves 6-9
-            if (parseInt(d.key) < 6 || parseInt(d.key) > 9) {
-                d.values.forEach(function(c) {
+          d.values.forEach(function(c) {
+            if (c.wave < 6 || c.wave > 9) {
+              if (that.filter.races == null || that.filter.races.length == 0) {
+                // female
+                if (c.gender == 0) {
+                  count_women++;
+                  // what she wants
+                  copy(c.start_pref, "real_women", 1, 1);
+                  // what she thinks he wants
+                  copy(c.start_pref, "perc_men", 2, 1);
+                }
+                // male 
+                else if (c.gender == 1) {
+                  count_men++;
+                  // what he wants
+                  copy(c.start_pref, "real_men", 1, 1);
+                  // what he thinks she wants
+                  copy(c.start_pref, "perc_women", 2, 1);
+                }
+              }
+              else {
+                for (var i = 0; i < that.filter.races.length; i++) {
+                  if (c.race == that.filter.races[i]) {
                     // female
-                    if (c.gender == 0) {
-                        // what she wants
-                        if (!isNaN(parseFloat(c.start_pref.attr1_1))) {
-                            attr["real_women"] += parseFloat(c.start_pref.attr1_1);
-                            count_women += 1;
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.sinc1_1))){
-                            sinc["real_women"] += parseFloat(c.start_pref.sinc1_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.intel1_1))) {
-                            intel["real_women"] += parseFloat(c.start_pref.intel1_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.fun1_1))) {
-                            fun["real_women"] += parseFloat(c.start_pref.fun1_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.amb1_1))) {
-                            amb["real_women"] += parseFloat(c.start_pref.amb1_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.shar1_1))) {
-                            shar["real_women"] += parseFloat(c.start_pref.shar1_1);
-                        }
-                        // what she thinks he wants
-                        if (!isNaN(parseFloat(c.start_pref.attr2_1))) {
-                            attr["perc_men"] += parseFloat(c.start_pref.attr2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.sinc2_1))) {
-                            sinc["perc_men"] += parseFloat(c.start_pref.sinc2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.intel2_1))) {
-                            intel["perc_men"] += parseFloat(c.start_pref.intel2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.fun2_1))) {
-                            fun["perc_men"] += parseFloat(c.start_pref.fun2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.amb2_1))) {
-                            amb["perc_men"] += parseFloat(c.start_pref.amb2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.shar2_1))) {
-                            shar["perc_men"] += parseFloat(c.start_pref.shar2_1);
-                        }
-                    }
-                    // male 
-                    else if (c.gender == 1) {
-                        // what he wants
-                        if (!isNaN(parseFloat(c.start_pref.attr1_1))) {
-                            attr["real_men"] += parseFloat(c.start_pref.attr1_1);
-                            count_men += 1;
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.sinc1_1))){
-                            sinc["real_men"] += parseFloat(c.start_pref.sinc1_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.intel1_1))) {
-                            intel["real_men"] += parseFloat(c.start_pref.intel1_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.fun1_1))) {
-                            fun["real_men"] += parseFloat(c.start_pref.fun1_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.amb1_1))) {
-                            amb["real_men"] += parseFloat(c.start_pref.amb1_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.shar1_1))) {
-                            shar["real_men"] += parseFloat(c.start_pref.shar1_1);
-                        }
-                        // what he thinks she wants
-                        if (!isNaN(parseFloat(c.start_pref.attr2_1))) {
-                            attr["perc_women"] += parseFloat(c.start_pref.attr2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.sinc2_1))) {
-                            sinc["perc_women"] += parseFloat(c.start_pref.sinc2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.intel2_1))) {
-                            intel["perc_women"] += parseFloat(c.start_pref.intel2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.fun2_1))) {
-                            fun["perc_women"] += parseFloat(c.start_pref.fun2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.amb2_1))) {
-                            amb["perc_women"] += parseFloat(c.start_pref.amb2_1);
-                        }
-                        if (!isNaN(parseFloat(c.start_pref.shar2_1))) {
-                            shar["perc_women"] += parseFloat(c.start_pref.shar2_1);
-                        }
-                    }
-                    
-                })
-            }
-        });
+                if (c.gender == 0) {
+                  count_women++;
+                  // what she wants
+                  copy(c.start_pref, "real_women", 1, 1);
+                  // what she thinks he wants
+                  copy(c.start_pref, "perc_men", 2, 1);
+                }
+                // male 
+                else if (c.gender == 1) {
+                  count_men++;
+                  // what he wants
+                  copy(c.start_pref, "real_men", 1, 1);
+                  // what he thinks she wants
+                  copy(c.start_pref, "perc_women", 2, 1);
+                }
+                  }
+                }
+              }
+            }  
+          })
+        }); 
 
-    // find averages
-    attr["perc_women"] = attr["perc_women"]/count_women;
-    sinc["perc_women"] = sinc["perc_women"]/count_women;
-    intel["perc_women"] = intel["perc_women"]/count_women;
-    fun["perc_women"] = fun["perc_women"]/count_women;
-    amb["perc_women"] = amb["perc_women"]/count_women;
-    shar["perc_women"] = shar["perc_women"]/count_women;
+    var women_categories = ["real_women", "perc_men"];
+    var men_categories = ["real_men", "perc_women"];
+    data.forEach(function(attr) {
+      women_categories.forEach(function(d) {
+        attr[d] = attr[d]/count_women;
+      });
+      men_categories.forEach(function(d) {
+        attr[d] = attr[d]/count_men;
+      });
+    });
 
-    attr["real_women"] = attr["real_women"]/count_women;
-    sinc["real_women"] = sinc["real_women"]/count_women;
-    intel["real_women"] = intel["real_women"]/count_women;
-    fun["real_women"] = fun["real_women"]/count_women;
-    amb["real_women"] = amb["real_women"]/count_women;
-    shar["real_women"] = shar["real_women"]/count_women;
-
-    attr["perc_men"] = attr["perc_men"]/count_men;
-    sinc["perc_men"] = sinc["perc_men"]/count_men;
-    intel["perc_men"] = intel["perc_men"]/count_men;
-    fun["perc_men"] = fun["perc_men"]/count_men;
-    amb["perc_men"] = amb["perc_men"]/count_men;
-    shar["perc_men"] = shar["perc_men"]/count_men;
-
-    attr["real_men"] = attr["real_men"]/count_men;
-    sinc["real_men"] = sinc["real_men"]/count_men;
-    intel["real_men"] = intel["real_men"]/count_men;
-    fun["real_men"] = fun["real_men"]/count_men;
-    amb["real_men"] = amb["real_men"]/count_men;
-    shar["real_men"] = shar["real_men"]/count_men;
-
-    var res = [];
-    res.push(attr, sinc, intel, fun, amb, shar);
-
-    console.log(res);
-    return res;
+    return data;
 
 }

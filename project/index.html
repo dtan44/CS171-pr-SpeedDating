@@ -23,6 +23,12 @@
 </head>
 <body>
 	<div class="col-md-12" id="prefVis">
+		<span>Filter by Race:</span>
+      <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>Black/African American</label>
+      <label><input class="filter_race" type="checkbox" name="European" value="2"></input>European/Caucasian-American</label>
+      <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input>Latino/Hispanic American</label>
+      <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input>Asian/Pacific Islander/Asian-American</label>
+      <label><input class="filter_race" type="checkbox" name="Other" value="6"></input>Other</label>
 	</div>
 
 	<div class="col-md-9" id="nodevis" style="background:lightblue">
@@ -65,7 +71,7 @@
 
       	var MyEventHandler = new Object();
 
-	     	var pref_vis = new PrefVis(d3.select("#prefVis"), allData);
+	     	pref_vis = new PrefVis(d3.select("#prefVis"), allData);
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
 
 	     	$(MyEventHandler).bind("nodeclick", function(event, id, wavepeep, node){
@@ -187,7 +193,7 @@
 			    allData = d3.nest()
 			             .key(function(d) { return d.wave;})
 			             .entries(data);
-
+			    console.log(allData)
 			    initVis();
 			  }
 			}
@@ -200,15 +206,38 @@
       startHere();
 	  })
 
+		function update_races() {
+			races = ["", "", "", "", "", ""]
+			d3.selectAll("input").each(function(d, i) {
+				if(d3.select(this).attr("type") == "checkbox" && d3.select(this).node().checked)
+          races[i] = d3.select(this).attr("value");
+			});
+		};
+
+    // update chart if filter race button is changed
+    d3.selectAll(".filter_race").on("change", function() {
+      update_races();
+
+      var empty = false;
+      var empty_count = 0;
+      for (var i = 0; i < races.length; i++) {
+      	if (races[i] == "")
+      		empty_count++;
+      }
+      pref_vis.onRaceChange(races);
+
+    });
+
 	  function changewave(value) {
 
 	  	value -= 1;
 
-		if (value !== "") {
-			node_vis.wrangleData(value);
-			node_vis.updateVis();
+			if (value !== "") {
+				node_vis.wrangleData(value);
+				node_vis.updateVis();
+				pref_vis.onSelectionChange(value);
+			}
 		}
-	}
 
 	</script>
 </body>
