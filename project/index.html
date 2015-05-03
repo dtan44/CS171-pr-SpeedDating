@@ -50,7 +50,7 @@
       <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input>Other</label>
 	</div>
 
-	<div class="col-md-9" id="nodevis" style="background:lightblue">
+	<div class="col-md-9" id="nodevis" style="">
 		<div class="dropdown dropdown-dark">
 			<select name="two" class="dropdown-select" onchange="changewave(value)">
 				<option value="">Wave</option>
@@ -253,12 +253,14 @@
     d3.selectAll(".filter_race").on("change", function() {
       update_races();
       pref_vis.onRaceChange(races);
+      node_vis.onRaceChange(races);
     });
 
     // update chart if filter career button is changed
     d3.selectAll(".filter_career").on("change", function() {
     	update_careers();
-      pref_vis.onCareerChange(careers);
+      	pref_vis.onCareerChange(careers);
+      	node_vis.onCareerChange(careers);
     })
 
 

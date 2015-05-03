@@ -18,7 +18,7 @@
 }
 
 .link {
-  stroke: white;
+  stroke: black;
   stroke-width: 1.5px;
 }
 
@@ -78,7 +78,6 @@ div.tooltip {
 
 body {
   font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
-  color: #404040;
 }
 
 .container {
