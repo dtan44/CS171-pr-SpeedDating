@@ -19,6 +19,7 @@
   <!-- vis classes-->
   <script src = "js/prefvis.js"></script>
   <script src = "js/nodevis.js"></script>
+  <script src = "js/mparvis.js"></script>
 
 </head>
 <body>
@@ -77,6 +78,9 @@
   	<div id="personalbox">
   	</div>
 
+    <div class="row">
+        <div id="mparVis"></div>
+    </div>
 
 	<script>
 
@@ -91,6 +95,7 @@
 
 	     	pref_vis = new PrefVis(d3.select("#prefVis"), allData);
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
+            mparv_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler)
 
 	     	$(MyEventHandler).bind("nodeclick", function(event, id, wavepeep, node){
 				node_vis.updateInfo(node);
