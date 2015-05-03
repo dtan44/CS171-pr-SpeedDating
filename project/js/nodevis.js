@@ -375,7 +375,6 @@ NodeVis.prototype.updateVis = function(){
     this.maleNodes        
         .append('text').attr("font-size", "12px")
         .attr('class', 'position')
-        .attr('font-family', 'Arial')
         .attr('x', '-3.5')
         .attr('y', '-20')
         .text(function(d){return d.positin;})
@@ -383,7 +382,6 @@ NodeVis.prototype.updateVis = function(){
     this.femaleNodes        
         .append('text').attr("font-size", "12px")
         .attr('class', 'position')
-        .attr('font-family', 'Arial')
         .attr('x', '-3.5')
         .attr('y', '28')
         .text(function(d){return d.positin;})

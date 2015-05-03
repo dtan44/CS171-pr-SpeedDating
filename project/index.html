@@ -258,16 +258,16 @@
 
 
 
-	  function changewave(value) {
+	function changewave(value) {
 
-	  	value -= 1;
+		value -= 1;
 
-			if (value !== "") {
-				node_vis.wrangleData(value);
-				node_vis.updateVis();
-				pref_vis.onSelectionChange(value);
-			}
+		if (value !== "") {
+			node_vis.wrangleData(value);
+			node_vis.updateVis();
+			pref_vis.onSelectionChange(value);
 		}
+	}
 
 	</script>
 </body>

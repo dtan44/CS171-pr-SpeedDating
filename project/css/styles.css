@@ -36,6 +36,11 @@
   stroke: #2ca02c;
 }
 
+.position {
+  font-family: Arial;
+
+}
+
 div.tooltip {   
   position: absolute;           
   text-align: center;           
