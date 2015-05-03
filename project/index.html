@@ -113,6 +113,10 @@
                 fparv_vis.onSelectionChange(id,wave_peep)
 	     	})
 
+            $(MyEventHandler).bind("lineclick", function (event, id) {
+                console.log(id)
+            })
+
         };
       
         // call this function after both files are loaded -- error should be "null" if no error

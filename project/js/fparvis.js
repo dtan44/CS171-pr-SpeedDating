@@ -55,9 +55,7 @@ FParVis.prototype.initVis = function(){
 };
 
 /**
- * Method to wrangle the data.
- * @param node_id -- The ID of the node clicked
- * @param wave_peep -- Data for the entire wave
+ * Method to set up the initial visualization data.
  */
 FParVis.prototype.wrangleData= function (filter) {
 
@@ -73,7 +71,7 @@ FParVis.prototype.wrangleData= function (filter) {
         {"iid": 4, "gender": 0, "attractive": 10, "sincere": 4, "intelligent": 7, "fun": 3, "ambitious": 2, "share_int": 8}
     ];
 
-    that.highlightData = {"iid": 2, "gender": 1, "attractive": 16, "sincere": 45, "intelligent": 18, "fun": 25, "ambitious": 40, "share_int": 5}
+    that.highlightData = {"iid": 2, "gender": 1, "attractive": 10, "sincere": 7, "intelligent": 8, "fun": 4, "ambitious": 5, "share_int": 2}
 
 };
 
@@ -125,6 +123,11 @@ FParVis.prototype.updateVis = function() {
         .attr("fill", "none")
         .attr("stroke-width", 2);
 
+    // Sends out event to update nodes when clicked
+    this.peeplines.on("click", function (d) {
+        $(that.eventHandler).trigger("lineclick", [d.iid])
+    });
+
     // Add a group element for each dimension.
     this.g = that.svg.selectAll(".dimension")
         .data(dimensions)
@@ -159,24 +162,7 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
     // Clears the old data from memory
     this.displayData = [];
     var person;
-
-    for (var i = 0; i <wave_peep.length; i++) {
-        if (wave_peep[i]["iid"] == node_id) {
-            that.highlightData = {
-                "iid": wave_peep[i]["iid"],
-                "gender": wave_peep[i]["gender"],
-                "attractive": wave_peep[i]["start_pref"]["attr3_1"],
-                "sincere": wave_peep[i]["start_pref"]["sinc3_1"],
-                "intelligent": wave_peep[i]["start_pref"]["intel3_1"],
-                "fun": wave_peep[i]["start_pref"]["fun3_1"],
-                "ambitious": wave_peep[i]["start_pref"]["amb3_1"],
-                "shared_interests": wave_peep[i]["start_pref"]["shar3_1"]
-            }
-
-            that.displayData.push(that.highlightData)
-        }
-    }
-
+    
     // Creates line data for each person
     for (var i = 0; i < wave_peep.length; i++) {
         for (var j = 0; j < wave_peep[i]["people"].length; j++) {
@@ -192,11 +178,26 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
                     "shared_interests": wave_peep[i]["people"][j]["shar"]
                 };
 
-                // Pushes relevant line data into data array
-                if (person.gender != that.highlightData.gender) {
-                    that.displayData.push(person)
-                }
+                that.displayData.push(person)
             }
+        }
+    }
+
+    // Creates line data for the selected node
+    for (var i = 0; i <wave_peep.length; i++) {
+        if (wave_peep[i]["iid"] == node_id) {
+            that.highlightData = {
+                "iid": wave_peep[i]["iid"],
+                "gender": wave_peep[i]["gender"],
+                "attractive": wave_peep[i]["start_pref"]["attr3_1"],
+                "sincere": wave_peep[i]["start_pref"]["sinc3_1"],
+                "intelligent": wave_peep[i]["start_pref"]["intel3_1"],
+                "fun": wave_peep[i]["start_pref"]["fun3_1"],
+                "ambitious": wave_peep[i]["start_pref"]["amb3_1"],
+                "shared_interests": wave_peep[i]["start_pref"]["shar3_1"]
+            };
+
+            that.displayData.push(that.highlightData)
         }
     }
 
