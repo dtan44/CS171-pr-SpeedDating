@@ -20,10 +20,11 @@
   <script src = "js/prefvis.js"></script>
   <script src = "js/nodevis.js"></script>
   <script src = "js/mparvis.js"></script>
+  <script src = "js/fparvis.js"></script>
 
 </head>
 <body>
-	<div class="col-md-12" id="prefVis">
+	<div class="col-md-12">
 		Filter by Race:
       <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>Black/African American</label>
       <label><input class="filter_race" type="checkbox" name="European" value="2"></input>European/Caucasian-American</label>
@@ -50,6 +51,8 @@
       <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input>Other</label>
 	</div>
 
+    <div id="prefVis"></div>
+
 	<div class="col-md-9" id="nodevis" style="background:lightblue">
 		<div class="dropdown dropdown-dark">
 			<select name="two" class="dropdown-select" onchange="changewave(value)">
@@ -75,12 +78,10 @@
 		</div>
   	</div>
 
-  	<div id="personalbox">
-  	</div>
+  	<div id="personalbox"></div>
 
-    <div class="row">
         <div id="mparVis"></div>
-    </div>
+        <div id="fparVis"></div>
 
 	<script>
 
@@ -95,10 +96,14 @@
 
 	     	pref_vis = new PrefVis(d3.select("#prefVis"), allData);
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
-            mparv_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler)
+            mparv_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
+            fparv_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
 
-	     	$(MyEventHandler).bind("nodeclick", function(event, id, wavepeep, node){
+	     	$(MyEventHandler).bind("nodeclick", function(event, id, wave_peep, node){
+                console.log(id, wave_peep);
 				node_vis.updateInfo(node);
+                mparv_vis.onSelectionChange(id,wave_peep);
+                fparv_vis.onSelectionChange(id,wave_peep)
 	     	})
 
       }
