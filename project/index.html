@@ -57,7 +57,7 @@
 				<option value="2">2</option>
 				<option value="3">3</option>
 				<option value="4">4</option>
-				<option value="5">5</option>
+				<option value="9">5</option>
 				<option value="10">6</option>
 				<option value="11">7</option>
 				<option value="12">8</option>
@@ -75,11 +75,6 @@
   	</div>
 
   	<div id="personalbox">
-  		<p id='information'> Information </p>
-		<p id='country'>Country:</p>
-		<p id='gdp'>GDP:</p>
-		<p id='population'>Population:</p>
-		<p id='life_expectancy'>Life Expectancy:</p>
   	</div>
 
 
@@ -97,8 +92,8 @@
 	     	pref_vis = new PrefVis(d3.select("#prefVis"), allData);
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
 
-	     	$(MyEventHandler).bind("nodeclick", function(event, id, wavepeep){
-	     		console.log(id, wavepeep)
+	     	$(MyEventHandler).bind("nodeclick", function(event, id, wavepeep, node){
+				node_vis.updateInfo(node);
 	     	})
 
       }
@@ -135,8 +130,10 @@
 							you_call: d.you_call,
 							them_call: d.them_call,
 							date_3: d.date_3,
+							undergra: d.undergra,
+							position: d.position,
 							people: [],
-							positin1: d.positin1
+							position1: d.positin1
 						};
 
 					  temp.start_pref = {};
@@ -203,6 +200,8 @@
 						shar: d.shar,
 						like: d.like,
 						prob: d.prob,
+						undergra: d.undergra,
+						order: d.order,
 						position: d.position
 					};
 

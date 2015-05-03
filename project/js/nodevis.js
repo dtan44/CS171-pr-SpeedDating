@@ -8,12 +8,18 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     this.width = 800;
     this.height = 450;
-    this.smallwidth = 180;
+    this.smallwidth = 200;
     this.smallheight = 450;
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
     this.wave = 1 - 1;
     this.widthScale = d3.scale.linear().range([20, this.width*.95])
+    this.posMale = [];
+    this.posFemale = [];
+    this.info = ['ID', 'Age', 'Sex', 'Race', 'Occupation', 'Goal', 'Undergraduate']
+    this.race = ['African American', 'Caucasian', 'Latino/Hispanic', 'Asian', 'Native American', 'Other']
+    this.occupation = ["Lawyer", 'Academic/Research', 'Psychologist', 'Doctor/Medicine', 'Engineer', 'Entertainment', 'Finance/Business', 'Real Estate', 'Humanitarian Affairs', 'Undecided', 'Social Work', 'Speech Pathology', 'Politics', 'Pro sports', 'Other', 'Journalism', 'Architecture']
+    this.goal = ['Seemed like a fun night out', 'To meet new people', 'To get a date', 'Looking for a serious relationship', 'To say I did it', 'Other']
 
     this.tick = function(e) {
 
@@ -59,6 +65,17 @@ NodeVis = function(_parentElement, _data, _eventHandler){
             .classed("link--target", function(l) { if (l.target === d) return true; })
             .classed("link--source", function(l) { if (l.source === d) return true; })
 
+        if (d.gender == '0') {
+            that.link
+                .transition()
+                .style("stroke-opacity", function(l) { if (l.target !== d) return 0.5; })
+        }
+        else {
+            that.link
+                .transition()
+                .style("stroke-opacity", function(l) { if (l.source !== d) return 0.5; })
+        }
+
         that.node
             .classed("node--target", function(n) { return n.target; })
             .classed("node--source", function(n) { return n.source; });
@@ -68,7 +85,8 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.mouseout = function(d) {
         that.link
           .classed("link--target", false)
-          .classed("link--source", false);
+          .classed("link--source", false)
+          .style("stroke-opacity", 1)
 
         that.node
           .classed("node--target", false)
@@ -77,8 +95,48 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     // run when node clicked
     this.nodeclick = function(node) {
-        var pass = [node.iid, that.displayData];
+        var pass = [node.iid, that.displayData, node];
         $(that.eventHandler).trigger('nodeclick', pass);
+
+        var array = (node.gender=='0'?that.posFemale:that.posMale)
+        
+        var index = parseInt(node.positin);
+        
+        that.graph.nodes.forEach(function(d){
+            if (node.gender == '1') {
+                if (d.gender == '0') {
+                    var pos = d.positin;
+                    if (pos == index){d.x = that.widthScale(1)}
+                    else {
+                        var dex = that.posFemale.indexOf(pos) - that.posFemale.indexOf(index)
+                        if (dex < 0) {
+                            d.x = that.widthScale(that.posFemale.length + dex + 1);
+                        }
+                        else {
+                            d.x = that.widthScale(dex + 1);
+                        }
+                    }
+                }
+            }
+            else {
+                if (d.gender == '1') {
+                    var pos = parseInt(d.positin);
+                    if (pos == index){d.x = that.widthScale(1)}
+                    else {
+                        var dex = that.posMale.indexOf(pos) - that.posMale.indexOf(index)
+                        if (dex < 0) {
+                            d.x = that.widthScale(that.posMale.length + dex + 1);
+                        }
+                        else {
+                            d.x = that.widthScale(dex + 1);
+                        }
+                    }
+
+                }
+            }
+        })
+
+        that.graph_update(500)
     }
 
     this.getID = function(id) {
@@ -91,11 +149,17 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
 
     this.toolover = function(d) {
+        var links = 0;
+        for (i=0,j=that.graph.links.length;i<j;i++){
+            if (that.graph.links[i].source.iid == d.iid){
+                links += 1;
+            }
+        }
         that.div.transition()        
             .duration(200)      
             .style("opacity", .9);      
         that.div 
-            .html(d.id + "<br/>")  
+            .html('# of Matches: ' + links + "<br/>")  
             .style("left", (d3.event.pageX) + "px")     
             .style("top", (d3.event.pageY - 28) + "px");   
     }
@@ -147,6 +211,19 @@ NodeVis.prototype.initVis = function(){
       .attr('x', that.smallwidth/2)
       .attr('text-anchor', "middle")
 
+    this.smallsvg.selectAll(".text")
+        .data(that.info)
+        .enter()
+        .append('text')
+            .attr('fill', 'white')
+            .text(function(d){return d})
+            .attr('y', function(d, i){return i*30+80})
+            .attr('x', 16)
+            .attr('text-anchor', "start")
+            .attr('id', function(d){return d})
+            .attr('font-size', 9)
+
+
     // filter, aggregate, modify data
     this.wrangleData(that.wave);
 
@@ -171,6 +248,8 @@ NodeVis.prototype.wrangleData= function(wave){
  * @param _options -- only needed if different kinds of updates are needed
  */
 NodeVis.prototype.updateVis = function(){
+    this.posMale.length = 0;
+    this.posFemale.length = 0;
 
     this.force
         .stop()
@@ -254,26 +333,67 @@ NodeVis.prototype.updateVis = function(){
     this.force.stop()
 
     this.position = 0;
-    this.graph.nodes.forEach(function(d, i){
+
+    this.graph.nodes.forEach(function(d, i) {
         if (parseInt(d.id) > that.position) {
             that.position = parseInt(d.id);
         }
     })
+    this.widthScale.domain([1, that.position])
 
-    this.widthScale.domain([0, that.position])
-
-    this.graph.nodes.forEach(function(d, i){
+    this.graph.nodes.forEach(function(d, k){
         if (d.gender == '1') {
+            var positin = 0;
+            for (i=0,j=d.people.length;i<j;i++){
+                if (d.position1 != "") {
+                    positin = d.position1
+                }
+                else {
+                    if (d.people[i].order == '1'){
+                            that.graph.nodes.forEach(function(e, f){
+                                if ((e.gender == '0') && (e.iid == d.people[i].pid)) {
+                                    positin = parseInt(e.position);
+                                }
+                            })
+                    }
+                }
+            }
+            that.posMale.push(parseInt(positin))
+            d.positin = positin
             d.y = that.height/4;
-            d.x = that.widthScale(d.id);
+            d.x = that.widthScale(positin);
         }
         else {
+            that.posFemale.push(parseInt(d.position))
+            d.positin = parseInt(d.position)
             d.y = that.height/4*3;
-            d.x = that.widthScale(d.id);
+            d.x = that.widthScale(parseInt(d.position));
         }
     })
 
+    this.posMale.sort(function(a,b){return a-b})
+    this.posFemale.sort(function(a,b){return a-b})
+
     this.graph_update(500)
+
+}
+
+NodeVis.prototype.updateInfo = function(node){
+    var gender = (node.gender == '0') ? 'Female' : 'Male';
+    var race = that.race[node.race - 1];
+    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
+    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
+    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
+
+console.log(node)
+    this.smallsvg.select('#ID').text('ID: ' + node.iid)
+    this.smallsvg.select('#Age').text('Age: ' + node.age)
+    this.smallsvg.select('#Sex').text('Sex: ' + gender)
+    this.smallsvg.select('#Race').text('Race: ' + race)
+    this.smallsvg.select('#Occupation').text('Occupation: ' + occupation)
+    this.smallsvg.select('#Goal').text('Goal: ' + goal)
+    this.smallsvg.select('#Undergraduate').text('Undergraduate: ' + undergraduate)
+
 }
 
 /**
@@ -281,7 +401,7 @@ NodeVis.prototype.updateVis = function(){
  * @param _options -- only needed if different kinds of updates are needed
  */
 NodeVis.prototype.filter = function(wave){
-
+    this.wave = wave
     return this.data[wave]['values'];
 
 }
