@@ -63,6 +63,17 @@ NodeVis = function(_parentElement, _data, _eventHandler){
             .classed("link--target", function(l) { if (l.target === d) return true; })
             .classed("link--source", function(l) { if (l.source === d) return true; })
 
+        if (d.gender == '0') {
+            that.link
+                .transition()
+                .style("stroke-opacity", function(l) { if (l.target !== d) return 0.5; })
+        }
+        else {
+            that.link
+                .transition()
+                .style("stroke-opacity", function(l) { if (l.source !== d) return 0.5; })
+        }
+
         that.node
             .classed("node--target", function(n) { return n.target; })
             .classed("node--source", function(n) { return n.source; });
@@ -72,7 +83,8 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.mouseout = function(d) {
         that.link
           .classed("link--target", false)
-          .classed("link--source", false);
+          .classed("link--source", false)
+          .style("stroke-opacity", 1)
 
         that.node
           .classed("node--target", false)
@@ -289,16 +301,19 @@ NodeVis.prototype.updateVis = function(){
         if (d.gender == '1') {
             var positin = 0;
             for (i=0,j=d.people.length;i<j;i++){
-                if (d.people[i].order == '1'){
-                        that.graph.nodes.forEach(function(e, f){
-                            if ((e.gender == '0') && (e.iid == d.people[i].pid)) {
-                                console.log(1)
-                                positin = parseInt(e.position);
-                            }
-                        })
+                if (d.position1 != "") {
+                    positin = d.position1
+                }
+                else {
+                    if (d.people[i].order == '1'){
+                            that.graph.nodes.forEach(function(e, f){
+                                if ((e.gender == '0') && (e.iid == d.people[i].pid)) {
+                                    positin = parseInt(e.position);
+                                }
+                            })
+                    }
                 }
             }
-            console.log(positin)
             d.y = that.height/4;
             d.x = that.widthScale(positin);
         }
@@ -311,6 +326,8 @@ NodeVis.prototype.updateVis = function(){
 
 
     this.graph_update(500)
+    console.log(this.displayData)
+
 }
 
 NodeVis.prototype.updateInfo = function(node){

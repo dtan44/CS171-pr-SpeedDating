@@ -19,12 +19,13 @@
 
 .link {
   stroke: white;
+  stroke-width: 1.5px;
 }
 
 .link--source,
 .link--target {
   stroke-opacity: 1;
-  stroke-width: 2px;
+  stroke-width: 4px;
 }
 
 .link--source {
