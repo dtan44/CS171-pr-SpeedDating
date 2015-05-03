@@ -7,8 +7,8 @@ PrefVis = function(_parentElement, _data){
     };
 
     this.margin = {top: 20, right: 30, bottom: 200, left: 120},
-    this.width = 800 - this.margin.left - this.margin.right,
-    this.height = 600 - this.margin.top - this.margin.bottom;
+    this.width = 700 - this.margin.left - this.margin.right,
+    this.height = 500 - this.margin.top - this.margin.bottom;
 
     this.initVis();
 
@@ -292,7 +292,7 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
     };
 
     var shar = {
-        attribute: "Shared Interests/Hobbies",
+        attribute: "Shared Interests",
         perc_women: 0.,
         real_women: 0.,
         perc_men: 0.,
@@ -318,10 +318,8 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       if (that.filter.races == null || that.filter.races.length == 0)
         return true;
       else if (that.filter.races != null && that.filter.races.length > 0) {
-        for (var i = 0; i < that.filter.races.length; i++) {
-          if (d.race == that.filter.races[i])
-            return true;
-        }
+        if (that.filter.races.indexOf(d.race) != -1)
+          return true;
       }
       return false;
     }
@@ -330,10 +328,8 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       if (that.filter.careers == null || that.filter.careers.length == 0)
         return true;
       else if (that.filter.careers != null && that.filter.careers.length > 0) {
-        for (var i = 0; i < that.filter.careers.length; i++) {
-          if (d.career_c == that.filter.careers[i])
-            return true;
-        }
+        if (that.filter.careers.indexOf(d.career_c) != -1)
+          return true;
       }
       return false;
     }
@@ -342,10 +338,8 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       if (that.filter.goals == null || that.filter.goals.length == 0)
         return true;
       else if (that.filter.goals != null && that.filter.goals.length > 0) {
-        for (var i = 0; i < that.filter.goals.length; i++) {
-          if (d.goal == that.filter.goals[i])
-            return true;
-        }
+        if (that.filter.goals.indexOf(d.goal) != -1)
+          return true;
       }
       return false;
     }
