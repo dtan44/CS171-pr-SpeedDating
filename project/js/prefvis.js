@@ -207,7 +207,7 @@ PrefVis.prototype.onGoalChange= function (goals){
     this.filter.goals = [];
     for (var i = 0; i < goals.length; i++)
       if (goals[i] != "")
-        this.filter.careers.push(goals[i]); 
+        this.filter.goals.push(goals[i]); 
     this.refilter();
 }
 
@@ -314,68 +314,67 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       })
     };
 
+    function filter_race(d) {
+      if (that.filter.races == null || that.filter.races.length == 0)
+        return true;
+      else if (that.filter.races != null && that.filter.races.length > 0) {
+        for (var i = 0; i < that.filter.races.length; i++) {
+          if (d.race == that.filter.races[i])
+            return true;
+        }
+      }
+      return false;
+    }
+
+    function filter_career(d) {
+      if (that.filter.careers == null || that.filter.careers.length == 0)
+        return true;
+      else if (that.filter.careers != null && that.filter.careers.length > 0) {
+        for (var i = 0; i < that.filter.careers.length; i++) {
+          if (d.career_c == that.filter.careers[i])
+            return true;
+        }
+      }
+      return false;
+    }
+
+    function filter_goal(d) {
+      if (that.filter.goals == null || that.filter.goals.length == 0)
+        return true;
+      else if (that.filter.goals != null && that.filter.goals.length > 0) {
+        for (var i = 0; i < that.filter.goals.length; i++) {
+          if (d.goal == that.filter.goals[i])
+            return true;
+        }
+      }
+      return false;
+    }
+
     this.data
         .filter(filter)
-        .forEach(function(d) {
-          d.values.forEach(function(c) {
-
-            function gender_copy() {
-              // female
-              if (c.gender == 0) {
-                count_women++;
-                // what she wants
-                copy(c.start_pref, "real_women", 1, 1);
-                // what she thinks he wants
-                copy(c.start_pref, "perc_men", 2, 1);
-              }
-              // male 
-              else if (c.gender == 1) {
-                count_men++;
-                // what he wants
-                copy(c.start_pref, "real_men", 1, 1);
-                // what he thinks she wants
-                copy(c.start_pref, "perc_women", 2, 1);
-              }
+        .filter(filter_race)
+        .filter(filter_career)
+        .filter(filter_goal)
+        .forEach(function(c) {
+          if (c.wave < 6 || c.wave > 9) {
+            // female
+            if (c.gender == 0) {
+              count_women++;
+              // what she wants
+              copy(c.start_pref, "real_women", 1, 1);
+              // what she thinks he wants
+              copy(c.start_pref, "perc_men", 2, 1);
             }
-
-            var races = that.filter.races;
-            var careers = that.filter.careers;
-            var goals = that.filter.goals;
-
-            if (c.wave < 6 || c.wave > 9) {
-              if ((races == null || races.length == 0) && 
-                  (careers == null || careers.length == 0)) {
-                gender_copy();
-              }
-              else if (races != null && 
-                      (careers == null || careers.length == 0)) {
-                for (var i = 0; i < races.length; i++) {
-                  if (c.race == races[i]) {
-                    gender_copy();
-                  }
-                }
-              }
-              else if ((races == null || races.length == 0) &&
-                        careers != null) {
-                for (var i = 0; i < careers.length; i++) {
-                  if (c.career_c == careers[i]) {
-                    gender_copy();
-                  }
-                }
-              }
-              else
-                for (var i = 0; i < careers.length; i++) {
-                  if (c.career_c == careers[i]) {
-                    for (var j = 0; j < races.length; j++) {
-                      if (c.race == races[j]) {
-                        gender_copy();
-                      }
-                    }
-                  }
-                }
-            }  
-          })
-        });
+            // male 
+            else if (c.gender == 1) {
+              count_men++;
+              // what he wants
+              copy(c.start_pref, "real_men", 1, 1);
+              // what he thinks she wants
+              copy(c.start_pref, "perc_women", 2, 1);
+            }
+          }
+        })
 
     var women_categories = ["real_women", "perc_men"];
     var men_categories = ["real_men", "perc_women"];
