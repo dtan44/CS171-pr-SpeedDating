@@ -91,7 +91,7 @@
       
       // call this function after both files are loaded -- error should be "null" if no error
 			var dataLoaded = function (error, datingdata) {
-				console.log(datingdata)
+
 			  if (!error) {
 
 				  var attrs = ['attr','sinc','intel','fun','amb','shar'];
@@ -204,7 +204,7 @@
 			    allData = d3.nest()
 			             .key(function(d) { return d.wave;})
 			             .entries(data);
-			    console.log(allData)
+
 			    initVis();
 			  }
 			}
