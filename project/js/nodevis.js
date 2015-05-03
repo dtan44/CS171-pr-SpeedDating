@@ -98,7 +98,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
         var pass = [node.iid, that.displayData, node];
         $(that.eventHandler).trigger('nodeclick', pass);
 
-        var array = (node.gender=='0'?that.posFemale:that.posMale)
+        var array = (node.gender=='0'?that.posFemale:that.posMale);
         
         var index = parseInt(node.positin);
         
@@ -108,7 +108,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
                     var pos = d.positin;
                     if (pos == index){d.x = that.widthScale(1)}
                     else {
-                        var dex = that.posFemale.indexOf(pos) - that.posFemale.indexOf(index)
+                        var dex = that.posFemale.indexOf(pos) - that.posFemale.indexOf(index);
                         if (dex < 0) {
                             d.x = that.widthScale(that.posFemale.length + dex + 1);
                         }
@@ -134,10 +134,10 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
                 }
             }
-        })
+        });
 
         that.graph_update(500)
-    }
+    };
 
     this.getID = function(id) {
         for (i=0,j=that.displayData.length; i<j; i++){
@@ -145,7 +145,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
                 return i;
             }
         }
-    }
+    };
 
 
     this.toolover = function(d) {
@@ -162,13 +162,13 @@ NodeVis = function(_parentElement, _data, _eventHandler){
             .html('# of Matches: ' + links + "<br/>")  
             .style("left", (d3.event.pageX) + "px")     
             .style("top", (d3.event.pageY - 28) + "px");   
-    }
+    };
 
     this.toolout = function(d) {
         that.div.transition()        
             .duration(500)      
             .style("opacity", 0); 
-    }
+    };
 
     this.initVis();
 

@@ -4,52 +4,52 @@
 	<title>Speed Dating</title>
 
 	<!--Libraries-->
-  <script src="library/d3/d3.min.js" charset="utf-8"></script>
-  <script src="library/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
-  <script src="library/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
-  <script src="http://d3js.org/queue.v1.min.js"></script>
+    <script src="library/d3/d3.min.js" charset="utf-8"></script>
+    <script src="library/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+    <script src="library/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
 
     <!--Stylesheets-->
     <link rel="stylesheet" type="text/css" href="library/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
 
-  <!--Font-->
-  <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+    <!--Font-->
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 
-  <!-- vis classes-->
-  <script src = "js/prefvis.js"></script>
-  <script src = "js/nodevis.js"></script>
-  <script src = "js/mparvis.js"></script>
-  <script src = "js/fparvis.js"></script>
+    <!-- vis classes-->
+    <script src = "js/prefvis.js"></script>
+    <script src = "js/nodevis.js"></script>
+    <script src = "js/mparvis.js"></script>
+    <script src = "js/fparvis.js"></script>
 
 </head>
 <body>
 	<div class ="row">
 		<div class="col-md-12">
 			Filter by Race:
-	      <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>African American</label>
-	      <label><input class="filter_race" type="checkbox" name="European" value="2"></input>Caucasian-American</label>
-	      <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input>Latino/Hispanic</label>
-	      <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input>Asian</label>
-	      <label><input class="filter_race" type="checkbox" name="Other" value="6"></input>Other</label>
+	        <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>African American</label>
+	        <label><input class="filter_race" type="checkbox" name="European" value="2"></input>Caucasian-American</label>
+	        <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input>Latino/Hispanic</label>
+	        <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input>Asian</label>
+	        <label><input class="filter_race" type="checkbox" name="Other" value="6"></input>Other</label>
 	    <br>
 
 	    Filter by Career:
 	    	<label><input class="filter_career" type="checkbox" name="Lawyer" value="1"></input>Lawyer</label>
-	      <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"></input>Academia</label>
-	      <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"></input>Medicine</label>
-	      <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input>Entertainment</label>
-	      <label><input class="filter_career" type="checkbox" name="Business" value="7"></input>Business</label>
-	      <label><input class="filter_career" type="checkbox" name="International" value="9"></input>Humanitarian Affairs</label>
+	        <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"></input>Academia</label>
+	        <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"></input>Medicine</label>
+	        <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input>Entertainment</label>
+	        <label><input class="filter_career" type="checkbox" name="Business" value="7"></input>Business</label>
+	        <label><input class="filter_career" type="checkbox" name="International" value="9"></input>Humanitarian Affairs</label>
 	    <br>
 
 	    Filter by Goal:
 	    	<label><input class="filter_goal" type="checkbox" name="Fun" value="1"></input>For Fun</label>
-	      <label><input class="filter_goal" type="checkbox" name="Meet" value="2"></input>Meet new people</label>
-	      <label><input class="filter_goal" type="checkbox" name="Date" value="3"></input>Get a date</label>
-	      <label><input class="filter_goal" type="checkbox" name="Serious" value="4"></input>Find serious relationship</label>
-	      <label><input class="filter_goal" type="checkbox" name="Say" value="5"></input>To say I did it</label>
-	      <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input>Other</label>
+	        <label><input class="filter_goal" type="checkbox" name="Meet" value="2"></input>Meet new people</label>
+	        <label><input class="filter_goal" type="checkbox" name="Date" value="3"></input>Get a date</label>
+	        <label><input class="filter_goal" type="checkbox" name="Serious" value="4"></input>Find serious relationship</label>
+	        <label><input class="filter_goal" type="checkbox" name="Say" value="5"></input>To say I did it</label>
+	        <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input>Other</label>
 		</div>
 
 		<div class="col-md-8">
@@ -91,20 +91,20 @@
 
 	<script>
 
-	  $(function(){ 
+	    $(function(){
 
-      var allData = [];
-      var prefData = [];
+        var allData = [];
+        var prefData = [];
      
-      // call this function after Data is loaded, reformatted and bound to the variables
-      var initVis = function(){
+        // call this function after Data is loaded, reformatted and bound to the variables
+        var initVis = function(){
 
       	var MyEventHandler = new Object();
 
 	     	pref_vis = new PrefVis(d3.select("#prefVis"), prefData);
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
-        mparv_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
-        fparv_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
+            mparv_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
+            fparv_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
 
 	     	$(MyEventHandler).bind("nodeclick", function(event, id, wave_peep, node){
                 console.log(id, wave_peep);
@@ -113,27 +113,27 @@
                 fparv_vis.onSelectionChange(id,wave_peep)
 	     	})
 
-      }
+        };
       
-      // call this function after both files are loaded -- error should be "null" if no error
+        // call this function after both files are loaded -- error should be "null" if no error
 			var dataLoaded = function (error, datingdata) {
 
-			  if (!error) {
+			    if (!error) {
 
-				  var attrs = ['attr','sinc','intel','fun','amb','shar'];
+				    var attrs = ['attr','sinc','intel','fun','amb','shar'];
 
-				  function copy(source, target, prefix, suffix) {
-					  attrs.forEach(function(attr) {
-						  var key = attr+prefix+'_'+suffix;
-						  if (source.hasOwnProperty(key)) { // copy if the property exists
-							  target[key] = source[key];
-						  }
-					  });
-				  }
+				    function copy(source, target, prefix, suffix) {
+					    attrs.forEach(function(attr) {
+						    var key = attr+prefix+'_'+suffix;
+						    if (source.hasOwnProperty(key)) { // copy if the property exists
+							    target[key] = source[key];
+						    }
+					    });
+				    }
 
-				  // to unique iid entries
-				  var uniquedata = d3.map(datingdata, function(d) { return d.iid; }).values();
-				  var data = uniquedata.map(function(d) {
+				    // to unique iid entries
+				    var uniquedata = d3.map(datingdata, function(d) { return d.iid; }).values();
+				    var data = uniquedata.map(function(d) {
 						var temp = {
 							iid: d.iid,
 							id: d.id,
@@ -153,48 +153,48 @@
 							position1: d.positin1
 						};
 
-					  temp.start_pref = {};
-					  // what the person looks for in the opposite sex (100 points)
-					  copy(d, temp.start_pref, 1, 1);
-					  // what the person thinks the opposite sex looks for (100 points)
-					  copy(d, temp.start_pref, 2, 1);
-					  // how the person rate him/herself (scale 1-10)
-					  copy(d, temp.start_pref, 3, 1);
-					  // how the person thinks others perceive him/her (scale 1-10)
-					  copy(d, temp.start_pref, 5, 1);
+					    temp.start_pref = {};
+					    // what the person looks for in the opposite sex (100 points)
+					    copy(d, temp.start_pref, 1, 1);
+					    // what the person thinks the opposite sex looks for (100 points)
+					    copy(d, temp.start_pref, 2, 1);
+					    // how the person rate him/herself (scale 1-10)
+					    copy(d, temp.start_pref, 3, 1);
+					    // how the person thinks others perceive him/her (scale 1-10)
+					    copy(d, temp.start_pref, 5, 1);
 
-					  temp.half_pref = {};
-					  // what the person looks for in the opposite sex (scale 1-10)
-					  copy(d, temp.half_pref, 1, 's');
-					  // how the person rate him/herself (scale 1-10)
-					  copy(d, temp.half_pref, 3, 's');
+					    temp.half_pref = {};
+					    // what the person looks for in the opposite sex (scale 1-10)
+					    copy(d, temp.half_pref, 1, 's');
+					    // how the person rate him/herself (scale 1-10)
+					    copy(d, temp.half_pref, 3, 's');
 
-					  temp.day_pref = {};
-					  // what the person looks for in the opposite sex (100 points)
-					  copy(d, temp.day_pref, 1, 2);
-					  // what the person thinks the opposite sex looks for (100 points)
-					  copy(d, temp.day_pref, 2, 2);
-					  // how the person rate him/herself (scale 1-10)
-					  copy(d, temp.day_pref, 3, 2);
-					  // how the person thinks others perceive him/her (scale 1-10)
-					  copy(d, temp.day_pref, 5, 2);
+					    temp.day_pref = {};
+					    // what the person looks for in the opposite sex (100 points)
+					    copy(d, temp.day_pref, 1, 2);
+					    // what the person thinks the opposite sex looks for (100 points)
+					    copy(d, temp.day_pref, 2, 2);
+					    // how the person rate him/herself (scale 1-10)
+					    copy(d, temp.day_pref, 3, 2);
+					    // how the person thinks others perceive him/her (scale 1-10)
+					    copy(d, temp.day_pref, 5, 2);
 					  
-					  temp.week_pref = {};
-					  // what the person looks for in the opposite sex (100 points)
-					  copy(d, temp.week_pref, 1, 3);
-					  // what the person thinks the opposite sex looks for (scale 1-10)
-					  copy(d, temp.week_pref, 2, 3);
-					  // how the person rate him/herself (scale 1-10)
-					  copy(d, temp.week_pref, 3, 3);
-					  // how the person thinks others perceive him/her (scale 1-10)
-					  copy(d, temp.week_pref, 5, 3);
+					    temp.week_pref = {};
+					    // what the person looks for in the opposite sex (100 points)
+					    copy(d, temp.week_pref, 1, 3);
+					    // what the person thinks the opposite sex looks for (scale 1-10)
+					    copy(d, temp.week_pref, 2, 3);
+					    // how the person rate him/herself (scale 1-10)
+					    copy(d, temp.week_pref, 3, 3);
+					    // how the person thinks others perceive him/her (scale 1-10)
+					    copy(d, temp.week_pref, 5, 3);
 					  
-					  return temp;
+					    return temp;
 					});
 
-				var lookup = d3.map(data, function(d) { return d.iid; });
+				    var lookup = d3.map(data, function(d) { return d.iid; });
 
-			  datingdata.forEach(function(d) {
+			        datingdata.forEach(function(d) {
 					var temp = {
 						wave: d.wave,
 						iid: d.iid,
@@ -229,13 +229,13 @@
 				prefData = data;
 
 				// group by wave
-		    allData = d3.nest()
-		             .key(function(d) { return d.wave;})
-		             .entries(data);
+		        allData = d3.nest()
+                        .key(function(d) { return d.wave;})
+                        .entries(data);
 
-		    initVis();
-			  }
-			}
+                initVis();
+            }
+        };
 
       var startHere = function(){
 				queue()
