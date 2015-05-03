@@ -53,7 +53,7 @@
 		</div>
 
 		<div class="col-md-8">
-			<b>current selection:</b> <span id="selectionInfo"></span>
+			<b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
 		</div>
 	</div>
 
@@ -101,7 +101,7 @@
 
       	var MyEventHandler = new Object();
 
-	     	pref_vis = new PrefVis(d3.select("#prefVis"), prefData);
+	     	pref_vis = new PrefVis(d3.select("#prefVis"), prefData, d3.select("#selectionInfo"));
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
             mparv_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
             fparv_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
