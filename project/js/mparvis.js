@@ -55,11 +55,9 @@ MParVis.prototype.initVis = function(){
 };
 
 /**
- * Method to wrangle the data.
- * @param node_id -- The ID of the node clicked
- * @param wave_peep -- Data for the entire wave
+ * Method to set up the initial visualization data.
  */
-MParVis.prototype.wrangleData= function (filter) {
+MParVis.prototype.wrangleData= function () {
 
     var that = this;
 
@@ -124,6 +122,13 @@ MParVis.prototype.updateVis = function() {
         })
         .attr("fill", "none")
         .attr("stroke-width", 2);
+
+    // Send out event to update nodes when clicked
+    this.peeplines.on("click", function (d) {
+        $(that.eventHandler).trigger("lineclick", [d.iid])
+    });
+
+    this.peeplines.on("mouseover", this.onMouseover());
 
     // Add a group element for each dimension.
     this.g = that.svg.selectAll(".dimension")
@@ -198,3 +203,10 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
 
     this.updateVis();
 };
+
+MParVis.prototype.onMouseover = function () {
+
+    var that = this;
+
+    that.peeplines.attr("stroke-opacity", 1)
+}
