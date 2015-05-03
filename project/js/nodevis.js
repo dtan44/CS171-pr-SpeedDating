@@ -8,12 +8,16 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     this.width = 800;
     this.height = 450;
-    this.smallwidth = 180;
+    this.smallwidth = 200;
     this.smallheight = 450;
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
     this.wave = 1 - 1;
     this.widthScale = d3.scale.linear().range([20, this.width*.95])
+    this.info = ['ID', 'Age', 'Sex', 'Race', 'Occupation', 'Goal', 'Undergraduate']
+    this.race = ['African American', 'Caucasian', 'Latino/Hispanic', 'Asian', 'Native American', 'Other']
+    this.occupation = ["Lawyer", 'Academic/Research', 'Psychologist', 'Doctor/Medicine', 'Engineer', 'Entertainment', 'Finance/Business', 'Real Estate', 'Humanitarian Affairs', 'Undecided', 'Social Work', 'Speech Pathology', 'Politics', 'Pro sports', 'Other', 'Journalism', 'Architecture']
+    this.goal = ['Seemed like a fun night out', 'To meet new people', 'To get a date', 'Looking for a serious relationship', 'To say I did it', 'Other']
 
     this.tick = function(e) {
 
@@ -77,7 +81,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     // run when node clicked
     this.nodeclick = function(node) {
-        var pass = [node.iid, that.displayData];
+        var pass = [node.iid, that.displayData, node];
         $(that.eventHandler).trigger('nodeclick', pass);
     }
 
@@ -91,11 +95,17 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
 
     this.toolover = function(d) {
+        var links = 0;
+        for (i=0,j=that.graph.links.length;i<j;i++){
+            if (that.graph.links[i].source.iid == d.iid){
+                links += 1;
+            }
+        }
         that.div.transition()        
             .duration(200)      
             .style("opacity", .9);      
         that.div 
-            .html(d.id + "<br/>")  
+            .html('# of Matches: ' + links + "<br/>")  
             .style("left", (d3.event.pageX) + "px")     
             .style("top", (d3.event.pageY - 28) + "px");   
     }
@@ -146,6 +156,19 @@ NodeVis.prototype.initVis = function(){
       .attr('y', 20)
       .attr('x', that.smallwidth/2)
       .attr('text-anchor', "middle")
+
+    this.smallsvg.selectAll(".text")
+        .data(that.info)
+        .enter()
+        .append('text')
+            .attr('fill', 'white')
+            .text(function(d){return d})
+            .attr('y', function(d, i){return i*30+80})
+            .attr('x', 16)
+            .attr('text-anchor', "start")
+            .attr('id', function(d){return d})
+            .attr('font-size', 9)
+
 
     // filter, aggregate, modify data
     this.wrangleData(that.wave);
@@ -254,26 +277,58 @@ NodeVis.prototype.updateVis = function(){
     this.force.stop()
 
     this.position = 0;
-    this.graph.nodes.forEach(function(d, i){
+
+    this.graph.nodes.forEach(function(d, i) {
         if (parseInt(d.id) > that.position) {
             that.position = parseInt(d.id);
         }
     })
-
     this.widthScale.domain([0, that.position])
 
-    this.graph.nodes.forEach(function(d, i){
+    this.graph.nodes.forEach(function(d, k){
         if (d.gender == '1') {
+            var positin = 0;
+            for (i=0,j=d.people.length;i<j;i++){
+                if (d.people[i].order == '1'){
+                        that.graph.nodes.forEach(function(e, f){
+                            if ((e.gender == '0') && (e.iid == d.people[i].pid)) {
+                                console.log(1)
+                                positin = parseInt(e.position);
+                            }
+                        })
+                }
+            }
+            console.log(positin)
             d.y = that.height/4;
-            d.x = that.widthScale(d.id);
+            d.x = that.widthScale(positin);
         }
         else {
             d.y = that.height/4*3;
-            d.x = that.widthScale(d.id);
+            d.x = that.widthScale(d.position);
         }
     })
 
+
+
     this.graph_update(500)
+}
+
+NodeVis.prototype.updateInfo = function(node){
+    var gender = (node.gender == '0') ? 'Female' : 'Male';
+    var race = that.race[node.race - 1];
+    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
+    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
+    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
+
+console.log(node)
+    this.smallsvg.select('#ID').text('ID: ' + node.iid)
+    this.smallsvg.select('#Age').text('Age: ' + node.age)
+    this.smallsvg.select('#Sex').text('Sex: ' + gender)
+    this.smallsvg.select('#Race').text('Race: ' + race)
+    this.smallsvg.select('#Occupation').text('Occupation: ' + occupation)
+    this.smallsvg.select('#Goal').text('Goal: ' + goal)
+    this.smallsvg.select('#Undergraduate').text('Undergraduate: ' + undergraduate)
+
 }
 
 /**
@@ -281,7 +336,7 @@ NodeVis.prototype.updateVis = function(){
  * @param _options -- only needed if different kinds of updates are needed
  */
 NodeVis.prototype.filter = function(wave){
-
+    this.wave = wave
     return this.data[wave]['values'];
 
 }
