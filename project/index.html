@@ -24,12 +24,11 @@
 <body>
 	<div class="col-md-12" id="prefVis">
 		<span>Filter by Race:</span>
-      <label><input class="filter_race" type="checkbox" name="Black"></input>Black/African American</label>
-      <label><input class="filter_race" type="checkbox" name="European"></input>European/Caucasian-American</label>
-      <label><input class="filter_race" type="checkbox" name="Latino"></input>Latino/Hispanic American</label>
-      <label><input class="filter_race" type="checkbox" name="Asian"></input>Asian/Pacific Islander/Asian-American</label>
-      <label><input class="filter_race" type="checkbox" name="Native"></input>Native American</label>
-      <label><input class="filter_race" type="checkbox" name="Other"></input>Other</label>
+      <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>Black/African American</label>
+      <label><input class="filter_race" type="checkbox" name="European" value="2"></input>European/Caucasian-American</label>
+      <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input>Latino/Hispanic American</label>
+      <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input>Asian/Pacific Islander/Asian-American</label>
+      <label><input class="filter_race" type="checkbox" name="Other" value="6"></input>Other</label>
 	</div>
 
 	<div class="col-md-9" id="nodevis" style="background:lightblue">
@@ -195,7 +194,7 @@
 			    allData = d3.nest()
 			             .key(function(d) { return d.wave;})
 			             .entries(data);
-
+			    console.log(allData)
 			    initVis();
 			  }
 			}
@@ -208,36 +207,26 @@
       startHere();
 	  })
 
-		var races_selected = {
-			"Black": false,
-			"European": false,
-			"Latino": false,
-			"Asian": false,
-			"Native": false,
-			"Other": false
-		}
-
-		function races_empty() {
-			for (var i in races_selected) {
-				if (continents_selected[i] == true)
-					return false;
-			}
-			return true;
-		};
-
 		function update_races() {
-			d3.selectAll("input").each(function(d) {
+			races = ["", "", "", "", "", ""]
+			d3.selectAll("input").each(function(d, i) {
 				if(d3.select(this).attr("type") == "checkbox" && d3.select(this).node().checked)
-          races_selected[d3.select(this).attr("name")] = true;
-        if (d3.select(this).attr("type") == "checkbox" && !d3.select(this).node().checked)
-          races_selected[d3.select(this).attr("name")] = false;
+          races[i] = d3.select(this).attr("value");
 			});
 		};
 
     // update chart if filter race button is changed
     d3.selectAll(".filter_race").on("change", function() {
       update_races();
-      console.log(races_selected);
+
+      var empty = false;
+      var empty_count = 0;
+      for (var i = 0; i < races.length; i++) {
+      	if (races[i] == "")
+      		empty_count++;
+      }
+      pref_vis.onRaceChange(races);
+
     });
 
 	  function changewave(value) {
