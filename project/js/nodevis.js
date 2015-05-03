@@ -248,7 +248,6 @@ NodeVis.prototype.wrangleData= function(wave){
  * @param _options -- only needed if different kinds of updates are needed
  */
 NodeVis.prototype.updateVis = function(){
-    console.log(this.displayData)
     this.posMale.length = 0;
     this.posFemale.length = 0;
 

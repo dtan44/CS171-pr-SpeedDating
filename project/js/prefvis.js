@@ -94,9 +94,12 @@ PrefVis.prototype.updateVis = function(){
     this.x0.domain(this.displayData.map(function(d) { return d.attribute; }));
     this.x1.domain(headers).rangeRoundBands([0, this.x0.rangeBand()]);
 
-    // var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
+    var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
 
-    this.y.domain([0, 50]);
+    if (ymax > 50)
+      this.y.domain([0, ymax]);
+    else 
+      this.y.domain([0, 50]);
 
     this.svg.select(".x_axis")
         .call(this.xAxis)
@@ -199,15 +202,24 @@ PrefVis.prototype.onCareerChange= function (careers){
     this.refilter();
 }
 
+PrefVis.prototype.onGoalChange= function (goals){
+
+    this.filter.goals = [];
+    for (var i = 0; i < goals.length; i++)
+      if (goals[i] != "")
+        this.filter.careers.push(goals[i]); 
+    this.refilter();
+}
+
 PrefVis.prototype.refilter = function() {
     var that = this;
     this.wrangleData(function(d) {
-        //check all filter properties if they are set and if the value doesn't abort and return false
-        if (that.filter.wave != null && d.key != that.filter.wave) {
-          return false;
-        }
-        //looks like a good item: no filter said no
-        return true;
+      //check all filter properties if they are set and if the value doesn't abort and return false
+      if (that.filter.wave != null && d.wave != that.filter.wave) {
+        return false;
+      }
+      //looks like a good item: no filter said no
+      return true;
     });
 
     this.updateVis();
@@ -302,24 +314,6 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       })
     };
 
-    var filtered_data = this.data.filter(filter);
-
-    function filter_race(d) {
-      if (that.filter.races != null && that.filter.races.length > 0) {
-        for (var i = 0; i < that.filter.races; i++) {
-          if (d.race == that.filter.races[i])
-            return true;
-        }
-      } 
-      return false;
-    }
-
-    filtered_data.forEach(function(d) {
-      d.values.forEach(function(c) {
-        
-      })
-    })
-
     this.data
         .filter(filter)
         .forEach(function(d) {
@@ -346,7 +340,7 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
 
             var races = that.filter.races;
             var careers = that.filter.careers;
-
+            var goals = that.filter.goals;
 
             if (c.wave < 6 || c.wave > 9) {
               if ((races == null || races.length == 0) && 
@@ -381,7 +375,7 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
                 }
             }  
           })
-        }); 
+        });
 
     var women_categories = ["real_women", "perc_men"];
     var men_categories = ["real_men", "perc_women"];

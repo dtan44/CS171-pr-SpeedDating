@@ -221,8 +221,6 @@
 			    console.log(allData)
 			    initVis();
 			  }
-			  console.log(datingdata)
-			  console.log(allData)
 			}
 
       var startHere = function(){
@@ -249,6 +247,14 @@
 			});
 		}
 
+		function update_goals() {
+			goals = ["", "", "", "", "", ""];
+			d3.selectAll("input").each(function(d, i) {
+				if(d3.select(this).attr("class") == "filter_goal" && d3.select(this).node().checked)
+          goals[i-11] = d3.select(this).attr("value");
+			});
+		}
+
     // update chart if filter race button is changed
     d3.selectAll(".filter_race").on("change", function() {
       update_races();
@@ -261,6 +267,11 @@
       pref_vis.onCareerChange(careers);
     })
 
+		// update chart if filter goal button is changed
+    d3.selectAll(".filter_goal").on("change", function() {
+    	update_careers();
+      pref_vis.onGoalChange(goals);
+    })
 
 
 	  function changewave(value) {
