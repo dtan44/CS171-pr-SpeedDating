@@ -248,6 +248,7 @@ NodeVis.prototype.wrangleData= function(wave){
  * @param _options -- only needed if different kinds of updates are needed
  */
 NodeVis.prototype.updateVis = function(){
+    console.log(this.displayData)
     this.posMale.length = 0;
     this.posFemale.length = 0;
 
@@ -286,7 +287,7 @@ NodeVis.prototype.updateVis = function(){
         .attr("class", "node")
         .on("mouseover", function(d) {that.mouseover(d); that.toolover(d)})
         .on("mouseout", function(d) {that.mouseout(d); that.toolout(d)})
-        .on("click", that.nodeclick);
+        .on("click", that.nodeclick)
         
     d3.selectAll('image').remove()
 
@@ -345,17 +346,12 @@ NodeVis.prototype.updateVis = function(){
         if (d.gender == '1') {
             var positin = 0;
             for (i=0,j=d.people.length;i<j;i++){
-                if (d.position1 != "") {
-                    positin = d.position1
-                }
-                else {
-                    if (d.people[i].order == '1'){
-                            that.graph.nodes.forEach(function(e, f){
-                                if ((e.gender == '0') && (e.iid == d.people[i].pid)) {
-                                    positin = parseInt(e.position);
-                                }
-                            })
-                    }
+                if (d.people[i].order == '1'){
+                        that.graph.nodes.forEach(function(e, f){
+                            if ((e.gender == '0') && (e.iid == d.people[i].pid)) {
+                                positin = parseInt(e.position);
+                            }
+                        })
                 }
             }
             that.posMale.push(parseInt(positin))
@@ -374,6 +370,20 @@ NodeVis.prototype.updateVis = function(){
     this.posMale.sort(function(a,b){return a-b})
     this.posFemale.sort(function(a,b){return a-b})
 
+    this.maleNodes        
+        .append('text').attr("font-size", "12px")
+        .attr('font-family', 'Arial')
+        .attr('x', '-3.5')
+        .attr('y', '-20')
+        .text(function(d){return d.positin;})
+
+    this.femaleNodes        
+        .append('text').attr("font-size", "12px")
+        .attr('font-family', 'Arial')
+        .attr('x', '-3.5')
+        .attr('y', '28')
+        .text(function(d){return d.positin;})
+    
     this.graph_update(500)
 
 }
@@ -385,7 +395,6 @@ NodeVis.prototype.updateInfo = function(node){
     var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
     var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
 
-console.log(node)
     this.smallsvg.select('#ID').text('ID: ' + node.iid)
     this.smallsvg.select('#Age').text('Age: ' + node.age)
     this.smallsvg.select('#Sex').text('Sex: ' + gender)
