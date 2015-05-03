@@ -370,8 +370,11 @@ NodeVis.prototype.updateVis = function(){
     this.posMale.sort(function(a,b){return a-b})
     this.posFemale.sort(function(a,b){return a-b})
 
+    d3.selectAll('.position').remove()
+
     this.maleNodes        
         .append('text').attr("font-size", "12px")
+        .attr('class', 'position')
         .attr('font-family', 'Arial')
         .attr('x', '-3.5')
         .attr('y', '-20')
@@ -379,6 +382,7 @@ NodeVis.prototype.updateVis = function(){
 
     this.femaleNodes        
         .append('text').attr("font-size", "12px")
+        .attr('class', 'position')
         .attr('font-family', 'Arial')
         .attr('x', '-3.5')
         .attr('y', '28')
