@@ -23,12 +23,21 @@
 </head>
 <body>
 	<div class="col-md-12" id="prefVis">
-		<span>Filter by Race:</span>
+		Filter by Race:
       <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>Black/African American</label>
       <label><input class="filter_race" type="checkbox" name="European" value="2"></input>European/Caucasian-American</label>
       <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input>Latino/Hispanic American</label>
       <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input>Asian/Pacific Islander/Asian-American</label>
       <label><input class="filter_race" type="checkbox" name="Other" value="6"></input>Other</label>
+    <br>
+
+    Filter by Career:
+    	<label><input class="filter_career" type="checkbox" name="Lawyer" value="1"></input>Lawyer</label>
+      <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"></input>Academic/Research</label>
+      <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"></input>Doctor/Medicine</label>
+      <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input>Creative Arts/Entertainment</label>
+      <label><input class="filter_career" type="checkbox" name="Business" value="7"></input>Business</label>
+      <label><input class="filter_career" type="checkbox" name="International" value="9"></input>International/Humanitarian Affairs</label>
 	</div>
 
 	<div class="col-md-9" id="nodevis" style="background:lightblue">
@@ -87,7 +96,7 @@
       
       // call this function after both files are loaded -- error should be "null" if no error
 			var dataLoaded = function (error, datingdata) {
-
+				console.log(datingdata)
 			  if (!error) {
 
 				  var attrs = ['attr','sinc','intel','fun','amb','shar'];
@@ -117,7 +126,8 @@
 							you_call: d.you_call,
 							them_call: d.them_call,
 							date_3: d.date_3,
-							people : []
+							people: [],
+							positin1: d.positin1
 						};
 
 					  temp.start_pref = {};
@@ -183,7 +193,8 @@
 						amb: d.amb,
 						shar: d.shar,
 						like: d.like,
-						prob: d.prob
+						prob: d.prob,
+						position: d.position
 					};
 
 					// lookup the corresponding data entry and push the people
@@ -208,26 +219,32 @@
 	  })
 
 		function update_races() {
-			races = ["", "", "", "", "", ""]
+			races = ["", "", "", "", ""]
 			d3.selectAll("input").each(function(d, i) {
-				if(d3.select(this).attr("type") == "checkbox" && d3.select(this).node().checked)
+				if(d3.select(this).attr("class") == "filter_race" && d3.select(this).node().checked)
           races[i] = d3.select(this).attr("value");
 			});
 		};
 
+		function update_careers() {
+			careers = ["", "", "", "", "", ""];
+			d3.selectAll("input").each(function(d, i) {
+				if(d3.select(this).attr("class") == "filter_career" && d3.select(this).node().checked)
+          careers[i-5] = d3.select(this).attr("value");
+			});
+		}
+
     // update chart if filter race button is changed
     d3.selectAll(".filter_race").on("change", function() {
       update_races();
-
-      var empty = false;
-      var empty_count = 0;
-      for (var i = 0; i < races.length; i++) {
-      	if (races[i] == "")
-      		empty_count++;
-      }
       pref_vis.onRaceChange(races);
-
     });
+
+    d3.selectAll(".filter_career").on("change", function() {
+    	update_careers();
+      pref_vis.onCareerChange(careers);
+
+    })
 
 	  function changewave(value) {
 
