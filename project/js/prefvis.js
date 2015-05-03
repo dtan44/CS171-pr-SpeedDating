@@ -302,10 +302,10 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       })
     };
 
-    var filtered_data = this.data.(filter);
+    var filtered_data = this.data.filter(filter);
 
     function filter_race() {
-      
+
     }
 
     this.data
