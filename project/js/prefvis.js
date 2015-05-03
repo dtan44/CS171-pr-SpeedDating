@@ -1,5 +1,6 @@
-PrefVis = function(_parentElement, _data){
+PrefVis = function(_parentElement, _data, _selectionElement){
     this.parentElement = _parentElement;
+    this.selectionElement = _selectionElement;
     this.data = _data;
     this.displayData = [];
     this.filter = {
@@ -380,6 +381,8 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
         attr[d] = attr[d]/count_men;
       });
     });
+
+    this.selectionElement.html(count_men+count_women+" out of 449 people");
 
     return data;
 
