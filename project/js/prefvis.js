@@ -8,7 +8,7 @@ PrefVis = function(_parentElement, _data){
 
     this.margin = {top: 20, right: 30, bottom: 200, left: 120},
     this.width = 800 - this.margin.left - this.margin.right,
-    this.height = 500 - this.margin.top - this.margin.bottom;
+    this.height = 600 - this.margin.top - this.margin.bottom;
 
     this.initVis();
 
@@ -94,9 +94,9 @@ PrefVis.prototype.updateVis = function(){
     this.x0.domain(this.displayData.map(function(d) { return d.attribute; }));
     this.x1.domain(headers).rangeRoundBands([0, this.x0.rangeBand()]);
 
-    var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
+    // var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
 
-    this.y.domain([0, ymax]);
+    this.y.domain([0, 50]);
 
     this.svg.select(".x_axis")
         .call(this.xAxis)
@@ -302,6 +302,12 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       })
     };
 
+    var filtered_data = this.data.(filter);
+
+    function filter_race() {
+      
+    }
+
     this.data
         .filter(filter)
         .forEach(function(d) {
@@ -354,7 +360,7 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
               else
                 for (var i = 0; i < careers.length; i++) {
                   if (c.career_c == careers[i]) {
-                    for (var j = 0; j < races.length; i++) {
+                    for (var j = 0; j < races.length; j++) {
                       if (c.race == races[j]) {
                         gender_copy();
                       }

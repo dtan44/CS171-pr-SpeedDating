@@ -38,6 +38,15 @@
       <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input>Creative Arts/Entertainment</label>
       <label><input class="filter_career" type="checkbox" name="Business" value="7"></input>Business</label>
       <label><input class="filter_career" type="checkbox" name="International" value="9"></input>International/Humanitarian Affairs</label>
+    <br>
+
+    Filter by Goal:
+    	<label><input class="filter_goal" type="checkbox" name="Fun" value="1"></input>Seemed like a fun night out</label>
+      <label><input class="filter_goal" type="checkbox" name="Meet" value="2"></input>To meet new people</label>
+      <label><input class="filter_goal" type="checkbox" name="Date" value="3"></input>To get a date</label>
+      <label><input class="filter_goal" type="checkbox" name="Serious" value="4"></input>Looking for a serious relationship</label>
+      <label><input class="filter_goal" type="checkbox" name="Say" value="5"></input>To say I did it</label>
+      <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input>Other</label>
 	</div>
 
 	<div class="col-md-9" id="nodevis" style="background:lightblue">
@@ -204,7 +213,7 @@
 			    allData = d3.nest()
 			             .key(function(d) { return d.wave;})
 			             .entries(data);
-
+			    console.log(allData)
 			    initVis();
 			  }
 			  console.log(datingdata)
@@ -241,11 +250,13 @@
       pref_vis.onRaceChange(races);
     });
 
+    // update chart if filter career button is changed
     d3.selectAll(".filter_career").on("change", function() {
     	update_careers();
       pref_vis.onCareerChange(careers);
-
     })
+
+
 
 	  function changewave(value) {
 
