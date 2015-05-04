@@ -196,7 +196,6 @@ PrefVis.prototype.onSelectionChange= function (wave){
 }
 
 PrefVis.prototype.onRaceChange= function (races){
-
     this.filter.races = [];
     for (var i = 0; i < races.length; i++)
       if (races[i] != "")

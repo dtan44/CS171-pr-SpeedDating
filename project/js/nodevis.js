@@ -258,15 +258,18 @@ NodeVis.prototype.wrangleData= function(wave){
  */
 NodeVis.prototype.updateVis = function(){
 
+    var that = this;
+
     this.posMale.length = 0;
     this.posFemale.length = 0;
 
     this.force
-        .stop()
+        .stop();
 
     this.graph.nodes = this.displayData;
 
-    this.graph.links.length = 0
+    this.graph.links.length = 0;
+
     this.graph.nodes.forEach(function(d, i) {
         for (c=0,e=d.people.length;c<e;c++){
             if (d.people[c].match == "1") {
@@ -281,14 +284,14 @@ NodeVis.prototype.updateVis = function(){
 
     this.link.enter()
         .insert("line", ".node")
-        .attr("class", "link")
+        .attr("class", "link");
 
     this.link.exit()
-        .remove()
+        .remove();
 
     // add and bind nodes
     this.node = this.svg.selectAll(".node")
-        .data(that.graph.nodes)
+        .data(that.graph.nodes);
 
     
     this.node.enter()
@@ -376,30 +379,30 @@ NodeVis.prototype.updateVis = function(){
             d.x = that.widthScale(d.positin);
         }
         else {
-            that.posFemale.push(parseInt(d.position))
-            d.positin = parseInt(d.position)
+            that.posFemale.push(parseInt(d.position));
+            d.positin = parseInt(d.position);
             d.y = that.height/4*3;
             d.x = that.widthScale(parseInt(d.position));
         }
     })
-    this.posMale.sort(function(a,b){return a-b})
-    this.posFemale.sort(function(a,b){return a-b})
+    this.posMale.sort(function(a,b){return a-b});
+    this.posFemale.sort(function(a,b){return a-b});
 
-    d3.selectAll('.position').remove()
+    d3.selectAll('.position').remove();
 
     this.maleNodes        
         .append('text').attr("font-size", "12px")
         .attr('class', 'position')
         .attr('x', '-3.5')
         .attr('y', '-37')
-        .text(function(d){return d.positin;})
+        .text(function(d){return d.iid;});
 
     this.femaleNodes        
         .append('text').attr("font-size", "12px")
         .attr('class', 'position')
         .attr('x', '-3.5')
         .attr('y', '58')
-        .text(function(d){return d.positin;})
+        .text(function(d){return d.iid;});
     
     this.graph_update(300)
 
@@ -425,6 +428,8 @@ NodeVis.prototype.updateInfo = function(node){
 }
 
 NodeVis.prototype.onRaceChange = function(races){
+
+    var that = this;
 
     that.race_check = false;
 

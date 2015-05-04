@@ -39,29 +39,29 @@
         <div class ="row">
             <div class="col-md-12">
                 Filter by Race:
-                <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>African American</label>
-                <label><input class="filter_race" type="checkbox" name="European" value="2"></input>Caucasian-American</label>
-                <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input>Latino/Hispanic</label>
-                <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input>Asian</label>
-                <label><input class="filter_race" type="checkbox" name="Other" value="6"></input>Other</label>
+                <label><input class="filter_race" type="checkbox" name="Black" value="1"></input> African American </label>
+                <label><input class="filter_race" type="checkbox" name="European" value="2"></input> Caucasian-American </label>
+                <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input> Latino/Hispanic </label>
+                <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input> Asian </label>
+                <label><input class="filter_race" type="checkbox" name="Other" value="6"></input> Other </label>
             <br>
 
             Filter by Career:
-                <label><input class="filter_career" type="checkbox" name="Lawyer" value="1"></input>Lawyer</label>
-                <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"></input>Academia</label>
-                <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"></input>Medicine</label>
-                <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input>Entertainment</label>
-                <label><input class="filter_career" type="checkbox" name="Business" value="7"></input>Business</label>
-                <label><input class="filter_career" type="checkbox" name="International" value="9"></input>Humanitarian Affairs</label>
+                <label><input class="filter_career" type="checkbox" name="Lawyer" value="1"></input> Lawyer </label>
+                <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"></input> Academia </label>
+                <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"></input> Medicine </label>
+                <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input> Entertainment </label>
+                <label><input class="filter_career" type="checkbox" name="Business" value="7"></input> Business </label>
+                <label><input class="filter_career" type="checkbox" name="International" value="9"></input> Humanitarian Affairs </label>
             <br>
 
             Filter by Goal:
-                <label><input class="filter_goal" type="checkbox" name="Fun" value="1"></input>For Fun</label>
-                <label><input class="filter_goal" type="checkbox" name="Meet" value="2"></input>Meet new people</label>
-                <label><input class="filter_goal" type="checkbox" name="Date" value="3"></input>Get a date</label>
-                <label><input class="filter_goal" type="checkbox" name="Serious" value="4"></input>Find serious relationship</label>
-                <label><input class="filter_goal" type="checkbox" name="Say" value="5"></input>To say I did it</label>
-                <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input>Other</label>
+                <label><input class="filter_goal" type="checkbox" name="Fun" value="1"></input> For Fun </label>
+                <label><input class="filter_goal" type="checkbox" name="Meet" value="2"></input> Meet new people </label>
+                <label><input class="filter_goal" type="checkbox" name="Date" value="3"></input> Get a date </label>
+                <label><input class="filter_goal" type="checkbox" name="Serious" value="4"></input> Find serious relationship </label>
+                <label><input class="filter_goal" type="checkbox" name="Say" value="5"></input> To say I did it </label>
+                <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input> Other </label>
             </div>
 
             <div class="col-md-8">
@@ -74,7 +74,7 @@
         <div class="col-md-9" id="nodevis">
             <div class="dropdown dropdown-dark">
                 <select name="two" class="dropdown-select" onchange="changewave(value)">
-                    <option value="0">Wave</option>
+                    <option value="0">select a wave</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -122,19 +122,18 @@
 
 	     	pref_vis = new PrefVis(d3.select("#prefVis"), prefData, d3.select("#selectionInfo"));
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
-            mparv_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
-            fparv_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
+            mpar_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
+            fpar_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
 
 	     	$(MyEventHandler).bind("nodeclick", function(event, id, wave_peep, node){
 				node_vis.updateInfo(node);
-                mparv_vis.onSelectionChange(id,wave_peep);
-                fparv_vis.onSelectionChange(id,wave_peep)
-	     	})
+                mpar_vis.onSelectionChange(id,wave_peep);
+                fpar_vis.onSelectionChange(id,wave_peep)
+	     	});
 
             $(MyEventHandler).bind("lineclick", function (event, iid) {
                 node_vis.linkClick(iid)
-            })
-
+            });
         };
       
         // call this function after both files are loaded -- error should be "null" if no error
@@ -269,24 +268,27 @@
 
     // update chart if filter race button is changed
     d3.selectAll(".filter_race").on("change", function() {
-      update_races();
-      pref_vis.onRaceChange(races);
-      node_vis.onRaceChange(races);
+        update_races();
+        pref_vis.onRaceChange(races);
+        node_vis.onRaceChange(races);
+        mpar_vis.onRaceChange(races);
+        fpar_vis.onRaceChange(races);
     });
 
     // update chart if filter career button is changed
     d3.selectAll(".filter_career").on("change", function() {
     	update_careers();
+        console.log(careers);
       	pref_vis.onCareerChange(careers);
       	node_vis.onCareerChange(careers);
-    })
+    });
 
 		// update chart if filter goal button is changed
     d3.selectAll(".filter_goal").on("change", function() {
     	update_goals();
       	pref_vis.onGoalChange(goals);
       	node_vis.onGoalChange(goals);
-    })
+    });
 
 	function changewave(value) {
 		
