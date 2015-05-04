@@ -14,8 +14,8 @@ MParVis = function(_parentElement, _data, _eventHandler){
 
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
-    this.margin = {top: 30, right: 10, bottom: 10, left: 10};
-    this.width = 650;
+    this.margin = {top: 50, right: 5, bottom: 10, left: 10};
+    this.width = 550;
     this.height = 250;
 
     this.initVis();
@@ -32,6 +32,9 @@ MParVis.prototype.initVis = function(){
     this.svg = this.parentElement.append("svg")
         .attr("width", that.width + that.margin.left + that.margin.right)
         .attr("height", that.height + that.margin.top + that.margin.bottom)
+        .attr("display", "block")
+        .attr("margin", "auto")
+        .attr("align", "center")
         .append("g")
         .attr("transform", "translate(" + that.margin.left + "," + that.margin.top + ")");
 
