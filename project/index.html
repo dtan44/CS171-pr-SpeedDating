@@ -252,12 +252,14 @@
     d3.selectAll(".filter_race").on("change", function() {
       update_races();
       pref_vis.onRaceChange(races);
+      node_vis.onRaceChange(races);
     });
 
     // update chart if filter career button is changed
     d3.selectAll(".filter_career").on("change", function() {
     	update_careers();
-      pref_vis.onCareerChange(careers);
+      	pref_vis.onCareerChange(careers);
+      	node_vis.onCareerChange(careers);
     })
 
 		// update chart if filter goal button is changed
@@ -266,16 +268,16 @@
       pref_vis.onGoalChange(goals);
     })
 
-	  function changewave(value) {
+	function changewave(value) {
 
-	  	value -= 1;
+		value -= 1;
 
-			if (value !== "") {
-				node_vis.wrangleData(value);
-				node_vis.updateVis();
-				pref_vis.onSelectionChange(value);
-			}
+		if (value !== "") {
+			node_vis.wrangleData(value);
+			node_vis.updateVis();
+			pref_vis.onSelectionChange(value);
 		}
+	}
 
 	</script>
 </body>

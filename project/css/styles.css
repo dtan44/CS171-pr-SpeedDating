@@ -47,7 +47,7 @@ svg {
 }
 
 .link {
-  stroke: white;
+  stroke: black;
   stroke-width: 1.5px;
 }
 
@@ -63,6 +63,11 @@ svg {
 
 .link--target {
   stroke: #2ca02c;
+}
+
+.position {
+  font-family: Arial;
+
 }
 
 div.tooltip {   
@@ -102,7 +107,6 @@ div.tooltip {
 
 body {
   font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
-  color: #404040;
 }
 
 .container {
