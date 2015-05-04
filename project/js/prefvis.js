@@ -345,11 +345,12 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       return false;
     }
 
-    this.data
-        .filter(filter)
-        .filter(filter_race)
-        .filter(filter_career)
-        .filter(filter_goal)
+    var filtered_data = this.data.filter(filter)
+                                 .filter(filter_race)
+                                 .filter(filter_career)
+                                 .filter(filter_goal)
+
+    filtered_data
         .forEach(function(c) {
           if (c.wave < 6 || c.wave > 9) {
             // female
@@ -381,6 +382,8 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
         attr[d] = attr[d]/count_men;
       });
     });
+
+    console.log(filtered_data)
 
     this.selectionElement.html(count_men+count_women+" out of 449 people");
 
