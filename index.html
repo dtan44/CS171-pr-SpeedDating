@@ -1,51 +1,309 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <title>Cs171-pr-speeddating by dtan44</title>
-  </head>
+<head>
+	<meta charset="utf-8">
+	<title>Speed Dating</title>
 
-  <body>
-    <div id="container">
-      <div class="inner">
+	<!--Libraries-->
+    <script src="library/d3/d3.min.js" charset="utf-8"></script>
+    <script src="library/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+    <script src="library/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
 
-        <header>
-          <h1>Cs171-pr-speeddating</h1>
-          <h2>Harvard CS171 Final Project</h2>
-        </header>
+    <!--Stylesheets-->
+    <link rel="stylesheet" type="text/css" href="library/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/dtan44/CS171-pr-SpeedDating/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/dtan44/CS171-pr-SpeedDating/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/dtan44/CS171-pr-SpeedDating" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
+    <!--Font-->
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 
-        <hr>
+    <!-- vis classes-->
+    <script src = "js/prefvis.js"></script>
+    <script src = "js/nodevis.js"></script>
+    <script src = "js/mparvis.js"></script>
+    <script src = "js/fparvis.js"></script>
 
-        <section id="main_content">
-          <h1>
-<a id="cs171-pr-speeddating" class="anchor" href="#cs171-pr-speeddating" aria-hidden="true"><span class="octicon octicon-link"></span></a>CS171-pr-SpeedDating</h1>
+</head>
+<body>
+	<div class ="row">
+		<div class="col-md-12">
+			Filter by Race:
+	        <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>African American</label>
+	        <label><input class="filter_race" type="checkbox" name="European" value="2"></input>Caucasian-American</label>
+	        <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input>Latino/Hispanic</label>
+	        <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input>Asian</label>
+	        <label><input class="filter_race" type="checkbox" name="Other" value="6"></input>Other</label>
+	    <br>
 
-<p>Harvard CS171 Final Project</p>
+	    Filter by Career:
+	    	<label><input class="filter_career" type="checkbox" name="Lawyer" value="1"></input>Lawyer</label>
+	        <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"></input>Academia</label>
+	        <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"></input>Medicine</label>
+	        <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input>Entertainment</label>
+	        <label><input class="filter_career" type="checkbox" name="Business" value="7"></input>Business</label>
+	        <label><input class="filter_career" type="checkbox" name="International" value="9"></input>Humanitarian Affairs</label>
+	    <br>
 
-<p>Data Set from <a href="http://www.stat.columbia.edu/%7Egelman/arm/examples/speed.dating/">http://www.stat.columbia.edu/~gelman/arm/examples/speed.dating/</a></p>
-        </section>
+	    Filter by Goal:
+	    	<label><input class="filter_goal" type="checkbox" name="Fun" value="1"></input>For Fun</label>
+	        <label><input class="filter_goal" type="checkbox" name="Meet" value="2"></input>Meet new people</label>
+	        <label><input class="filter_goal" type="checkbox" name="Date" value="3"></input>Get a date</label>
+	        <label><input class="filter_goal" type="checkbox" name="Serious" value="4"></input>Find serious relationship</label>
+	        <label><input class="filter_goal" type="checkbox" name="Say" value="5"></input>To say I did it</label>
+	        <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input>Other</label>
+		</div>
 
-        <footer>
-          Cs171-pr-speeddating is maintained by <a href="https://github.com/dtan44">dtan44</a><br>
-          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
+		<div class="col-md-8">
+			<b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
+		</div>
+	</div>
 
-        
-      </div>
-    </div>
-  </body>
+    <div id="prefVis"></div>
+
+	<div class="col-md-9" id="nodevis" style="background:lightblue">
+		<div class="dropdown dropdown-dark">
+			<select name="two" class="dropdown-select" onchange="changewave(value)">
+				<option value="">Wave</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="9">5</option>
+				<option value="10">6</option>
+				<option value="11">7</option>
+				<option value="12">8</option>
+				<option value="13">9</option>
+				<option value="14">10</option>
+				<option value="15">11</option>
+				<option value="16">12</option>
+				<option value="17">13</option>
+				<option value="18">14</option>
+				<option value="19">15</option>
+				<option value="20">16</option>
+				<option value="21">17</option>
+			</select>
+		</div>
+  	</div>
+
+  	<div id="personalbox"></div>
+
+        <div id="mparVis"></div>
+        <div id="fparVis"></div>
+
+	<script>
+
+	    $(function(){
+
+        var allData = [];
+        var prefData = [];
+     
+        // call this function after Data is loaded, reformatted and bound to the variables
+        var initVis = function(){
+
+      	var MyEventHandler = new Object();
+
+	     	pref_vis = new PrefVis(d3.select("#prefVis"), prefData, d3.select("#selectionInfo"));
+	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
+            mparv_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
+            fparv_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
+
+	     	$(MyEventHandler).bind("nodeclick", function(event, id, wave_peep, node){
+                console.log(id, wave_peep);
+								node_vis.updateInfo(node);
+                mparv_vis.onSelectionChange(id,wave_peep);
+                fparv_vis.onSelectionChange(id,wave_peep)
+	     	})
+
+            $(MyEventHandler).bind("lineclick", function (event, id) {
+                console.log(id)
+            })
+
+        };
+      
+        // call this function after both files are loaded -- error should be "null" if no error
+			var dataLoaded = function (error, datingdata) {
+
+			    if (!error) {
+
+				    var attrs = ['attr','sinc','intel','fun','amb','shar'];
+
+				    function copy(source, target, prefix, suffix) {
+					    attrs.forEach(function(attr) {
+						    var key = attr+prefix+'_'+suffix;
+						    if (source.hasOwnProperty(key)) { // copy if the property exists
+							    target[key] = source[key];
+						    }
+					    });
+				    }
+
+				    // to unique iid entries
+				    var uniquedata = d3.map(datingdata, function(d) { return d.iid; }).values();
+				    var data = uniquedata.map(function(d) {
+						var temp = {
+							iid: d.iid,
+							id: d.id,
+							age: d.age,
+							gender: d.gender,
+							race: d.race,
+							goal: d.goal,
+							career_c: d.career_c,
+							wave: d.wave,
+							round: d.round,
+							you_call: d.you_call,
+							them_call: d.them_call,
+							date_3: d.date_3,
+							undergra: d.undergra,
+							position: d.position,
+							people: [],
+							position1: d.positin1
+						};
+
+					    temp.start_pref = {};
+					    // what the person looks for in the opposite sex (100 points)
+					    copy(d, temp.start_pref, 1, 1);
+					    // what the person thinks the opposite sex looks for (100 points)
+					    copy(d, temp.start_pref, 2, 1);
+					    // how the person rate him/herself (scale 1-10)
+					    copy(d, temp.start_pref, 3, 1);
+					    // how the person thinks others perceive him/her (scale 1-10)
+					    copy(d, temp.start_pref, 5, 1);
+
+					    temp.half_pref = {};
+					    // what the person looks for in the opposite sex (scale 1-10)
+					    copy(d, temp.half_pref, 1, 's');
+					    // how the person rate him/herself (scale 1-10)
+					    copy(d, temp.half_pref, 3, 's');
+
+					    temp.day_pref = {};
+					    // what the person looks for in the opposite sex (100 points)
+					    copy(d, temp.day_pref, 1, 2);
+					    // what the person thinks the opposite sex looks for (100 points)
+					    copy(d, temp.day_pref, 2, 2);
+					    // how the person rate him/herself (scale 1-10)
+					    copy(d, temp.day_pref, 3, 2);
+					    // how the person thinks others perceive him/her (scale 1-10)
+					    copy(d, temp.day_pref, 5, 2);
+					  
+					    temp.week_pref = {};
+					    // what the person looks for in the opposite sex (100 points)
+					    copy(d, temp.week_pref, 1, 3);
+					    // what the person thinks the opposite sex looks for (scale 1-10)
+					    copy(d, temp.week_pref, 2, 3);
+					    // how the person rate him/herself (scale 1-10)
+					    copy(d, temp.week_pref, 3, 3);
+					    // how the person thinks others perceive him/her (scale 1-10)
+					    copy(d, temp.week_pref, 5, 3);
+					  
+					    return temp;
+					});
+
+				    var lookup = d3.map(data, function(d) { return d.iid; });
+
+			        datingdata.forEach(function(d) {
+					var temp = {
+						wave: d.wave,
+						iid: d.iid,
+						id: d.id,
+						order: d.order,
+						pid: d.pid,
+						match: d.match,
+						samerace: d.samerace,
+						age_o: d.age_o,
+						race_o: d.race_o,
+						pf_o_attr: d.pf_o_attr,
+						dec_o: d.dec_o,
+						attr_o: d.attr_o,
+						dec: d.dec,
+						attr: d.attr,
+						sinc: d.sinc,
+						intel: d.intel,
+						fun: d.fun,
+						amb: d.amb,
+						shar: d.shar,
+						like: d.like,
+						prob: d.prob,
+						undergra: d.undergra,
+						order: d.order,
+						position: d.position
+					};
+
+					// lookup the corresponding data entry and push the people
+					lookup.get(temp.iid).people.push(temp);
+				});
+
+				prefData = data;
+
+				// group by wave
+		        allData = d3.nest()
+                        .key(function(d) { return d.wave;})
+                        .entries(data);
+
+                initVis();
+            }
+        };
+
+      var startHere = function(){
+				queue()
+    			.defer(d3.csv, 'data/SpeedDating.csv')
+    			.await(dataLoaded);
+      }
+      startHere();
+	  })
+
+		function update_races() {
+			races = ["", "", "", "", ""]
+			d3.selectAll("input").each(function(d, i) {
+				if(d3.select(this).attr("class") == "filter_race" && d3.select(this).node().checked)
+          races[i] = d3.select(this).attr("value");
+			});
+		};
+
+		function update_careers() {
+			careers = ["", "", "", "", "", ""];
+			d3.selectAll("input").each(function(d, i) {
+				if(d3.select(this).attr("class") == "filter_career" && d3.select(this).node().checked)
+          careers[i-5] = d3.select(this).attr("value");
+			});
+		}
+
+		function update_goals() {
+			goals = ["", "", "", "", "", ""];
+			d3.selectAll("input").each(function(d, i) {
+				if(d3.select(this).attr("class") == "filter_goal" && d3.select(this).node().checked)
+          goals[i-11] = d3.select(this).attr("value");
+			});
+		}
+
+    // update chart if filter race button is changed
+    d3.selectAll(".filter_race").on("change", function() {
+      update_races();
+      pref_vis.onRaceChange(races);
+      node_vis.onRaceChange(races);
+    });
+
+    // update chart if filter career button is changed
+    d3.selectAll(".filter_career").on("change", function() {
+    	update_careers();
+      	pref_vis.onCareerChange(careers);
+      	node_vis.onCareerChange(careers);
+    })
+
+		// update chart if filter goal button is changed
+    d3.selectAll(".filter_goal").on("change", function() {
+    	update_goals();
+      pref_vis.onGoalChange(goals);
+    })
+
+	function changewave(value) {
+
+		value -= 1;
+
+		if (value !== "") {
+			node_vis.wrangleData(value);
+			node_vis.updateVis();
+			pref_vis.onSelectionChange(value);
+		}
+	}
+
+	</script>
+</body>
 </html>
