@@ -62,7 +62,7 @@
 	<div class="col-md-9" id="nodevis" style="background:lightblue">
 		<div class="dropdown dropdown-dark">
 			<select name="two" class="dropdown-select" onchange="changewave(value)">
-				<option value="">Wave</option>
+				<option value="0">Wave</option>
 				<option value="1">1</option>
 				<option value="2">2</option>
 				<option value="3">3</option>
@@ -294,13 +294,14 @@
     })
 
 	function changewave(value) {
+		
+		pref_vis.onSelectionChange(value);
 
-		value -= 1;
+		value = parseInt(value) - 1;
 
-		if (value !== "") {
+		if (value !== -1) {
 			node_vis.wrangleData(value);
 			node_vis.updateVis();
-			pref_vis.onSelectionChange(value);
 		}
 	}
 
