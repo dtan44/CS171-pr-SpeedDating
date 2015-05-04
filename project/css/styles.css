@@ -27,6 +27,12 @@ svg {
     shape-rendering: crispEdges;
 }
 
+.node:hover {
+  fill: green;
+
+}
+
+.node:hover,
 .node--source,
 .node--target {
   font-weight: 700;
