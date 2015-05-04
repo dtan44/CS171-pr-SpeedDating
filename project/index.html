@@ -62,35 +62,37 @@
 
     <div id="prefVis"></div>
 
-		<div class="col-md-9" id="nodevis" style="background:lightblue">
-			<div class="dropdown dropdown-dark">
-				<select name="two" class="dropdown-select" onchange="changewave(value)">
-					<option value="0">Wave</option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-					<option value="10">6</option>
-					<option value="11">7</option>
-					<option value="12">8</option>
-					<option value="13">9</option>
-					<option value="14">10</option>
-					<option value="15">11</option>
-					<option value="16">12</option>
-					<option value="17">13</option>
-					<option value="18">14</option>
-					<option value="19">15</option>
-					<option value="20">16</option>
-					<option value="21">17</option>
-				</select>
-			</div>
-	  </div>
+	<div class="col-md-9" id="nodevis">
+		<div class="dropdown dropdown-dark">
+			<select name="two" class="dropdown-select" onchange="changewave(value)">
+				<option value="0">Wave</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="10">6</option>
+				<option value="11">7</option>
+				<option value="12">8</option>
+				<option value="13">9</option>
+				<option value="14">10</option>
+				<option value="15">11</option>
+				<option value="16">12</option>
+				<option value="17">13</option>
+				<option value="18">14</option>
+				<option value="19">15</option>
+				<option value="20">16</option>
+				<option value="21">17</option>
+			</select>
+		</div>
+  	</div>
 
   	<div id="personalbox"></div>
 
-    <div id="mparVis"></div>
-    <div id="fparVis"></div>
+    <div class="inner_row">
+        <div class="parcoordleft" id="mparVis"></div>
+        <div class="parcoordright" id="fparVis"></div>
+    </div>
 
 	<script>
 
@@ -110,14 +112,13 @@
             fparv_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
 
 	     	$(MyEventHandler).bind("nodeclick", function(event, id, wave_peep, node){
-                console.log(id, wave_peep);
-								node_vis.updateInfo(node);
+				node_vis.updateInfo(node);
                 mparv_vis.onSelectionChange(id,wave_peep);
                 fparv_vis.onSelectionChange(id,wave_peep)
 	     	})
 
-            $(MyEventHandler).bind("lineclick", function (event, id) {
-                console.log(id)
+            $(MyEventHandler).bind("lineclick", function (event, iid) {
+                node_vis.linkClick(iid)
             })
 
         };
@@ -269,7 +270,8 @@
 		// update chart if filter goal button is changed
     d3.selectAll(".filter_goal").on("change", function() {
     	update_goals();
-      pref_vis.onGoalChange(goals);
+      	pref_vis.onGoalChange(goals);
+      	node_vis.onGoalChange(goals);
     })
 
 	function changewave(value) {

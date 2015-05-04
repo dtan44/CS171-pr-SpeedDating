@@ -15,7 +15,7 @@ FParVis = function(_parentElement, _data, _eventHandler){
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
     this.margin = {top: 30, right: 10, bottom: 10, left: 10};
-    this.width = 600;
+    this.width = 650;
     this.height = 250;
 
     this.initVis();
@@ -29,11 +29,7 @@ FParVis.prototype.initVis = function(){
     var that = this; // read about the this
 
     // Constructs SVG layout
-    this.svg = this.parentElement
-        .attr("width", that.width)
-        .attr("height", that.height);
-
-    this.svg = d3.select("body").append("svg")
+    this.svg = this.parentElement.append("svg")
         .attr("width", that.width + that.margin.left + that.margin.right)
         .attr("height", that.height + that.margin.top + that.margin.bottom)
         .append("g")
@@ -101,6 +97,7 @@ FParVis.prototype.updateVis = function() {
     this.peeplines.enter()
         .append("path")
         .attr("d", path)
+        .attr("class", "foreground")
         .attr("stroke", function (d) {
             if (d.iid == that.highlightData.iid) {
                 if (d.gender == 1) {
@@ -118,10 +115,10 @@ FParVis.prototype.updateVis = function() {
             if (d.iid == that.highlightData.iid) {
                 return 1
             }
-            else return .5
+            else return .4
         })
         .attr("fill", "none")
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 4);
 
     // Sends out event to update nodes when clicked
     this.peeplines.on("click", function (d) {
@@ -162,11 +159,11 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
     // Clears the old data from memory
     this.displayData = [];
     var person;
-    
+
     // Creates line data for each person
     for (var i = 0; i < wave_peep.length; i++) {
         for (var j = 0; j < wave_peep[i]["people"].length; j++) {
-            if (that.highlightData.iid == wave_peep[i]["people"][j]["pid"]) {
+            if (node_id == wave_peep[i]["people"][j]["pid"]) {
                 person = {
                     "iid": wave_peep[i]["iid"],
                     "gender": wave_peep[i]["gender"],
