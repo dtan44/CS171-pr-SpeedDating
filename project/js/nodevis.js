@@ -511,7 +511,6 @@ NodeVis.prototype.updateNode = function(){
 NodeVis.prototype.filter = function(wave){
     this.wave = wave
     return this.data[wave]['values'];
-
 }
 
 /**

@@ -215,6 +215,10 @@ PrefVis.prototype.onGoalChange= function (goals){
 PrefVis.prototype.refilter = function() {
     var that = this;
     this.wrangleData(function(d) {
+
+      if (that.filter.wave == "0") {
+        return true;
+      }
       //check all filter properties if they are set and if the value doesn't abort and return false
       if (that.filter.wave != null && d.wave != that.filter.wave) {
         return false;

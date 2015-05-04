@@ -62,7 +62,7 @@
 	<div class="col-md-9" id="nodevis" style="background:lightblue">
 		<div class="dropdown dropdown-dark">
 			<select name="two" class="dropdown-select" onchange="changewave(value)">
-				<option value="">Wave</option>
+				<option value="0">Wave</option>
 				<option value="1">1</option>
 				<option value="2">2</option>
 				<option value="3">3</option>
@@ -205,7 +205,6 @@
 				});
 
 				prefData = data;
-				console.log(data);
 
 				// group by wave
 		        allData = d3.nest()
@@ -214,6 +213,8 @@
 
                 initVis();
             }
+
+            console.log(allData)
         };
 
       var startHere = function(){
@@ -270,12 +271,13 @@
 
 	function changewave(value) {
 
+		pref_vis.onSelectionChange(value);
+
 		value -= 1;
 
-		if (value !== "") {
+		if (value != "0") {
 			node_vis.wrangleData(value);
 			node_vis.updateVis();
-			pref_vis.onSelectionChange(value);
 		}
 	}
 
