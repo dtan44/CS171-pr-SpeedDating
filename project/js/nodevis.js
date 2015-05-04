@@ -16,10 +16,18 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.widthScale = d3.scale.linear().range([20, this.width*.95])
     this.posMale = [];
     this.posFemale = [];
-    this.info = ['ID', 'Age', 'Sex', 'Race', 'Occupation', 'Goal', 'Undergraduate']
+    this.info = ['ID', 'Age', 'Sex', 'Race', 'Occupation', 'Goal', 'Alma-Mater']
     this.race = ['African American', 'Caucasian', 'Latino/Hispanic', 'Asian', 'Native American', 'Other']
     this.occupation = ["Lawyer", 'Academic/Research', 'Psychologist', 'Doctor/Medicine', 'Engineer', 'Entertainment', 'Finance/Business', 'Real Estate', 'Humanitarian Affairs', 'Undecided', 'Social Work', 'Speech Pathology', 'Politics', 'Pro sports', 'Other', 'Journalism', 'Architecture']
     this.goal = ['Seemed like a fun night out', 'To meet new people', 'To get a date', 'Looking for a serious relationship', 'To say I did it', 'Other']
+    this.update_race = []
+    this.update_occupation = []
+    this.update_goal = []
+    this.race_check = false;
+    this.occupation_check = false;
+    this.goal_check = false;
+    this.gSize = 40;
+    this.bSize = 40;
 
     this.tick = function(e) {
 
@@ -95,6 +103,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     // run when node clicked
     this.nodeclick = function(node) {
+        console.log(node)
         var pass = [node.iid, that.displayData, node];
         $(that.eventHandler).trigger('nodeclick', pass);
 
@@ -183,8 +192,7 @@ NodeVis.prototype.initVis = function(){
     this.svg = this.parentElement.append('svg')
                     .attr('width', that.width)
                     .attr('height', that.height)
-                    .attr('style', "background-color: lightgrey");
-    
+
     this.force = d3.layout.force()
         .size([that.width, that.height])
         .on("tick", that.tick)
@@ -248,6 +256,7 @@ NodeVis.prototype.wrangleData= function(wave){
  * @param _options -- only needed if different kinds of updates are needed
  */
 NodeVis.prototype.updateVis = function(){
+
     this.posMale.length = 0;
     this.posFemale.length = 0;
 
@@ -294,21 +303,21 @@ NodeVis.prototype.updateVis = function(){
         
     this.maleNodes
         .append('image')
-        .attr("xlink:href", "image/male.png")
-        .attr("x", -15)
-        .attr("y", -15)
-        .attr("width", 30)
-        .attr("height", 30);
+        .attr("xlink:href", "image/boy.png")
+        .attr("x", -18)
+        .attr("y", -30)
+        .attr("width", that.bSize)
+        .attr("height", that.bSize);
 
     this.femaleNodes = d3.selectAll('.node').filter(function(d,i) {if (d.gender == '0') {return true}})
         
     this.femaleNodes
         .append('image')
-        .attr("xlink:href", "image/female.png")
-        .attr("x", -8)
-        .attr("y", -8)
-        .attr("width", 16)
-        .attr("height", 16);
+        .attr("xlink:href", "image/girl.png")
+        .attr("x", -18)
+        .attr("y", 0)
+        .attr("width", that.gSize)
+        .attr("height", that.gSize);
 
     // append node points
     /*this.node.append("circle")
@@ -374,20 +383,20 @@ NodeVis.prototype.updateVis = function(){
     this.maleNodes        
         .append('text').attr("font-size", "12px")
         .attr('class', 'position')
-        .attr('font-family', 'Arial')
         .attr('x', '-3.5')
-        .attr('y', '-20')
+        .attr('y', '-37')
         .text(function(d){return d.positin;})
 
     this.femaleNodes        
         .append('text').attr("font-size", "12px")
         .attr('class', 'position')
-        .attr('font-family', 'Arial')
         .attr('x', '-3.5')
-        .attr('y', '28')
+        .attr('y', '58')
         .text(function(d){return d.positin;})
     
     this.graph_update(500)
+
+    this.updateNode()
 
 }
 
@@ -404,8 +413,96 @@ NodeVis.prototype.updateInfo = function(node){
     this.smallsvg.select('#Race').text('Race: ' + race)
     this.smallsvg.select('#Occupation').text('Occupation: ' + occupation)
     this.smallsvg.select('#Goal').text('Goal: ' + goal)
-    this.smallsvg.select('#Undergraduate').text('Undergraduate: ' + undergraduate)
+    this.smallsvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate)
 
+}
+
+NodeVis.prototype.onRaceChange = function(races){
+
+    that.race_check = false;
+
+    races.forEach(function(d){
+        if (d != "") {
+            that.race_check = true;
+        }
+    })
+    
+    that.update_race = races;
+
+    this.updateNode();
+
+}
+
+NodeVis.prototype.onCareerChange = function(careers){
+
+    that.occupation_check = false;
+
+    careers.forEach(function(d){
+        if (d != "") {
+            that.occupation_check = true;
+        }
+    })
+    
+    that.update_occupation = careers;
+    
+    this.updateNode();
+
+}
+
+NodeVis.prototype.updateNode = function(){
+
+    var filter = d3.selectAll('.node')
+        .classed('filter', false)
+
+    if (that.race_check == true) {
+        filter = filter
+            .filter(function(d, i) {if (that.update_race.indexOf(d.race)>0){return true}})
+            console.log(filter, 1)
+    }
+    if (that.occupation_check == true) {
+        filter = filter
+            .filter(function(d, i) {if (that.update_occupation.indexOf(d.career_c)>0){return true}})
+            console.log(filter, 2)
+    }
+    if (that.goal_check == true) {
+        filter = filter
+            .filter(function(d, i) {if (that.update_goal.indexOf(d.career_c)>0){return true}})
+    }
+    
+    var filtered = d3.selectAll('.node')
+
+    if ((that.race_check == true) || (that.occupation_check == true) || (that.goal_check == true)) {
+        filter
+            .filter(function(d) {if (d.gender == '0'){return true}})
+            .classed('filter', true)
+            .select('image')
+            .attr("xlink:href", "image/girl_glow.png")
+            .attr("width", that.gSize)
+            .attr("height", that.gSize)
+            filtered = d3.selectAll('.node:not(.filter)')
+        filter
+            .filter(function(d) {if (d.gender == '1'){return true}})
+            .classed('filter', true)
+            .select('image')
+            .attr("xlink:href", "image/boy_glow.png")
+            .attr("width", that.bSize)
+            .attr("height", that.bSize)
+            filtered = d3.selectAll('.node:not(.filter)')
+    }
+
+    filtered
+        .filter(function(d) {if (d.gender == '0'){return true}})
+        .select('image')
+        .attr("xlink:href", "image/girl.png")
+        .attr("width", that.gSize)
+        .attr("height", that.gSize)
+
+    filtered
+        .filter(function(d) {if (d.gender == '1'){return true}})
+        .select('image')
+        .attr("xlink:href", "image/boy.png")
+        .attr("width", that.bSize)
+        .attr("height", that.bSize)
 }
 
 /**
@@ -415,7 +512,6 @@ NodeVis.prototype.updateInfo = function(node){
 NodeVis.prototype.filter = function(wave){
     this.wave = wave
     return this.data[wave]['values'];
-
 }
 
 /**

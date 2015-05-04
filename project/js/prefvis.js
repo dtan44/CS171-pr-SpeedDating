@@ -215,6 +215,10 @@ PrefVis.prototype.onGoalChange= function (goals){
 PrefVis.prototype.refilter = function() {
     var that = this;
     this.wrangleData(function(d) {
+
+      if (that.filter.wave == "0") {
+        return true;
+      }
       //check all filter properties if they are set and if the value doesn't abort and return false
       if (that.filter.wave != null && d.wave != that.filter.wave) {
         return false;
@@ -345,11 +349,12 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       return false;
     }
 
-    this.data
-        .filter(filter)
-        .filter(filter_race)
-        .filter(filter_career)
-        .filter(filter_goal)
+    var filtered_data = this.data.filter(filter)
+                                 .filter(filter_race)
+                                 .filter(filter_career)
+                                 .filter(filter_goal)
+
+    filtered_data
         .forEach(function(c) {
           if (c.wave < 6 || c.wave > 9) {
             // female
@@ -381,6 +386,8 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
         attr[d] = attr[d]/count_men;
       });
     });
+
+    console.log(filtered_data)
 
     this.selectionElement.html(count_men+count_women+" out of 449 people");
 
