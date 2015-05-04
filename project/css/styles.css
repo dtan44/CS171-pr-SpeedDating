@@ -1,23 +1,21 @@
 /*
+ * Index CSS
+ */
+.parcoordleft {
+    float: left
+    width: 50%
+}
+
+.parcoordright {
+    float: left
+    width: 50%
+}
+
+/*
  * Parallel Coordinates CSS
  */
-
 svg {
     font: 10px sans-serif;
-}
-
-.background path {
-    fill: none;
-    stroke: powderblue;
-    shape-rendering: crispEdges;
-    stroke-width: 2;
-    stroke-opacity: .8;
-}
-
-.foreground path {
-    fill: none;
-    stroke: midnightblue;
-    stroke-width: 2;
 }
 
 .axis line,
@@ -27,9 +25,17 @@ svg {
     shape-rendering: crispEdges;
 }
 
+.foreground:hover {
+    stroke-opacity: 1;
+    stroke: gold;
+}
+
+/*
+ * Other CSS
+ */
+
 .node:hover {
   fill: green;
-
 }
 
 .node:hover,
@@ -69,6 +75,10 @@ svg {
   font-family: Arial;
 
 }
+
+/*
+ *  tool tip / Personal Box css
+*/
 
 div.tooltip {   
   position: absolute;           
