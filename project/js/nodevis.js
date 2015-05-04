@@ -13,7 +13,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
     this.wave = 1 - 1;
-    this.widthScale = d3.scale.linear().range([20, this.width*.95])
+    this.widthScale = d3.scale.linear().range([40, this.width*.95])
     this.posMale = [];
     this.posFemale = [];
     this.info = ['ID', 'Age', 'Sex', 'Race', 'Occupation', 'Goal', 'Alma-Mater']
@@ -30,20 +30,6 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.bSize = 40;
 
     this.tick = function(e) {
-
-        var k = .1 * e.alpha;
-
-        that.graph.nodes.forEach(function(o, i) {
-            if (o.gender == '1') {
-                o.y += (60 - o.y) * k;
-                o.x += (i*20 - o.x) * k * .1;
-            }
-            else {
-                o.y += (450 - o.y) * k;
-                o.x += (i*80 - o.x) * k * .1;
-            }
-        });
-
         that.graph_update(40);
     }
     
@@ -103,21 +89,34 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     // run when node clicked
     this.nodeclick = function(node) {
-        console.log(node)
         var pass = [node.iid, that.displayData, node];
         $(that.eventHandler).trigger('nodeclick', pass);
 
-        var array = (node.gender=='0'?that.posFemale:that.posMale);
+        var array = (node.gender=='1'?that.posFemale:that.posMale);
         
-        var index = parseInt(node.positin);
-        
+        var girl_index = parseInt(node.positin);
+
+        var boy_index = 0;
+
+        if (node.gender == '0') {
+            for (i=0,j=node.people.length;i<j;i++){
+                if (node.people[i].order == '1'){
+                    that.graph.nodes.forEach(function(e, f){
+                        if ((e.gender == '1') && (e.iid == node.people[i].pid)) {
+                            boy_index = parseInt(e.positin);
+                        }
+                    })
+                }
+            }
+        }
+
         that.graph.nodes.forEach(function(d){
             if (node.gender == '1') {
                 if (d.gender == '0') {
                     var pos = d.positin;
-                    if (pos == index){d.x = that.widthScale(1)}
+                    if (pos == girl_index){d.x = that.widthScale(1)}
                     else {
-                        var dex = that.posFemale.indexOf(pos) - that.posFemale.indexOf(index);
+                        var dex = that.posFemale.indexOf(pos) - that.posFemale.indexOf(girl_index);
                         if (dex < 0) {
                             d.x = that.widthScale(that.posFemale.length + dex + 1);
                         }
@@ -130,9 +129,9 @@ NodeVis = function(_parentElement, _data, _eventHandler){
             else {
                 if (d.gender == '1') {
                     var pos = parseInt(d.positin);
-                    if (pos == index){d.x = that.widthScale(1)}
+                    if (pos == boy_index){d.x = that.widthScale(1)}
                     else {
-                        var dex = that.posMale.indexOf(pos) - that.posMale.indexOf(index)
+                        var dex = that.posMale.indexOf(pos) - that.posMale.indexOf(boy_index)
                         if (dex < 0) {
                             d.x = that.widthScale(that.posMale.length + dex + 1);
                         }
@@ -348,7 +347,7 @@ NodeVis.prototype.updateVis = function(){
             that.position = parseInt(d.id);
         }
     })
-    this.widthScale.domain([1, that.position])
+    this.widthScale.domain([0, that.position])
 
     this.graph.nodes.forEach(function(d, k){
         if (d.gender == '1') {
@@ -362,10 +361,17 @@ NodeVis.prototype.updateVis = function(){
                         })
                 }
             }
-            that.posMale.push(parseInt(positin))
-            d.positin = positin
+
+            if (that.posMale.indexOf(positin) >= 0) {
+                that.posMale.push(parseInt(positin) - 1)
+                d.positin = positin - 1
+            }
+            else {
+                that.posMale.push(parseInt(positin))
+                d.positin = positin
+            }
             d.y = that.height/4;
-            d.x = that.widthScale(positin);
+            d.x = that.widthScale(d.positin);
         }
         else {
             that.posFemale.push(parseInt(d.position))
@@ -374,7 +380,6 @@ NodeVis.prototype.updateVis = function(){
             d.x = that.widthScale(parseInt(d.position));
         }
     })
-
     this.posMale.sort(function(a,b){return a-b})
     this.posFemale.sort(function(a,b){return a-b})
 
@@ -394,7 +399,7 @@ NodeVis.prototype.updateVis = function(){
         .attr('y', '58')
         .text(function(d){return d.positin;})
     
-    this.graph_update(500)
+    this.graph_update(300)
 
     this.updateNode()
 
@@ -449,24 +454,42 @@ NodeVis.prototype.onCareerChange = function(careers){
 
 }
 
-NodeVis.prototype.updateNode = function(){
+NodeVis.prototype.onGoalChange = function(goals){
+
+    that.goal_check = false;
+
+    goals.forEach(function(d){
+        if (d != "") {
+            that.goal_check = true;
+        }
+    })
+    
+    that.update_goal = goals;
+    
+    this.updateNode();
+
+}
+
+NodeVis.prototype.updateNode = function(selector){
 
     var filter = d3.selectAll('.node')
         .classed('filter', false)
 
     if (that.race_check == true) {
         filter = filter
-            .filter(function(d, i) {if (that.update_race.indexOf(d.race)>0){return true}})
-            console.log(filter, 1)
+            .filter(function(d, i) {if (that.update_race.indexOf(d.race)>=0){return true}})
     }
     if (that.occupation_check == true) {
         filter = filter
-            .filter(function(d, i) {if (that.update_occupation.indexOf(d.career_c)>0){return true}})
-            console.log(filter, 2)
+            .filter(function(d, i) {if (that.update_occupation.indexOf(d.career_c)>=0){
+                if (d.career_c != "") {
+                    return true
+                }
+            }})
     }
     if (that.goal_check == true) {
         filter = filter
-            .filter(function(d, i) {if (that.update_goal.indexOf(d.career_c)>0){return true}})
+            .filter(function(d, i) {if (that.update_goal.indexOf(d.goal)>=0){return true}})
     }
     
     var filtered = d3.selectAll('.node')
@@ -503,6 +526,13 @@ NodeVis.prototype.updateNode = function(){
         .attr("xlink:href", "image/boy.png")
         .attr("width", that.bSize)
         .attr("height", that.bSize)
+
+    if (typeof selector !== 'undefined') {
+        console.log(selector[0][0])
+        selector
+            .select('image')
+            .attr("xlink:href", "image/female.png")
+    }
 }
 
 /**
@@ -514,18 +544,11 @@ NodeVis.prototype.filter = function(wave){
     return this.data[wave]['values'];
 }
 
-/**
- * Gets called by event handler and should create new aggregated data
- * aggregation is done by the function "aggregate(filter)". Filter has to
- * be defined here.
- * @param selection
- */
-NodeVis.prototype.onSelectionChange= function (selectionStart, selectionEnd){
+NodeVis.prototype.linkClick = function(iid){
+    var selector = d3.selectAll('.node')
+        .filter(function(d) {if (parseInt(d.iid) == iid){return true}})
 
-    // TODO: call wrangle function
-
-    // do nothing -- no update when brushing
-
+    this.updateNode(selector)
 
 }
 

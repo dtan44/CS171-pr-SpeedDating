@@ -33,6 +33,7 @@ svg {
 /*
  * Node and Links CSS
  */
+
 .node:hover {
   fill: green;
 }
@@ -74,6 +75,10 @@ svg {
   font-family: Arial;
 
 }
+
+/*
+ *  tool tip / Personal Box css
+*/
 
 div.tooltip {   
   position: absolute;           

@@ -109,14 +109,13 @@
             fparv_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
 
 	     	$(MyEventHandler).bind("nodeclick", function(event, id, wave_peep, node){
-                console.log(id, wave_peep);
-								node_vis.updateInfo(node);
+				node_vis.updateInfo(node);
                 mparv_vis.onSelectionChange(id,wave_peep);
                 fparv_vis.onSelectionChange(id,wave_peep)
 	     	})
 
-            $(MyEventHandler).bind("lineclick", function (event, id) {
-                console.log(id)
+            $(MyEventHandler).bind("lineclick", function (event, iid) {
+                node_vis.linkClick(iid)
             })
 
         };
@@ -268,7 +267,8 @@
 		// update chart if filter goal button is changed
     d3.selectAll(".filter_goal").on("change", function() {
     	update_goals();
-      pref_vis.onGoalChange(goals);
+      	pref_vis.onGoalChange(goals);
+      	node_vis.onGoalChange(goals);
     })
 
 	function changewave(value) {
