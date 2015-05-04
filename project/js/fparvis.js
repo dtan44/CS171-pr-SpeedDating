@@ -14,8 +14,8 @@ FParVis = function(_parentElement, _data, _eventHandler){
 
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
-    this.margin = {top: 30, right: 10, bottom: 10, left: 10};
-    this.width = 650;
+    this.margin = {top: 50, right: 10, bottom: 10, left: 5};
+    this.width = 550;
     this.height = 250;
 
     this.initVis();

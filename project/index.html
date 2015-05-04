@@ -24,74 +24,88 @@
 
 </head>
 <body>
+    <!-- Title block -->
+    <div class="title"></div>
 
-		<div class ="row">
-			<div class="col-md-12">
-				Filter by Race:
-		        <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>African American</label>
-		        <label><input class="filter_race" type="checkbox" name="European" value="2"></input>Caucasian-American</label>
-		        <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input>Latino/Hispanic</label>
-		        <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input>Asian</label>
-		        <label><input class="filter_race" type="checkbox" name="Other" value="6"></input>Other</label>
-		    <br>
+    <div class="horz_divider"></div>
 
-		    Filter by Career:
-		    	<label><input class="filter_career" type="checkbox" name="Lawyer" value="1"></input>Lawyer</label>
-		        <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"></input>Academia</label>
-		        <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"></input>Medicine</label>
-		        <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input>Entertainment</label>
-		        <label><input class="filter_career" type="checkbox" name="Business" value="7"></input>Business</label>
-		        <label><input class="filter_career" type="checkbox" name="International" value="9"></input>Humanitarian Affairs</label>
-		    <br>
+    <!-- Narrative block -->
+    <div class="left_column"></div>
 
-		    Filter by Goal:
-		    	<label><input class="filter_goal" type="checkbox" name="Fun" value="1"></input>For Fun</label>
-		        <label><input class="filter_goal" type="checkbox" name="Meet" value="2"></input>Meet new people</label>
-		        <label><input class="filter_goal" type="checkbox" name="Date" value="3"></input>Get a date</label>
-		        <label><input class="filter_goal" type="checkbox" name="Serious" value="4"></input>Find serious relationship</label>
-		        <label><input class="filter_goal" type="checkbox" name="Say" value="5"></input>To say I did it</label>
-		        <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input>Other</label>
-		    <br>
+    <div class="vert_divider"></div>
 
-			</div>
+    <!-- Visualization block -->
+    <div class="right_column">
+        <div class ="row">
+            <div class="col-md-12">
+                Filter by Race:
+                <label><input class="filter_race" type="checkbox" name="Black" value="1"></input>African American</label>
+                <label><input class="filter_race" type="checkbox" name="European" value="2"></input>Caucasian-American</label>
+                <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input>Latino/Hispanic</label>
+                <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input>Asian</label>
+                <label><input class="filter_race" type="checkbox" name="Other" value="6"></input>Other</label>
+            <br>
 
-			<div class="col-md-8" style="text-align:center">
-				<b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
-			</div>
-		</div>
+            Filter by Career:
+                <label><input class="filter_career" type="checkbox" name="Lawyer" value="1"></input>Lawyer</label>
+                <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"></input>Academia</label>
+                <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"></input>Medicine</label>
+                <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input>Entertainment</label>
+                <label><input class="filter_career" type="checkbox" name="Business" value="7"></input>Business</label>
+                <label><input class="filter_career" type="checkbox" name="International" value="9"></input>Humanitarian Affairs</label>
+            <br>
 
-    <div id="prefVis"></div>
+            Filter by Goal:
+                <label><input class="filter_goal" type="checkbox" name="Fun" value="1"></input>For Fun</label>
+                <label><input class="filter_goal" type="checkbox" name="Meet" value="2"></input>Meet new people</label>
+                <label><input class="filter_goal" type="checkbox" name="Date" value="3"></input>Get a date</label>
+                <label><input class="filter_goal" type="checkbox" name="Serious" value="4"></input>Find serious relationship</label>
+                <label><input class="filter_goal" type="checkbox" name="Say" value="5"></input>To say I did it</label>
+                <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input>Other</label>
+            </div>
 
-	<div class="col-md-9" id="nodevis">
-		<div class="dropdown dropdown-dark">
-			<select name="two" class="dropdown-select" onchange="changewave(value)">
-				<option value="0">Wave</option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="3">3</option>
-				<option value="4">4</option>
-				<option value="5">5</option>
-				<option value="10">6</option>
-				<option value="11">7</option>
-				<option value="12">8</option>
-				<option value="13">9</option>
-				<option value="14">10</option>
-				<option value="15">11</option>
-				<option value="16">12</option>
-				<option value="17">13</option>
-				<option value="18">14</option>
-				<option value="19">15</option>
-				<option value="20">16</option>
-				<option value="21">17</option>
-			</select>
-		</div>
-  	</div>
+            <div class="col-md-8">
+                <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
+            </div>
+        </div>
 
-  	<div id="personalbox"></div>
+        <div id="prefVis"></div>
 
-    <div class="inner_row">
-        <div class="parcoordleft" id="mparVis"></div>
-        <div class="parcoordright" id="fparVis"></div>
+        <div class="col-md-9" id="nodevis">
+            <div class="dropdown dropdown-dark">
+                <select name="two" class="dropdown-select" onchange="changewave(value)">
+                    <option value="0">Wave</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="10">6</option>
+                    <option value="11">7</option>
+                    <option value="12">8</option>
+                    <option value="13">9</option>
+                    <option value="14">10</option>
+                    <option value="15">11</option>
+                    <option value="16">12</option>
+                    <option value="17">13</option>
+                    <option value="18">14</option>
+                    <option value="19">15</option>
+                    <option value="20">16</option>
+                    <option value="21">17</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="personinfo">
+            <div id="personalbox"></div>
+            <div id="linebox"></div>
+        </div>
+
+        <div class="inner_row">
+            <div class="parcoordleft" id="mparVis"></div>
+            <div class="parcoordright" id="fparVis"></div>
+        </div>
+
     </div>
 
 	<script>

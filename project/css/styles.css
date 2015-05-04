@@ -1,19 +1,48 @@
 /*
- * Index CSS
+ * Page Layout CSS
  */
-.parcoordleft {
-    float: left
-    width: 50%
+.title {
+    height:300px;
+    width:100%;
 }
 
-.parcoordright {
+.horz_divider {
+    width: 80%;
+    height: 50px;
+    border-top: 2px dashed #ff383a;
+    font-size: 0;
+    margin: 0 auto;
+}
+
+.left_column {
+    height: 1800px;
+    width: 30%;
+    float: left;
+}
+
+.vert_divider {
+
+}
+
+.right_column {
+    height: 1800px;
+    width: 65%;
     float: left
-    width: 50%
 }
 
 /*
  * Parallel Coordinates CSS
  */
+.parcoordleft {
+    width: 50%;
+    float: left;
+}
+
+.parcoordright {
+    width: 50%;
+    float: left;
+}
+
 svg {
     font: 10px sans-serif;
 }
@@ -53,14 +82,14 @@ svg {
 }
 
 .link {
-  stroke: black;
+  stroke: lightgrey;
   stroke-width: 1.5px;
 }
 
 .link--source,
 .link--target {
   stroke-opacity: 1;
-  stroke-width: 4px;
+  stroke-width: 3px;
 }
 
 .link--source {
@@ -77,27 +106,42 @@ svg {
 }
 
 /*
- *  tool tip / Personal Box css
+ *  Tool Tip / Personal Box CSS
 */
 
-div.tooltip {   
-  position: absolute;           
-  text-align: center;           
-  width: 110px;                  
-  height: 20px;                 
-  padding: 2px;             
-  font: 12px sans-serif;        
-  background: lightgrey; 
-  border: 0px;      
-  border-radius: 8px;           
-  pointer-events: none;         
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 110px;
+    height: 20px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightgrey;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.personinfo {
+    height: 400px;
+    width: 20%;
+    float: left;
 }
 
 #personalbox {
-  display: inline-block;
-  height: 483px;
-  width: 200px;
-  background: black;
+    display: inline-block;
+    height: 200px;
+    width: 100%;
+    border-style: dashed;
+    border-radius: 10px;
+}
+
+#linebox {
+    display: inline-block;
+    height: 200px;
+    width: 100%;
+    border-style:dashed;
+    border-radius: 10px;
 }
 
 .information {

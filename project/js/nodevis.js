@@ -9,7 +9,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.width = 800;
     this.height = 450;
     this.smallwidth = 200;
-    this.smallheight = 450;
+    this.smallheight = 200;
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
     this.wave = 1 - 1;
@@ -209,7 +209,7 @@ NodeVis.prototype.initVis = function(){
 
     this.smallsvg = d3.select('#personalbox').append('svg')
         .attr('width', that.smallwidth)
-        .attr('height', that.smallheight)
+        .attr('height', that.smallheight);
     
     this.toptext = that.smallsvg.append("text")
       .attr('fill', 'white')
