@@ -63,24 +63,6 @@ svg {
  * Node and Links CSS
  */
 
-.node:hover {
-  fill: green;
-}
-
-.node:hover,
-.node--source,
-.node--target {
-  font-weight: 700;
-}
-
-.node--source {
-  fill: #2ca02c;
-}
-
-.node--target {
-  fill: #d62728;
-}
-
 .link {
   stroke: lightgrey;
   stroke-width: 1.5px;
@@ -93,11 +75,11 @@ svg {
 }
 
 .link--source {
-  stroke: #d62728;
+  stroke: #0099FF;
 }
 
 .link--target {
-  stroke: #2ca02c;
+  stroke: #FF00FF;
 }
 
 .position {
