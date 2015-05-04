@@ -15,7 +15,7 @@ MParVis = function(_parentElement, _data, _eventHandler){
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
     this.margin = {top: 30, right: 10, bottom: 10, left: 10};
-    this.width = 500;
+    this.width = 650;
     this.height = 250;
 
     this.initVis();
@@ -119,7 +119,7 @@ MParVis.prototype.updateVis = function() {
             else return .5
         })
         .attr("fill", "none")
-        .attr("stroke-width", 3);
+        .attr("stroke-width", 4);
 
     // Send out event to update nodes when clicked
     this.peeplines.on("click", function (d) {
