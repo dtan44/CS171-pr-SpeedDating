@@ -190,7 +190,9 @@ NodeVis.prototype.initVis = function(){
 
     this.svg = this.parentElement.append('svg')
                     .attr('width', that.width)
-                    .attr('height', that.height)
+                    .attr('height', that.height);
+
+    this.bundle = d3.layout.bundle();
 
     this.force = d3.layout.force()
         .size([that.width, that.height])
@@ -336,9 +338,9 @@ NodeVis.prototype.updateVis = function(){
     this.force
         .nodes(this.graph.nodes)
         .links(this.graph.links)
-        .start()
+        .start();
 
-    this.force.stop()
+    this.force.stop();
 
     this.position = 0;
 
@@ -346,8 +348,8 @@ NodeVis.prototype.updateVis = function(){
         if (parseInt(d.id) > that.position) {
             that.position = parseInt(d.id);
         }
-    })
-    this.widthScale.domain([0, that.position])
+    });
+    this.widthScale.domain([0, that.position]);
 
     this.graph.nodes.forEach(function(d, k){
         if (d.gender == '1') {
