@@ -183,7 +183,7 @@ NodeVis.prototype.initVis = function(){
     this.svg = this.parentElement.append('svg')
                     .attr('width', that.width)
                     .attr('height', that.height)
-                    .attr('style', "background-color: lightblue");
+                    .attr('style', "background-color: lightgrey");
     
     this.force = d3.layout.force()
         .size([that.width, that.height])

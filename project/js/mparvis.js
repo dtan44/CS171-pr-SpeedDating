@@ -15,7 +15,7 @@ MParVis = function(_parentElement, _data, _eventHandler){
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
     this.margin = {top: 30, right: 10, bottom: 10, left: 10};
-    this.width = 600;
+    this.width = 500;
     this.height = 250;
 
     this.initVis();
@@ -29,11 +29,7 @@ MParVis.prototype.initVis = function(){
     var that = this; // read about the this
 
     // Constructs SVG layout
-    this.svg = this.parentElement
-        .attr("width", that.width)
-        .attr("height", that.height);
-
-    this.svg = d3.select("body").append("svg")
+    this.svg = this.parentElement.append("svg")
         .attr("width", that.width + that.margin.left + that.margin.right)
         .attr("height", that.height + that.margin.top + that.margin.bottom)
         .append("g")
@@ -101,6 +97,7 @@ MParVis.prototype.updateVis = function() {
     this.peeplines.enter()
         .append("path")
         .attr("d", path)
+        .attr("class", "foreground")
         .attr("stroke", function (d) {
             if (d.iid == that.highlightData.iid) {
                 if (d.gender == 1) {
@@ -115,20 +112,19 @@ MParVis.prototype.updateVis = function() {
                 else return "lightpink"
             }})
         .attr("stroke-opacity", function (d) {
+            console.log(d.iid, that.highlightData.iid);
             if (d.iid == that.highlightData.iid) {
-                return 1
+                return 1;
             }
-            else return .4
+            else return .5
         })
         .attr("fill", "none")
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 3);
 
     // Send out event to update nodes when clicked
     this.peeplines.on("click", function (d) {
         $(that.eventHandler).trigger("lineclick", [d.iid])
     });
-
-    this.peeplines.on("mouseover", this.onMouseover());
 
     // Add a group element for each dimension.
     this.g = that.svg.selectAll(".dimension")
@@ -199,14 +195,9 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
         }
     }
 
+    that.displayData.push(that.highlightData);
+
     console.log(that.displayData, that.highlightData);
 
     this.updateVis();
 };
-
-MParVis.prototype.onMouseover = function () {
-
-    var that = this;
-
-    that.peeplines.attr("stroke-opacity", 1)
-}
