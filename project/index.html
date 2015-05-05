@@ -18,6 +18,7 @@
 
     <!-- vis classes-->
     <script src = "js/prefvis.js"></script>
+    <script src = "js/matchvis.js"></script>
     <script src = "js/nodevis.js"></script>
     <script src = "js/mparvis.js"></script>
     <script src = "js/fparvis.js"></script>
@@ -75,7 +76,7 @@
         <div class="right_column">
             <div class ="row">
                 <div class="col-md-12">
-                    Filter by Race:
+                Filter by Race:
                     <label><input class="filter_race" type="checkbox" name="Black" value="1"> African American </label>
                     <label><input class="filter_race" type="checkbox" name="European" value="2"> Caucasian-American </label>
                     <label><input class="filter_race" type="checkbox" name="Latino" value="3"> Latino/Hispanic </label>
@@ -105,7 +106,10 @@
                 </div>
             </div>
 
-            <div id="prefVis"></div>
+            <div class="barcharts">
+                <div id="prefVis"></div>
+                <div id="matchVis"></div>
+            </div>
 
             <div class="col-md-9" id="nodevis">
                 <div class="dropdown dropdown-dark">
@@ -177,6 +181,7 @@
       	var MyEventHandler = new Object();
 
 	     	pref_vis = new PrefVis(d3.select("#prefVis"), prefData, d3.select("#selectionInfo"));
+            match_vis = new MatchVis(d3.select("#matchVis"), prefData);
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
             mpar_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
             fpar_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
@@ -320,36 +325,40 @@
 			});
 		}
 
-        // update chart if filter race button is changed
-        d3.selectAll(".filter_race").on("change", function() {
-            update_races();
-            pref_vis.onRaceChange(races);
-            node_vis.onRaceChange(races);
-            mpar_vis.onRaceChange(races);
-            fpar_vis.onRaceChange(races);
-        });
+    // update chart if filter race button is changed
+    d3.selectAll(".filter_race").on("change", function() {
+        update_races();
+        pref_vis.onRaceChange(races);
+        match_vis.onRaceChange(races);
+        node_vis.onRaceChange(races);
+        mpar_vis.onRaceChange(races);
+        fpar_vis.onRaceChange(races);
+    });
 
-        // update chart if filter career button is changed
-        d3.selectAll(".filter_career").on("change", function() {
-            update_careers();
-            pref_vis.onCareerChange(careers);
-            node_vis.onCareerChange(careers);
-            mpar_vis.onCareerChange(careers);
-            fpar_vis.onCareerChange(careers);
-        });
+    // update chart if filter career button is changed
+    d3.selectAll(".filter_career").on("change", function() {
+    	update_careers();
+        match_vis.onCareerChange(careers);
+      	pref_vis.onCareerChange(careers);
+      	node_vis.onCareerChange(careers);
+        mpar_vis.onCareerChange(careers);
+        fpar_vis.onCareerChange(careers);
+    });
 
-            // update chart if filter goal button is changed
-        d3.selectAll(".filter_goal").on("change", function() {
-            update_goals();
-            pref_vis.onGoalChange(goals);
-            node_vis.onGoalChange(goals);
-            mpar_vis.onGoalChange(goals);
-            fpar_vis.onGoalChange(goals);
-        });
+		// update chart if filter goal button is changed
+    d3.selectAll(".filter_goal").on("change", function() {
+    	update_goals();
+        pref_vis.onGoalChange(goals);
+      	match_vis.onGoalChange(goals);
+      	node_vis.onGoalChange(goals);
+        mpar_vis.onCareerChange(goals);
+        fpar_vis.onCareerChange(goals);
+    });
 
 	function changewave(value) {
 		
 		pref_vis.onSelectionChange(value);
+        match_vis.onSelectionChange(value);
 
 		value = parseInt(value) - 1;
 
