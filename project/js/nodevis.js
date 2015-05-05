@@ -1,10 +1,12 @@
 
 NodeVis = function(_parentElement, _data, _eventHandler){
+    // global variables passed in
     this.parentElement = _parentElement;
     this.data = _data;
     this.eventHandler = _eventHandler;
     this.displayData = [];
 
+    // 
     this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     this.width = this.w/2.2;
@@ -149,6 +151,11 @@ NodeVis = function(_parentElement, _data, _eventHandler){
                 }
             }
         });
+
+        var selector = d3.selectAll('.node')
+            .filter(function(d) {if (parseInt(d.iid) == node.iid){return true}})
+
+        that.updateNode(selector)
 
         that.graph_update(500)
     };
@@ -438,7 +445,7 @@ NodeVis.prototype.updateVis = function(){
 
 NodeVis.prototype.updateInfo = function(node){
     var gender = (node.gender == '0') ? 'Female' : 'Male';
-    var race = that.race[node.race - 1];
+    var race = (node.race != '') ? that.race[node.race - 1]: 'Undisclosed';
     var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
     var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
     var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
@@ -564,12 +571,12 @@ NodeVis.prototype.updateNode = function(selector){
         selector
             .filter(function(d) {if (d.gender == '0'){return true}})
             .select('image')
-            .attr("xlink:href", "image/girl_glow_purple.png")
+            .attr("xlink:href", "image/girl_glow_green.png")
 
         selector
             .filter(function(d) {if (d.gender == '1'){return true}})
             .select('image')
-            .attr("xlink:href", "image/boy_glow_purple.png")
+            .attr("xlink:href", "image/boy_glow_green.png")
     }
 }
 
