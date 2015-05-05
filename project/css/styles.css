@@ -95,16 +95,22 @@ svg {
 }
 
 .link--source {
-  stroke: #0099FF;
+  stroke: #9ECACF;
 }
 
 .link--target {
-  stroke: #FF00FF;
+  stroke: #E6A4AE;
 }
 
 .position {
   font-family: Arial;
 
+}
+
+.legendbox {
+  display: inline-block;
+  padding-right: 14px;  
+  padding-left: 14px;  
 }
 
 /*
