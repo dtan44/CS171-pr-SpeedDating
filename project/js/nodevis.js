@@ -599,7 +599,6 @@ NodeVis.prototype.linkClick = function(iid){
 
     this.updateNode(selector);
 
-    console.log(that.graph.nodes);
     for (var i = 0; i < that.graph.nodes.length; i++) {
         if (that.graph.nodes[i].iid == iid) {
             node = that.graph.nodes[i];
