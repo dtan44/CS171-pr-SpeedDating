@@ -535,7 +535,6 @@ NodeVis.prototype.updateNode = function(selector){
         .attr("height", that.bSize)
 
     if (typeof selector !== 'undefined') {
-        console.log(selector[0][0])
         selector
             .select('image')
             .attr("xlink:href", "image/female.png")

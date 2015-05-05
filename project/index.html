@@ -230,8 +230,6 @@
 
                 initVis();
             }
-
-            console.log(allData)
         };
 
       var startHere = function(){
@@ -278,9 +276,10 @@
     // update chart if filter career button is changed
     d3.selectAll(".filter_career").on("change", function() {
     	update_careers();
-        console.log(careers);
       	pref_vis.onCareerChange(careers);
       	node_vis.onCareerChange(careers);
+        mpar_vis.onCareerChange(careers);
+        fpar_vis.onCareerChange(careers);
     });
 
 		// update chart if filter goal button is changed
@@ -288,6 +287,8 @@
     	update_goals();
       	pref_vis.onGoalChange(goals);
       	node_vis.onGoalChange(goals);
+        mpar_vis.onCareerChange(goals);
+        fpar_vis.onCareerChange(goals);
     });
 
 	function changewave(value) {
@@ -299,6 +300,7 @@
 		if (value !== -1) {
 			node_vis.wrangleData(value);
 			node_vis.updateVis();
+            mpar_vis.onWaveChange(value)
 		}
 	}
 
