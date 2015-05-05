@@ -11,6 +11,7 @@ MParVis = function(_parentElement, _data, _eventHandler){
     this.eventHandler = _eventHandler;
     this.displayData = [];
     this.highlightData;
+    this.wavenum = 0;
 
     this.selected_races = [];
     this.selected_careers = [];
@@ -101,15 +102,15 @@ MParVis.prototype.updateVis = function() {
 
     // Add lines representing each individual person
     this.peeplines = that.svg.append("g")
-        .selectAll("path")
-        .data(that.displayData);
+        .selectAll("path");
 
-    this.peeplines.enter()
+    this.path_enter = this.peeplines.data(that.displayData)
+        .enter()
         .append("path")
-        .attr("d", path)
+
+    this.path_enter.attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            console.log(that.selected_careers.indexOf(d.career) != -1, that.selected_careers, d.career)
             if ((that.selected_races.indexOf(d.race) != -1 || that.selected_careers.indexOf(d.career) != -1 ||
                 that.selected_goals.indexOf(d.goal) != -1) && d.iid != that.highlightData.iid) {
                 return "greenyellow"
@@ -136,12 +137,11 @@ MParVis.prototype.updateVis = function() {
             else return .5
         })
         .attr("fill", "none")
-        .attr("stroke-width", 4);
+        .attr("stroke-width", 4)
 
-    // Send out event to update nodes when clicked
-    this.peeplines.on("click", function (d) {
-        $(that.eventHandler).trigger("lineclick", [d.iid])
-    });
+    this.path_enter.on("click", function (d) {
+            $(that.eventHandler).trigger("lineclick", d.iid);
+        });
 
     // Add a group element for each dimension.
     this.g = that.svg.selectAll(".dimension")
@@ -169,13 +169,16 @@ MParVis.prototype.updateVis = function() {
  * Gets called by event handler and should create new displayData
  * @param node_id -- the ID of the node clicked
  * @param wave_peep -- data for the entire wave
+ * @param wave_num -- number of the wave
  */
-MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
+MParVis.prototype.onSelectionChange= function (node_id, wave_peep, wave_num){
 
     var that = this;
 
     // Clears the old data from memory
     this.displayData = [];
+
+    that.wavenum = wave_num;
 
     // Stores the relevant data for selected node
     for (var i = 0; i <wave_peep.length; i++) {
@@ -266,10 +269,12 @@ MParVis.prototype.onGoalChange= function (goals) {
 
 /*
  * Updates parcoords when a wave changes
- * @param index -- index of selected wave
+ * @param wave_num -- index of selected wave
  */
-MParVis.prototype.onWaveChange= function (value) {
+MParVis.prototype.onWaveChange= function (wave_num) {
 
     var that = this;
+
+    that.wavenum = wave_num;
 
 };

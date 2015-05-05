@@ -55,7 +55,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
             .attr("transform", function(d) { 
                 return "translate("+d.x+","+d.y+")"; 
           });
-    }
+    };
 
     // run when node is mouse-overed
     this.mouseover = function(d) {
@@ -199,7 +199,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
  */
 NodeVis.prototype.initVis = function(){
 
-    that = this; 
+    that = this; // read about the this
 
     this.svg = this.parentElement.append('svg')
                     .attr('width', that.width)
@@ -247,7 +247,7 @@ NodeVis.prototype.initVis = function(){
         .attr("width", that. smallwidth)
         .attr("height", that.smallheight);
 
-    this.titletext = that.smallsvg.append("text")
+    this.titletext = that.linesvg.append("text")
         .attr("fill", that.textcolor)
         .text("line info")
         .attr("y", 20)
@@ -437,11 +437,10 @@ NodeVis.prototype.updateVis = function(){
         .attr('y', '58')
         .text(function(d){return d.iid;});
     
-    this.graph_update(300)
+    this.graph_update(300);
 
     this.updateNode()
-
-}
+};
 
 NodeVis.prototype.updateInfo = function(node){
     var gender = (node.gender == '0') ? 'Female' : 'Male';
@@ -458,7 +457,7 @@ NodeVis.prototype.updateInfo = function(node){
     this.smallsvg.select('#Goal').text('Goal: ' + goal)
     this.smallsvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate)
 
-}
+};
 
 NodeVis.prototype.onRaceChange = function(races){
 
@@ -590,11 +589,36 @@ NodeVis.prototype.filter = function(wave){
 }
 
 NodeVis.prototype.linkClick = function(iid){
+
+    var that = this;
+
+    var node =  [];
+
     var selector = d3.selectAll('.node')
         .filter(function(d) {if (parseInt(d.iid) == iid){return true}})
 
-    this.updateNode(selector)
+    this.updateNode(selector);
 
+    console.log(that.graph.nodes);
+    for (var i = 0; i < that.graph.nodes.length; i++) {
+        if (that.graph.nodes[i].iid == iid) {
+            node = that.graph.nodes[i];
+        }
+    }
+
+    var gender = (node.gender == '0') ? 'Female' : 'Male';
+    var race = that.race[node.race - 1];
+    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
+    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
+    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
+
+    this.linesvg.select('#ID').text('ID: ' + node.iid);
+    this.linesvg.select('#Age').text('Age: ' + node.age);
+    this.linesvg.select('#Sex').text('Sex: ' + gender);
+    this.linesvg.select('#Race').text('Race: ' + race);
+    this.linesvg.select('#Occupation').text('Occupation: ' + occupation);
+    this.linesvg.select('#Goal').text('Goal: ' + goal);
+    this.linesvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate);
 }
 
 /**
