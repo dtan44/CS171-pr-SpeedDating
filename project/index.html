@@ -26,147 +26,132 @@
 </head>
 <body>
     <!-- Title block -->
-    <div id="header">
-        <div class="title">
-            <div class="col-md-4" id="title-left">
-                <h1> Speed Dating </h1>
-                <img src="image/couple.png" alt="Couple" style="width:200px; height:200px">
-            </div>
-            <div class="col-md-6 highlight" id="title-right">
-                <br><br><br>
-                <p>
-                    Much to our dismay, a large proportion of the general populace are single. Amidst our hapless and
-                    woebegone plight, we all yearn for the dream of a rose-colored life replete with raven-haired
-                    maidens and starry-eyed gentlemen. In a desperate ploy to escape the lovelorn monotony of an
-                    unfulfilling personal life, we sought guidance from the perennial bachelor’s haven that is speed
-                    dating.
-                </p>
-                <p>
-                    The first visualization shows you what people look for in the opposite gender and what people think the
-                    opposite gender looks for. (You can filter by race, occupation, and goal and the people who fit the
-                    criteria will be highlighted in the subsequent visualizations.) The second visualization shows you
-                    successful matches in a particular wave. (You can click on a specific people and information about the
-                    person will appear on the side.) And the third visualization shows you (1) preferences of the selected
-                    person from the second visualization compared to people of the same gender and (2) how that person views
-                    him/herself compared to how people of the opposite gender view him/her. (You can click on a line and the
-                    person will be highlighted in the second visualization.) Follow our narrative and click on the
-                    highlighted words to explore the relationships.
-                </p>
-            </div>
+    <div class="title">
+        <div class="col-md-4" id="title-left">
+            <h1> Speed Dating </h1>
+            <img src="image/couple.png" alt="Couple" style="width:200px; height:200px">
         </div>
+        <div class="col-md-6 highlight" id="title-right">
+            <br><br>
+            <p> Still single? Haven't been successful in getting a match at a speed dating event? Learn the secrets to success in speed dating here. Find out what the opposite gender is looking for and explore why some people get matches and others don't. Become a master at speed dating, and INSERT SOMETHING CORNY HERE.
+            </p>
+            <p> The first visualization shows you what people look for in the opposite gender and what people think the opposite gender looks for. (You can filter by race, occupation, and goal and the people who fit the criteria will be highlighted in the subsequent visualizations.) The second visualization shows you successful matches in a particular wave. (You can click on specific people and information about the person will appear on the side.) And the third visualizaiton shows you (1) preferences of the selected person from the second visualization compared to people of the same gender and (2) how that person views him/herself compared to how people of the opposite gender view him/her. (Clicking on a line and will highlighted the person in the second visualization.) Follow our narrative and click on the highlighted words to explore the relationships.
+        </div>
+    </div>
 
-        <div class="horz_divider"></div>
+    <div class="horz_divider">
     </div>
 
     <!-- Narrative block -->
-    <div id="content">
-        <div class="left_column">
-            <div class="col-md-9">
-                <p> Participants were asked to distribute 100 points among 6 attributes, giving more points to those
-                    attributes that were more important to them in a potential date. On average, women weighted the
-                    attributes relatively evenly, with intelligence the most and ambition the least. Men weighted attractive
-                    the most and ambition the least. Interesting, both genders thought the opposite gender would weight
-                    attractive more heavily and sincere and intelligent less.
-                </p>
-            </div>
-            <div class="vert_divider"></div>
+    <div class="left_column">
+        <div class="vert_divider"></div>
+
+        <div class="col-md-9" id='preferences'>
+            <p> Participants were asked to distribute 100 points among 6 attributes, giving more points to those attributes that were more important to them in a potential date. On average, women weighted the attributes relatively evenly, with intelligence the most and ambition the least. Men weighted attractive the most and ambition the least. Interesting, both genders thought the opposite gender would weight attractive more heavily and sincere and intelligent less.
+            </p>
         </div>
-
-        <!-- Visualization block -->
-        <div class="right_column">
-            <div class ="row">
-                <div class="col-md-12">
-                Filter by Race:
-                    <label><input class="filter_race" type="checkbox" name="Black" value="1"> African American </label>
-                    <label><input class="filter_race" type="checkbox" name="European" value="2"> Caucasian-American </label>
-                    <label><input class="filter_race" type="checkbox" name="Latino" value="3"> Latino/Hispanic </label>
-                    <label><input class="filter_race" type="checkbox" name="Asian" value="4"> Asian </label>
-                    <label><input class="filter_race" type="checkbox" name="Other" value="6"> Other </label>
-                <br>
-
-                Filter by Occupation:
-                    <label><input class="filter_career" type="checkbox" name="Lawyer" value="1"> Lawyer </label>
-                    <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"> Academia </label>
-                    <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"> Medicine </label>
-                    <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"> Entertainment </label>
-                    <label><input class="filter_career" type="checkbox" name="Business" value="7"> Business </label>
-                    <label><input class="filter_career" type="checkbox" name="International" value="9"> Humanitarian Affairs </label>
-                <br>
-
-                Filter by Goal:
-                    <label><input class="filter_goal" type="checkbox" name="Fun" value="1">> For Fun </label>
-                    <label><input class="filter_goal" type="checkbox" name="Meet" value="2"> Meet new people </label>
-                    <label><input class="filter_goal" type="checkbox" name="Date" value="3"> Get a date </label>
-                    <label><input class="filter_goal" type="checkbox" name="Serious" value="4"> Find serious relationship </label>
-                    <label><input class="filter_goal" type="checkbox" name="Say" value="5"> To say I did it </label>
-                    <label><input class="filter_goal" type="checkbox" name="Other" value="6"> Other </label>
-                </div>
-                <div class="col-md-8">
-                    <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
-                </div>
-            </div>
-
-            <div class="barcharts">
-                <div id="prefVis"></div>
-                <div id="matchVis"></div>
-            </div>
-
-            <div class="col-md-9" id="nodevis">
-                <div class="dropdown dropdown-dark">
-                    <select name="two" class="dropdown-select" onchange="changewave(value)">
-                        <option value="0">Select a Dating Session</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="10">6</option>
-                        <option value="11">7</option>
-                        <option value="12">8</option>
-                        <option value="13">9</option>
-                        <option value="14">10</option>
-                        <option value="15">11</option>
-                        <option value="16">12</option>
-                        <option value="17">13</option>
-                        <option value="18">14</option>
-                        <option value="19">15</option>
-                        <option value="20">16</option>
-                        <option value="21">17</option>
-                    </select>
-                </div>
-                <section id="nodelegend">
-                    <div class="legendbox">
-                        <img src="image/boy.png" height="30" width="30">
-                        <img src="image/girl.png" height="30" width="30">
-                        <span>participants</span>
-                    </div>
-                    <div class="legendbox">
-                        <img src="image/boy_glow.png" height="30" width="30">
-                        <img src="image/girl_glow.png" height="30" width="30">
-                        <span>filtered</span>
-                    </div>
-                    <div class="legendbox">
-                        <img src="image/boy_glow_green.png" height="30" width="30">
-                        <img src="image/girl_glow_green.png" height="30" width="30">
-                        <span>selected</span>
-                    </div>
-                </section>
-            </div>
-
-            <div class="personinfo">
-                <div id="personalbox"></div>
-                <div id="linebox"></div>
-            </div>
-
-            <div class="inner_row">
-                <div class="parcoordleft" id="mparVis"><center>Personal Preferences vs People of the Same Gender</center></div>
-                <div class="parcoordright" id="fparVis"><center>Opinion of Self vs Impression Left on Others</center></div>
-            </div>
+        <div class="col-md-9" id='nodes'>
+            <p> There were 17 total speed dating sessions beginning from October 2002 and ending on April 2004. In each session, males rotated through the stations while females stayed stationary.
+            </p>
+        </div>
+        <div class="col-md-9" id='parallel'>
+            <p>
+            </p>
         </div>
     </div>
 
-    <div id="footer"></div>
+    <!-- Visualization block -->
+    <div class="right_column">
+        <div class ="row">
+            <div class="col-md-12">
+                Filter by Race:
+                <label><input class="filter_race" type="checkbox" name="Black" value="1"> African American </label>
+                <label><input class="filter_race" type="checkbox" name="European" value="2"> Caucasian-American </label>
+                <label><input class="filter_race" type="checkbox" name="Latino" value="3"> Latino/Hispanic </label>
+                <label><input class="filter_race" type="checkbox" name="Asian" value="4"> Asian </label>
+                <label><input class="filter_race" type="checkbox" name="Other" value="6"> Other </label>
+            <br>
 
+            Filter by Occupation:
+                <label><input class="filter_career" type="checkbox" name="Lawyer" value="1">Lawyer </label>
+                <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2">Academia </label>
+                <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4">Medicine </label>
+                <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"> Entertainment </label>
+                <label><input class="filter_career" type="checkbox" name="Business" value="7">Business </label>
+                <label><input class="filter_career" type="checkbox" name="International" value="9"> Humanitarian Affairs </label>
+            <br>
+
+            Filter by Goal:
+                <label><input class="filter_goal" type="checkbox" name="Fun" value="1"> For Fun </label>
+                <label><input class="filter_goal" type="checkbox" name="Meet" value="2"> Meet new people </label>
+                <label><input class="filter_goal" type="checkbox" name="Date" value="3"> Get a date </label>
+                <label><input class="filter_goal" type="checkbox" name="Serious" value="4"> Find serious relationship </label>
+                <label><input class="filter_goal" type="checkbox" name="Say" value="5"> To say I did it </label>
+                <label><input class="filter_goal" type="checkbox" name="Other" value="6"> Other </label>
+            </div>
+
+            <div class="col-md-8">
+                <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
+            </div>
+        </div>
+
+        <div id="barcharts">
+            <div id="prefVis"></div>
+            <div id="matchVis"></div>
+        </div>
+
+        <div class="col-md-9" id="nodevis">
+            <div class="dropdown dropdown-dark">
+                <select name="two" class="dropdown-select" onchange="changewave(value)">
+                    <option value="0">Select a Dating Session</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="10">6</option>
+                    <option value="11">7</option>
+                    <option value="12">8</option>
+                    <option value="13">9</option>
+                    <option value="14">10</option>
+                    <option value="15">11</option>
+                    <option value="16">12</option>
+                    <option value="17">13</option>
+                    <option value="18">14</option>
+                    <option value="19">15</option>
+                    <option value="20">16</option>
+                    <option value="21">17</option>
+                </select>
+            </div>
+            <section id="nodelegend">
+                <div class="legendbox">
+                    <img src="image/boy.png" height="30" width="30">
+                    <img src="image/girl.png" height="30" width="30">
+                    <span>Participants</span>
+                </div>
+                <div class="legendbox">
+                    <img src="image/boy_glow_green.png" height="30" width="30">
+                    <img src="image/girl_glow_green.png" height="30" width="30">
+                    <span>Filtered</span>
+                </div>
+                <div class="legendbox">
+                    <img src="image/boy_glow.png" height="30" width="30">
+                    <img src="image/girl_glow.png" height="30" width="30">
+                    <span>Selected</span>
+                </div>
+            </section>
+        </div>
+
+        <div class="personinfo">
+            <div id="personalbox"></div>
+            <div id="linebox"></div>
+        </div>
+
+        <div class="inner_row">
+            <div class="parcoordleft" id="mparVis"><center>Personal Preferences vs Others of the Same Gender</center></div>
+            <div class="parcoordright" id="fparVis"><center>Opinion of Self vs Impression Left on Others</center></div>
+        </div>
+    </div>
 	<script>
 
 	    $(function(){
@@ -292,21 +277,21 @@
             }
         };
 
-        var startHere = function(){
-            queue().defer(d3.csv, 'data/SpeedDating.csv')
-                    .await(dataLoaded);
-            };
-
-            startHere();
-	    });
+      var startHere = function(){
+				queue()
+    			.defer(d3.csv, 'data/SpeedDating.csv')
+    			.await(dataLoaded);
+      }
+      startHere();
+	  })
 
 		function update_races() {
-			races = ["", "", "", "", ""];
+			races = ["", "", "", "", ""]
 			d3.selectAll("input").each(function(d, i) {
 				if(d3.select(this).attr("class") == "filter_race" && d3.select(this).node().checked)
           races[i] = d3.select(this).attr("value");
 			});
-		}
+		};
 
 		function update_careers() {
 			careers = ["", "", "", "", "", ""];
@@ -337,8 +322,8 @@
     // update chart if filter career button is changed
     d3.selectAll(".filter_career").on("change", function() {
     	update_careers();
-        match_vis.onCareerChange(careers);
       	pref_vis.onCareerChange(careers);
+        match_vis.onCareerChange(careers);
       	node_vis.onCareerChange(careers);
         mpar_vis.onCareerChange(careers);
         fpar_vis.onCareerChange(careers);
@@ -347,11 +332,11 @@
 		// update chart if filter goal button is changed
     d3.selectAll(".filter_goal").on("change", function() {
     	update_goals();
-        pref_vis.onGoalChange(goals);
-      	match_vis.onGoalChange(goals);
+      	pref_vis.onGoalChange(goals);
+        match_vis.onGoalChange(goals);
       	node_vis.onGoalChange(goals);
-        mpar_vis.onCareerChange(goals);
-        fpar_vis.onCareerChange(goals);
+        mpar_vis.onGoalChange(goals);
+        fpar_vis.onGoalChange(goals);
     });
 
 	function changewave(value) {
