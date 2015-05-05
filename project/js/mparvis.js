@@ -12,7 +12,9 @@ MParVis = function(_parentElement, _data, _eventHandler){
     this.displayData = [];
     this.highlightData;
 
-    this.selected_races = ["","","","",""];
+    this.selected_races = [];
+    this.selected_careers = [];
+    this.selected_goals = [];
 
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
@@ -85,7 +87,7 @@ MParVis.prototype.updateVis = function() {
 
     // Extract the list of dimensions and create a scale for each
     that.x.domain(dimensions = d3.keys(that.displayData[0]).filter(function(d) {
-        return d != "iid" && d != "gender" && d != "race" && (that.y[d] = d3.scale.linear()
+        return d != "iid" && d != "gender" && d != "race" && d != "career" && d != "goal" && (that.y[d] = d3.scale.linear()
                 .domain(d3.extent(that.displayData, function(p) { return +p[d]; }))
                 .range([that.height, 0]));
     }));
@@ -104,7 +106,9 @@ MParVis.prototype.updateVis = function() {
         .attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            if (that.selected_races.indexOf(d.race) != -1 && d.iid != that.highlightData.iid) {
+            console.log(that.selected_careers.indexOf(d.career) != -1, that.selected_careers, d.career)
+            if ((that.selected_races.indexOf(d.race) != -1 || that.selected_careers.indexOf(d.career) != -1 ||
+                that.selected_goals.indexOf(d.goal) != -1) && d.iid != that.highlightData.iid) {
                 return "greenyellow"
             }
             else {
@@ -177,6 +181,8 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
                 "iid": wave_peep[i]["iid"],
                 "gender": wave_peep[i]["gender"],
                 "race": wave_peep[i]["race"],
+                "career": wave_peep[i]["career_c"],
+                "goal": wave_peep[i]["goal"],
                 "attractive": wave_peep[i]["start_pref"]["attr1_1"],
                 "sincere": wave_peep[i]["start_pref"]["sinc1_1"],
                 "intelligent": wave_peep[i]["start_pref"]["intel1_1"],
@@ -185,7 +191,7 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
                 "share_interests": wave_peep[i]["start_pref"]["shar1_1"]
             }
         }
-    };
+    }
 
     // Creates line data for each person
     for (var i = 0; i < wave_peep.length; i++) {
@@ -193,6 +199,8 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
             "iid": wave_peep[i]["iid"],
             "gender": wave_peep[i]["gender"],
             "race": wave_peep[i]["race"],
+            "career": wave_peep[i]["career_c"],
+            "goal": wave_peep[i]["goal"],
             "attractive": wave_peep[i]["start_pref"]["attr1_1"],
             "sincere": wave_peep[i]["start_pref"]["sinc1_1"],
             "intelligent": wave_peep[i]["start_pref"]["intel1_1"],
@@ -214,6 +222,10 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
     this.updateVis();
 };
 
+/*
+ * Updates selected races and parcoords chart
+ * @param races -- array of the selected races
+ */
 MParVis.prototype.onRaceChange= function (races) {
 
     var that = this;
@@ -221,4 +233,40 @@ MParVis.prototype.onRaceChange= function (races) {
     that.selected_races = races;
 
     this.updateVis();
+};
+
+/*
+ * Updates selected careers and parcoords chart
+ * @param careers -- array of the selected careers
+ */
+MParVis.prototype.onCareerChange= function (careers) {
+
+    var that = this;
+
+    that.selected_careers = careers;
+
+    this.updateVis();
+};
+
+/*
+ * Updates selected goals and parcoords chart
+ * @param goals -- array of selected goals
+ */
+MParVis.prototype.onGoalChange= function (goals) {
+
+    var that = this;
+
+    that.selected_goals = goals;
+
+    this.updateVis();
+};
+
+/*
+ * Updates parcoords when a wave changes
+ * @param index -- index of selected wave
+ */
+MParVis.prototype.onWaveChange= function (value) {
+
+    var that = this;
+
 };

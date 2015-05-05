@@ -98,10 +98,10 @@ PrefVis.prototype.updateVis = function(){
 
     var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
 
-    if (ymax > 50)
+    if (ymax > 45)
       this.y.domain([0, ymax]);
     else 
-      this.y.domain([0, 50]);
+      this.y.domain([0, 45]);
 
     // Creates Bars
     var attr = this.svg.selectAll(".attr")
@@ -143,14 +143,13 @@ PrefVis.prototype.updateVis = function(){
 
     this.svg.select(".y_axis")
         .call(this.yAxis)
-        .append("text")//SAM: keep in mind that you will add a text element per updateVis call
+        .append("text")
         .attr("transform", "rotate(-90)")
         .attr({"x": -110, "y": -70})
         .attr("dy", ".75em")
         .style("text-anchor", "end")
         .text("# of Points");
 
-    //SAM a selectAll creates a nested data-join. which may be initialized implicitly but not updated
     bar.transition()
        .duration(500)
        .attr("y", function(d) { return that.y(d.value); })
@@ -170,8 +169,9 @@ PrefVis.prototype.updateVis = function(){
         .attr("width", 18)
         .attr("height", 18)
         .style("fill", color)
-        .style("opacity",.5)
-        .style("stroke", color);
+        .style("fill-opacity", .5)
+        .style("stroke", color)
+        .style("stroke-width", 2);
 
     legend.append("text")
           .attr("x", this.width - 24)
@@ -395,8 +395,6 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
         attr[d] = attr[d]/count_men;
       });
     });
-
-    console.log(filtered_data)
 
     this.selectionElement.html(count_men+count_women+" out of 449 people");
 
