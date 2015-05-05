@@ -12,7 +12,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.smallheight = 200;
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
-    this.wave = 1 - 1;
+    this.wave = 0;
     this.widthScale = d3.scale.linear().range([40, this.width*.95])
     this.posMale = [];
     this.posFemale = [];
@@ -28,6 +28,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.goal_check = false;
     this.gSize = 40;
     this.bSize = 40;
+    this.textcolor = "black"
 
     this.tick = function(e) {
         that.graph_update(40);
@@ -73,6 +74,8 @@ NodeVis = function(_parentElement, _data, _eventHandler){
         that.node
             .classed("node--target", function(n) { return n.target; })
             .classed("node--source", function(n) { return n.source; });
+
+        that.updateInfo(d);
     }
 
     // run when node is mouse-outed
@@ -190,7 +193,9 @@ NodeVis.prototype.initVis = function(){
 
     this.svg = this.parentElement.append('svg')
                     .attr('width', that.width)
-                    .attr('height', that.height)
+                    .attr('height', that.height);
+
+    this.bundle = d3.layout.bundle();
 
     this.force = d3.layout.force()
         .size([that.width, that.height])
@@ -209,10 +214,10 @@ NodeVis.prototype.initVis = function(){
 
     this.smallsvg = d3.select('#personalbox').append('svg')
         .attr('width', that.smallwidth)
-        .attr('height', that.smallheight);
-    
+        .attr('height', that.smallheight)
+
     this.toptext = that.smallsvg.append("text")
-      .attr('fill', 'white')
+      .attr('fill', that.textcolor)
       .text('Information')
       .attr('y', 20)
       .attr('x', that.smallwidth/2)
@@ -222,7 +227,7 @@ NodeVis.prototype.initVis = function(){
         .data(that.info)
         .enter()
         .append('text')
-            .attr('fill', 'white')
+            .attr('fill', that.textcolor)
             .text(function(d){return d})
             .attr('y', function(d, i){return i*30+80})
             .attr('x', 16)
@@ -256,15 +261,18 @@ NodeVis.prototype.wrangleData= function(wave){
  */
 NodeVis.prototype.updateVis = function(){
 
+    var that = this;
+
     this.posMale.length = 0;
     this.posFemale.length = 0;
 
     this.force
-        .stop()
+        .stop();
 
     this.graph.nodes = this.displayData;
 
-    this.graph.links.length = 0
+    this.graph.links.length = 0;
+
     this.graph.nodes.forEach(function(d, i) {
         for (c=0,e=d.people.length;c<e;c++){
             if (d.people[c].match == "1") {
@@ -279,14 +287,14 @@ NodeVis.prototype.updateVis = function(){
 
     this.link.enter()
         .insert("line", ".node")
-        .attr("class", "link")
+        .attr("class", "link");
 
     this.link.exit()
-        .remove()
+        .remove();
 
     // add and bind nodes
     this.node = this.svg.selectAll(".node")
-        .data(that.graph.nodes)
+        .data(that.graph.nodes);
 
     
     this.node.enter()
@@ -336,9 +344,9 @@ NodeVis.prototype.updateVis = function(){
     this.force
         .nodes(this.graph.nodes)
         .links(this.graph.links)
-        .start()
+        .start();
 
-    this.force.stop()
+    this.force.stop();
 
     this.position = 0;
 
@@ -346,8 +354,8 @@ NodeVis.prototype.updateVis = function(){
         if (parseInt(d.id) > that.position) {
             that.position = parseInt(d.id);
         }
-    })
-    this.widthScale.domain([0, that.position])
+    });
+    this.widthScale.domain([0, that.position]);
 
     this.graph.nodes.forEach(function(d, k){
         if (d.gender == '1') {
@@ -374,30 +382,30 @@ NodeVis.prototype.updateVis = function(){
             d.x = that.widthScale(d.positin);
         }
         else {
-            that.posFemale.push(parseInt(d.position))
-            d.positin = parseInt(d.position)
+            that.posFemale.push(parseInt(d.position));
+            d.positin = parseInt(d.position);
             d.y = that.height/4*3;
             d.x = that.widthScale(parseInt(d.position));
         }
     })
-    this.posMale.sort(function(a,b){return a-b})
-    this.posFemale.sort(function(a,b){return a-b})
+    this.posMale.sort(function(a,b){return a-b});
+    this.posFemale.sort(function(a,b){return a-b});
 
-    d3.selectAll('.position').remove()
+    d3.selectAll('.position').remove();
 
     this.maleNodes        
         .append('text').attr("font-size", "12px")
         .attr('class', 'position')
         .attr('x', '-3.5')
         .attr('y', '-37')
-        .text(function(d){return d.positin;})
+        .text(function(d){return d.iid;});
 
     this.femaleNodes        
         .append('text').attr("font-size", "12px")
         .attr('class', 'position')
         .attr('x', '-3.5')
         .attr('y', '58')
-        .text(function(d){return d.positin;})
+        .text(function(d){return d.iid;});
     
     this.graph_update(300)
 
@@ -423,6 +431,8 @@ NodeVis.prototype.updateInfo = function(node){
 }
 
 NodeVis.prototype.onRaceChange = function(races){
+
+    var that = this;
 
     that.race_check = false;
 
@@ -528,10 +538,15 @@ NodeVis.prototype.updateNode = function(selector){
         .attr("height", that.bSize)
 
     if (typeof selector !== 'undefined') {
-        console.log(selector[0][0])
         selector
+            .filter(function(d) {if (d.gender == '0'){return true}})
             .select('image')
-            .attr("xlink:href", "image/female.png")
+            .attr("xlink:href", "image/girl_glow_green.png")
+
+        selector
+            .filter(function(d) {if (d.gender == '1'){return true}})
+            .select('image')
+            .attr("xlink:href", "image/boy_glow_green.png")
     }
 }
 

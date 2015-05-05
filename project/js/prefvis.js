@@ -85,13 +85,14 @@ PrefVis.prototype.updateVis = function(){
         "what women THINK men want", "what men ACTUALLY want"];
 
     var color = d3.scale.ordinal()
-                        .domain(headers)
-                        .range(["pink", "red", "#87CEFA", "blue"]);
+        .domain(headers)
+        .range(["lightpink", "crimson", "powderblue", "midnightblue"]);
 
     this.displayData.forEach(function(d) {
       d.ratings = headers.map(function(name) { return {name: name, value: +d[name]}; });
     });               
 
+    // Updates scales for axis and bars
     this.x0.domain(this.displayData.map(function(d) { return d.attribute; }));
     this.x1.domain(headers).rangeRoundBands([0, this.x0.rangeBand()]);
 
@@ -102,6 +103,35 @@ PrefVis.prototype.updateVis = function(){
     else 
       this.y.domain([0, 50]);
 
+    // Creates Bars
+    var attr = this.svg.selectAll(".attr")
+                   .data(this.displayData)
+                   
+    var attr_enter = attr.enter().append("g");
+
+    attr.attr("class", "attr")
+        .attr("transform", function(d) { return "translate(" + that.x0(d.attribute) + ", 0)"; });
+
+    attr.exit().remove();
+
+    var bar = attr.selectAll(".bar")
+        .data(function(d) { return d.ratings; });
+
+    var bar_enter = bar.enter()
+        .append("rect")
+        .attr("class", "bar")
+        .style("stroke", function(d) {return color(d.name)})
+        .style("stroke-width", 2)
+        .style("stroke-opacity", 1);
+
+    bar.attr("width", this.x1.rangeBand())
+        .attr("x", function(d) { return that.x1(d.name); })
+        .style("fill", function(d) {return color(d.name); })
+        .style("fill-opacity", .5);
+
+    bar.exit().remove();
+
+    // Creates axises
     this.svg.select(".x_axis")
         .call(this.xAxis)
         .selectAll("text")
@@ -120,48 +150,28 @@ PrefVis.prototype.updateVis = function(){
         .style("text-anchor", "end")
         .text("# of Points");
 
-    var attr = this.svg.selectAll(".attr")
-                   .data(this.displayData)
-                   
-    var attr_enter = attr.enter().append("g");
-
-    attr.attr("class", "attr")
-        .attr("transform", function(d) { return "translate(" + that.x0(d.attribute) + ",0)"; });
-
-    attr.exit().remove();
-
-    var bar = attr.selectAll(".bar")
-                  .data(function(d) { return d.ratings; });
-
-    var bar_enter = bar.enter()
-                       .append("rect")
-                       .attr("class", "bar");
-
-    bar.attr("width", this.x1.rangeBand())
-       .attr("x", function(d) { return that.x1(d.name); })
-       .style("fill", function(d) {return color(d.name); });
-
-    bar.exit().remove();
-
     //SAM a selectAll creates a nested data-join. which may be initialized implicitly but not updated
     bar.transition()
        .duration(500)
        .attr("y", function(d) { return that.y(d.value); })
        .attr("height", function(d) { return that.height - that.y(d.value); });
 
+    // Create legend
     var legend = this.svg.selectAll(".legend")
-                     .data(categories)
-                     .enter().append("g")
-                     .attr("class", "legend")
-                     .attr("transform", function(d, i) { 
-                        return "translate(-20,"+i*20+")"; 
-                      });
+        .data(categories)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d, i) {
+            return "translate(-20,"+i*20+")";
+        });
 
     legend.append("rect")
-          .attr("x", this.width - 18)
-          .attr("width", 18)
-          .attr("height", 18)
-          .style("fill", color);
+        .attr("x", this.width - 18)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", color)
+        .style("opacity",.5)
+        .style("stroke", color);
 
     legend.append("text")
           .attr("x", this.width - 24)
@@ -186,7 +196,6 @@ PrefVis.prototype.onSelectionChange= function (wave){
 }
 
 PrefVis.prototype.onRaceChange= function (races){
-
     this.filter.races = [];
     for (var i = 0; i < races.length; i++)
       if (races[i] != "")

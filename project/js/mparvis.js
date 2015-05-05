@@ -12,6 +12,8 @@ MParVis = function(_parentElement, _data, _eventHandler){
     this.displayData = [];
     this.highlightData;
 
+    this.selected_races = ["","","","",""];
+
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
     this.margin = {top: 50, right: 5, bottom: 10, left: 10};
@@ -83,7 +85,7 @@ MParVis.prototype.updateVis = function() {
 
     // Extract the list of dimensions and create a scale for each
     that.x.domain(dimensions = d3.keys(that.displayData[0]).filter(function(d) {
-        return d != "iid" && d != "gender" && (that.y[d] = d3.scale.linear()
+        return d != "iid" && d != "gender" && d != "race" && (that.y[d] = d3.scale.linear()
                 .domain(d3.extent(that.displayData, function(p) { return +p[d]; }))
                 .range([that.height, 0]));
     }));
@@ -102,20 +104,25 @@ MParVis.prototype.updateVis = function() {
         .attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            if (d.iid == that.highlightData.iid) {
-                if (d.gender == 1) {
-                    return "midnightblue"
-                }
-                else return "crimson"
+            if (that.selected_races.indexOf(d.race) != -1 && d.iid != that.highlightData.iid) {
+                return "greenyellow"
             }
             else {
-                if (d.gender == 1) {
-                    return "powderblue"
+                if (d.iid == that.highlightData.iid) {
+                    if (d.gender == 1) {
+                        return "midnightblue"
+                    }
+                    else return "crimson"
                 }
-                else return "lightpink"
-            }})
+                else {
+                    if (d.gender == 1) {
+                        return "powderblue"
+                    }
+                    else return "lightpink"
+                }
+            }
+        })
         .attr("stroke-opacity", function (d) {
-            console.log(d.iid, that.highlightData.iid);
             if (d.iid == that.highlightData.iid) {
                 return 1;
             }
@@ -169,6 +176,7 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
             that.highlightData = {
                 "iid": wave_peep[i]["iid"],
                 "gender": wave_peep[i]["gender"],
+                "race": wave_peep[i]["race"],
                 "attractive": wave_peep[i]["start_pref"]["attr1_1"],
                 "sincere": wave_peep[i]["start_pref"]["sinc1_1"],
                 "intelligent": wave_peep[i]["start_pref"]["intel1_1"],
@@ -184,6 +192,7 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
         var person = {
             "iid": wave_peep[i]["iid"],
             "gender": wave_peep[i]["gender"],
+            "race": wave_peep[i]["race"],
             "attractive": wave_peep[i]["start_pref"]["attr1_1"],
             "sincere": wave_peep[i]["start_pref"]["sinc1_1"],
             "intelligent": wave_peep[i]["start_pref"]["intel1_1"],
@@ -201,6 +210,15 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
     that.displayData.push(that.highlightData);
 
     console.log(that.displayData, that.highlightData);
+
+    this.updateVis();
+};
+
+MParVis.prototype.onRaceChange= function (races) {
+
+    var that = this;
+
+    that.selected_races = races;
 
     this.updateVis();
 };

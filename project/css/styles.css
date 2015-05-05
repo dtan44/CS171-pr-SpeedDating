@@ -9,7 +9,7 @@
 .horz_divider {
     width: 80%;
     height: 50px;
-    border-top: 2px dashed #ff383a;
+    border-top: 2px dashed crimson;
     font-size: 0;
     margin: 0 auto;
 }
@@ -21,7 +21,12 @@
 }
 
 .vert_divider {
-
+    border-right: 2px dashed crimson;
+    width: 50px;
+    height: 90%;
+    font-size: 0;
+    margin-right: 50px;
+    float: right;
 }
 
 .right_column {
@@ -36,11 +41,13 @@
 .parcoordleft {
     width: 50%;
     float: left;
+    margin: 0 auto;
 }
 
 .parcoordright {
     width: 50%;
     float: left;
+    margin: 0 auto;
 }
 
 svg {
@@ -63,24 +70,6 @@ svg {
  * Node and Links CSS
  */
 
-.node:hover {
-  fill: green;
-}
-
-.node:hover,
-.node--source,
-.node--target {
-  font-weight: 700;
-}
-
-.node--source {
-  fill: #2ca02c;
-}
-
-.node--target {
-  fill: #d62728;
-}
-
 .link {
   stroke: lightgrey;
   stroke-width: 1.5px;
@@ -93,11 +82,11 @@ svg {
 }
 
 .link--source {
-  stroke: #d62728;
+  stroke: #0099FF;
 }
 
 .link--target {
-  stroke: #2ca02c;
+  stroke: #FF00FF;
 }
 
 .position {
@@ -118,7 +107,7 @@ div.tooltip {
     font: 12px sans-serif;
     background: lightgrey;
     border: 0px;
-    border-radius: 8px;
+    border-radius: 5px;
     pointer-events: none;
 }
 
