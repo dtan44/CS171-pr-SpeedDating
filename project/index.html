@@ -110,6 +110,17 @@
                     <option value="21">17</option>
                 </select>
             </div>
+            <section id="nodelegend">
+                <img src="image/boy.png" height="30" width="30"></img>
+                <img src="image/girl.png" height="30" width="30"></img>
+                <span>Participants</span>
+                <img src="image/boy_glow.png" height="30" width="30"></img>
+                <img src="image/girl_glow.png" height="30" width="30"></img>
+                <span>Filtered</span>
+                <img src="image/boy_glow_green.png" height="30" width="30"></img>
+                <img src="image/girl_glow_green.png" height="30" width="30"></img>
+                <span>Selected</span>
+            </section>
         </div>
 
         <div class="personinfo">
@@ -142,10 +153,10 @@
             mpar_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
             fpar_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
 
-	     	$(MyEventHandler).bind("nodeclick", function(event, id, wave_peep, node){
+	     	$(MyEventHandler).bind("nodeclick", function(event, id, wave_peep, node, wavenum){
 				node_vis.updateInfo(node);
-                mpar_vis.onSelectionChange(id,wave_peep);
-                fpar_vis.onSelectionChange(id,wave_peep)
+                mpar_vis.onSelectionChange(id,wave_peep, wavenum);
+                fpar_vis.onSelectionChange(id,wave_peep, wavenum)
 	     	});
 
             $(MyEventHandler).bind("lineclick", function (event, iid) {

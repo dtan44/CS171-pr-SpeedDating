@@ -152,6 +152,10 @@ div.tooltip {
     width: 6em
 }
 
+#nodelegend {
+  display: inline-block;
+}
+
 /*
  * Copyright (c) 2012-2013 Thibaut Courouble
  * http://www.cssflow.com
@@ -177,7 +181,7 @@ body {
 }
 
 .dropdown {
-  display: block;
+  display: inline-block;;
   position: relative;
   overflow: hidden;
   height: 28px;

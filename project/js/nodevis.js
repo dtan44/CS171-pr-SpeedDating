@@ -8,7 +8,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     this.width = this.w/2.2;
-    this.height = this.h/2;
+    this.height = 500;
     this.smallwidth = this.w*0.125;
     this.smallheight = 200;
     this.graph = {nodes: [], links: []};
@@ -30,8 +30,8 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.gSize = 40;
     this.bSize = 40;
     this.textcolor = "black";
-    this.categories = ["Male Participant", "Female Participant", "Filtered Male Participant", "Filtered Female Participant", "Selected Male Participant", "Selected Female Participant"]
-    this.imageLink = ["image/boy.png", "image/girl.png", "image/boy_glow.png", "image/girl_glow.png", "image/boy_glow_green.png", "image/girl_glow_green.png"];
+    this.maleX = this.height*.2
+    this.femaleX = this.height*.6
 
 
     this.tick = function(e) {
@@ -96,7 +96,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     // run when node clicked
     this.nodeclick = function(node) {
-        var pass = [node.iid, that.displayData, node];
+        var pass = [node.iid, that.displayData, node, that.wave];
         $(that.eventHandler).trigger('nodeclick', pass);
 
         var array = (node.gender=='1'?that.posFemale:that.posMale);
@@ -194,33 +194,10 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 NodeVis.prototype.initVis = function(){
 
     that = this; // read about the this
-console.log(this.w, this.h)
+
     this.svg = this.parentElement.append('svg')
                     .attr('width', that.width)
                     .attr('height', that.height);
-
-    // Create legend
-    var legend = this.svg.selectAll(".legend")
-        .data(that.categories)
-        .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", function(d, i) {
-            return "translate(-20,"+i*20+")";
-        });
-
-    legend.append("image")
-        .attr("xlink:href", function(d,i){console.log(this);return that.imageLink[i]})
-        .attr("x", -18)
-        .attr("y", 0)
-        .attr("width", that.gSize)
-        .attr("height", that.gSize);
-
-    legend.append("text")
-          .attr("x", this.width - 24)
-          .attr("y", 9)
-          .attr("dy", ".35em")
-          .style("text-anchor", "end")
-          .text(function(d) { return d; });
 
     this.force = d3.layout.force()
         .size([that.width, that.height])
@@ -425,13 +402,13 @@ NodeVis.prototype.updateVis = function(){
                 that.posMale.push(parseInt(positin))
                 d.positin = positin
             }
-            d.y = that.height/2;
+            d.y = that.maleX;
             d.x = that.widthScale(d.positin);
         }
         else {
             that.posFemale.push(parseInt(d.position));
             d.positin = parseInt(d.position);
-            d.y = that.height/5*4;
+            d.y = that.femaleX;
             d.x = that.widthScale(parseInt(d.position));
         }
     })
@@ -587,12 +564,12 @@ NodeVis.prototype.updateNode = function(selector){
         selector
             .filter(function(d) {if (d.gender == '0'){return true}})
             .select('image')
-            .attr("xlink:href", "image/girl_glow_green.png")
+            .attr("xlink:href", "image/girl_glow_purple.png")
 
         selector
             .filter(function(d) {if (d.gender == '1'){return true}})
             .select('image')
-            .attr("xlink:href", "image/boy_glow_green.png")
+            .attr("xlink:href", "image/boy_glow_purple.png")
     }
 }
 
