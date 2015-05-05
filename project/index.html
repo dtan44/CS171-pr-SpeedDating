@@ -151,8 +151,8 @@
             </div>
 
             <div class="inner_row">
-                <div class="parcoordleft" id="mparVis"></div>
-                <div class="parcoordright" id="fparVis"></div>
+                <div class="parcoordleft" id="mparVis"><center>Personal Preferences vs People of the Same Gender</center></div>
+                <div class="parcoordright" id="fparVis"><center>Opinion of Self vs Impression Left on Others</center></div>
             </div>
         </div>
     </div>
@@ -283,21 +283,21 @@
             }
         };
 
-      var startHere = function(){
-				queue()
-    			.defer(d3.csv, 'data/SpeedDating.csv')
-    			.await(dataLoaded);
-      }
-      startHere();
-	  })
+        var startHere = function(){
+            queue().defer(d3.csv, 'data/SpeedDating.csv')
+                    .await(dataLoaded);
+            };
+
+            startHere();
+	    });
 
 		function update_races() {
-			races = ["", "", "", "", ""]
+			races = ["", "", "", "", ""];
 			d3.selectAll("input").each(function(d, i) {
 				if(d3.select(this).attr("class") == "filter_race" && d3.select(this).node().checked)
           races[i] = d3.select(this).attr("value");
 			});
-		};
+		}
 
 		function update_careers() {
 			careers = ["", "", "", "", "", ""];
@@ -315,32 +315,32 @@
 			});
 		}
 
-    // update chart if filter race button is changed
-    d3.selectAll(".filter_race").on("change", function() {
-        update_races();
-        pref_vis.onRaceChange(races);
-        node_vis.onRaceChange(races);
-        mpar_vis.onRaceChange(races);
-        fpar_vis.onRaceChange(races);
-    });
+        // update chart if filter race button is changed
+        d3.selectAll(".filter_race").on("change", function() {
+            update_races();
+            pref_vis.onRaceChange(races);
+            node_vis.onRaceChange(races);
+            mpar_vis.onRaceChange(races);
+            fpar_vis.onRaceChange(races);
+        });
 
-    // update chart if filter career button is changed
-    d3.selectAll(".filter_career").on("change", function() {
-    	update_careers();
-      	pref_vis.onCareerChange(careers);
-      	node_vis.onCareerChange(careers);
-        mpar_vis.onCareerChange(careers);
-        fpar_vis.onCareerChange(careers);
-    });
+        // update chart if filter career button is changed
+        d3.selectAll(".filter_career").on("change", function() {
+            update_careers();
+            pref_vis.onCareerChange(careers);
+            node_vis.onCareerChange(careers);
+            mpar_vis.onCareerChange(careers);
+            fpar_vis.onCareerChange(careers);
+        });
 
-		// update chart if filter goal button is changed
-    d3.selectAll(".filter_goal").on("change", function() {
-    	update_goals();
-      	pref_vis.onGoalChange(goals);
-      	node_vis.onGoalChange(goals);
-        mpar_vis.onGoalChange(goals);
-        fpar_vis.onGoalChange(goals);
-    });
+            // update chart if filter goal button is changed
+        d3.selectAll(".filter_goal").on("change", function() {
+            update_goals();
+            pref_vis.onGoalChange(goals);
+            node_vis.onGoalChange(goals);
+            mpar_vis.onGoalChange(goals);
+            fpar_vis.onGoalChange(goals);
+        });
 
 	function changewave(value) {
 		
