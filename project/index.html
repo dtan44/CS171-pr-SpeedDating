@@ -34,7 +34,7 @@
             <br><br>
             <p> Still single? Haven't been successful in getting a match at a speed dating event? Learn the secrets to success in speed dating here. Find out what the opposite gender is looking for and explore why some people get matches and others don't. Become a master at speed dating, and INSERT SOMETHING CORNY HERE.
             </p>
-            <p> The first visualization shows you what people look for in the opposite gender and what people think the opposite gender looks for. (You can filter by race, occupation, and goal and the people who fit the criteria will be highlighted in the subsequent visualizations.) The second visualization shows you successful matches in a particular wave. (You can click on a specific people and information about the person will appear on the side.) And the third visualizaiton shows you (1) preferences of the selected person from the second visualization compared to people of the same gender and (2) how that person views him/herself compared to how people of the opposite gender view him/her. (You can click on a line and the person will be highlighted in the second visualization.) Follow our narrative and click on the highlighted words to explore the relationships.
+            <p> The first visualization shows you what people look for in the opposite gender and what people think the opposite gender looks for. (You can filter by race, occupation, and goal and the people who fit the criteria will be highlighted in the subsequent visualizations.) The second visualization shows you successful matches in a particular wave. (You can click on specific people and information about the person will appear on the side.) And the third visualizaiton shows you (1) preferences of the selected person from the second visualization compared to people of the same gender and (2) how that person views him/herself compared to how people of the opposite gender view him/her. (Clicking on a line and will highlighted the person in the second visualization.) Follow our narrative and click on the highlighted words to explore the relationships.
         </div>
     </div>
 
@@ -43,11 +43,20 @@
 
     <!-- Narrative block -->
     <div class="left_column">
-        <div class="col-md-9">
+        <div class="vert_divider"></div>
+
+        <div class="col-md-9" id='preferences'>
             <p> Participants were asked to distribute 100 points among 6 attributes, giving more points to those attributes that were more important to them in a potential date. On average, women weighted the attributes relatively evenly, with intelligence the most and ambition the least. Men weighted attractive the most and ambition the least. Interesting, both genders thought the opposite gender would weight attractive more heavily and sincere and intelligent less.
             </p>
         </div>
-        <div class="vert_divider"></div>
+        <div class="col-md-9" id='nodes'>
+            <p> There were 17 total speed dating sessions beginning from October 2002 and ending on April 2004. In each session, males rotated through the stations while females stayed stationary.
+            </p>
+        </div>
+        <div class="col-md-9" id='parallel'>
+            <p>
+            </p>
+        </div>
     </div>
 
     <!-- Visualization block -->
@@ -117,13 +126,13 @@
                     <span>Participants</span>
                 </div>
                 <div class="legendbox">
-                    <img src="image/boy_glow.png" height="30" width="30">
-                    <img src="image/girl_glow.png" height="30" width="30">
+                    <img src="image/boy_glow_green.png" height="30" width="30">
+                    <img src="image/girl_glow_green.png" height="30" width="30">
                     <span>Filtered</span>
                 </div>
                 <div class="legendbox">
-                    <img src="image/boy_glow_green.png" height="30" width="30">
-                    <img src="image/girl_glow_green.png" height="30" width="30">
+                    <img src="image/boy_glow.png" height="30" width="30">
+                    <img src="image/girl_glow.png" height="30" width="30">
                     <span>Selected</span>
                 </div>
             </section>
@@ -139,9 +148,7 @@
             <div class="parcoordleft" id="mparVis"></div>
             <div class="parcoordright" id="fparVis"></div>
         </div>
-
     </div>
-
 	<script>
 
 	    $(function(){
