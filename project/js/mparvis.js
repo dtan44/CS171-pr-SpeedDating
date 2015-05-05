@@ -22,7 +22,7 @@ MParVis = function(_parentElement, _data, _eventHandler){
 
     this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    this.margin = {top: 60, right: 5, bottom: 10, left: 10};
+    this.margin = {top: 100, right: 5, bottom: 10, left: 10};
     this.width = this.w/3;
     this.height = 250;
 
@@ -58,11 +58,11 @@ MParVis.prototype.initVis = function(){
     // Creates the legend
     var color = d3.scale.ordinal()
         .domain(that.legend_cats)
-        .range(["gold", "greenyellow", "powderblue", "lightpink"])
+        .range(["gold", "greenyellow", "lightpink", "powderblue"]);
 
     var stroke = d3.scale.ordinal()
         .domain(that.legend_cats)
-        .range(["gold", "greenyellow", "midnightblue", "crimson"]);
+        .range(["gold", "greenyellow", "crimson", "midnightblue"]);
 
     var legend = this.svg.selectAll("#parcoordlegend")
         .data(that.legend_cats)

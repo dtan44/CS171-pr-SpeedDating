@@ -216,7 +216,7 @@ NodeVis.prototype.initVis = function(){
         .friction(0.4)
         .start();
     
-    this.div = d3.select("body").append("div")
+    this.div = d3.select("body").insert("div", "div")
         .attr("class", "tooltip")
         .style("opacity", 1e-6);
 
@@ -516,7 +516,11 @@ NodeVis.prototype.updateNode = function(selector){
 
     if (that.race_check == true) {
         filter = filter
-            .filter(function(d, i) {if (that.update_race.indexOf(d.race)>=0){return true}})
+            .filter(function(d, i) {if (that.update_race.indexOf(d.race)>=0){
+                if (d.race != "") {
+                    return true
+                }
+            }})
     }
     if (that.occupation_check == true) {
         filter = filter
@@ -528,7 +532,11 @@ NodeVis.prototype.updateNode = function(selector){
     }
     if (that.goal_check == true) {
         filter = filter
-            .filter(function(d, i) {if (that.update_goal.indexOf(d.goal)>=0){return true}})
+            .filter(function(d, i) {if (that.update_goal.indexOf(d.goal)>=0){
+                if (d.goal != "") {
+                    return true
+                } 
+        }})
     }
     
     var filtered = d3.selectAll('.node')
@@ -538,7 +546,7 @@ NodeVis.prototype.updateNode = function(selector){
             .filter(function(d) {if (d.gender == '0'){return true}})
             .classed('filter', true)
             .select('image')
-            .attr("xlink:href", "image/girl_glow.png")
+            .attr("xlink:href", "image/girl_glow_green.png")
             .attr("width", that.gSize)
             .attr("height", that.gSize)
             filtered = d3.selectAll('.node:not(.filter)')
@@ -546,7 +554,7 @@ NodeVis.prototype.updateNode = function(selector){
             .filter(function(d) {if (d.gender == '1'){return true}})
             .classed('filter', true)
             .select('image')
-            .attr("xlink:href", "image/boy_glow.png")
+            .attr("xlink:href", "image/boy_glow_green.png")
             .attr("width", that.bSize)
             .attr("height", that.bSize)
             filtered = d3.selectAll('.node:not(.filter)')
@@ -570,12 +578,12 @@ NodeVis.prototype.updateNode = function(selector){
         selector
             .filter(function(d) {if (d.gender == '0'){return true}})
             .select('image')
-            .attr("xlink:href", "image/girl_glow_green.png")
+            .attr("xlink:href", "image/girl_glow.png")
 
         selector
             .filter(function(d) {if (d.gender == '1'){return true}})
             .select('image')
-            .attr("xlink:href", "image/boy_glow_green.png")
+            .attr("xlink:href", "image/boy_glow.png")
     }
 }
 

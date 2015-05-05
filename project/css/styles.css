@@ -16,7 +16,7 @@
 }
 
 .horz_divider {
-    width: 80%;
+    width: 90%;
     height: 50px;
     border-top: 2px dashed crimson;
     font-size: 0;
@@ -27,6 +27,7 @@
     height: 1600px;
     width: 30%;
     float: left;
+    margin-left: 4%;
 }
 
 .vert_divider {
@@ -42,6 +43,42 @@
     height: 1600px;
     width: 65%;
     float: left;
+}
+
+#wrapper {
+  min-height:100%;
+  position:relative;
+}
+
+.legendbox {
+  display: inline-block;
+  padding-right: 14px;  
+  padding-left: 14px;  
+}
+
+div #preferences {
+  height: 38%;
+}
+
+div #nodes {
+  margin-top: 10px;
+  height: 25%;
+}
+
+div #parallel {
+  margin-top: 35px;
+  height: 15%;
+}
+
+text {
+  font: 9.5px "Lucida Grande", Tahoma, Verdana, sans-serif;
+}
+
+html,
+body {
+  font: 12px/18px "Lucida Grande", Tahoma, Verdana, sans-serif;
+  background-color: #FFFEFE;
+  height:100%;
 }
 
 /*
@@ -104,13 +141,6 @@ svg {
 
 .position {
   font-family: Arial;
-
-}
-
-.legendbox {
-  display: inline-block;
-  padding-right: 14px;  
-  padding-left: 14px;  
 }
 
 /*
@@ -170,10 +200,6 @@ div.tooltip {
  * Sass/SCSS source: http://goo.gl/qEV26
  * PSD by Hemn Chawroka: http://goo.gl/nXZHJ
  */
-
-body {
-  font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
-}
 
 .container {
   margin: 80px auto;

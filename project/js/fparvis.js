@@ -22,7 +22,7 @@ FParVis = function(_parentElement, _data, _eventHandler){
 
     this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-    this.margin = {top: 60, right: 10, bottom: 10, left: 5};
+    this.margin = {top: 100, right: 10, bottom: 10, left: 5};
     this.width = this.w/3;
     this.height = 250;
 
