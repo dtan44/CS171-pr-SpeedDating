@@ -103,7 +103,7 @@ MParVis.prototype.wrangleData= function (wave_num) {
     // displayData should hold the data which is visualized
     // pretty simple in this case -- no modifications needed
 
-    this.onSelectionChange(that.data[0].values[wave_num].iid, that.data[wave_num].values, wave_num);
+    this.onSelectionChange(that.data[wave_num].values[0].iid, that.data[wave_num].values, wave_num);
 };
 
 /**

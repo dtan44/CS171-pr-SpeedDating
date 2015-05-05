@@ -8,7 +8,7 @@ PrefVis = function(_parentElement, _data, _selectionElement){
     };
 
     this.margin = {top: 50, right: 0, bottom: 100, left: 80},
-    this.width = 500 - this.margin.left - this.margin.right,
+    this.width = 700 - this.margin.left - this.margin.right,
     this.height = 500 - this.margin.top - this.margin.bottom;
 
     this.initVis();

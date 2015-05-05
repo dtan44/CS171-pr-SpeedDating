@@ -87,13 +87,13 @@ body {
  */
 
 #prefVis {
-  width: 75%;
+  width: 60%;
   float: left;
 }
 
 #matchVis {
-  width: 25%;
-  float: right;
+  width: 40%;
+  float: left;
 }
 
 /*
