@@ -18,9 +18,12 @@ FParVis = function(_parentElement, _data, _eventHandler){
 
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
+    this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     this.margin = {top: 50, right: 10, bottom: 10, left: 5};
-    this.width = 550;
+    this.width = this.w/3;
     this.height = 250;
+
 
     this.initVis();
 };

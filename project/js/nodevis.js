@@ -67,12 +67,12 @@ NodeVis = function(_parentElement, _data, _eventHandler){
         if (d.gender == '0') {
             that.link
                 .transition()
-                .style("stroke-opacity", function(l) { if (l.target !== d) return 0.2; })
+                .style("stroke-opacity", function(l) { if (l.target !== d) return 0.1; })
         }
         else {
             that.link
                 .transition()
-                .style("stroke-opacity", function(l) { if (l.source !== d) return 0.2; })
+                .style("stroke-opacity", function(l) { if (l.source !== d) return 0.1; })
         }
 
         that.node
@@ -87,7 +87,6 @@ NodeVis = function(_parentElement, _data, _eventHandler){
         that.link
           .classed("link--target", false)
           .classed("link--source", false)
-          .style("stroke-opacity", 1)
 
         that.node
           .classed("node--target", false)
