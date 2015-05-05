@@ -442,23 +442,6 @@ NodeVis.prototype.updateVis = function(){
     this.updateNode()
 };
 
-NodeVis.prototype.updateInfo = function(node){
-    var gender = (node.gender == '0') ? 'Female' : 'Male';
-    var race = (node.race != '') ? that.race[node.race - 1]: 'Undisclosed';
-    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
-    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
-    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
-
-    this.smallsvg.select('#ID').text('ID: ' + node.iid)
-    this.smallsvg.select('#Age').text('Age: ' + node.age)
-    this.smallsvg.select('#Sex').text('Sex: ' + gender)
-    this.smallsvg.select('#Race').text('Race: ' + race)
-    this.smallsvg.select('#Occupation').text('Occupation: ' + occupation)
-    this.smallsvg.select('#Goal').text('Goal: ' + goal)
-    this.smallsvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate)
-
-};
-
 NodeVis.prototype.onRaceChange = function(races){
 
     var that = this;
@@ -618,15 +601,37 @@ NodeVis.prototype.linkClick = function(iid){
     var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
     var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
     var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
+    var color = (node.gender == '0') ? '#E6A4AE': '#8DB3B8';
 
-    this.linesvg.select('#ID').text('ID: ' + node.iid);
-    this.linesvg.select('#Age').text('Age: ' + node.age);
-    this.linesvg.select('#Sex').text('Sex: ' + gender);
-    this.linesvg.select('#Race').text('Race: ' + race);
-    this.linesvg.select('#Occupation').text('Occupation: ' + occupation);
-    this.linesvg.select('#Goal').text('Goal: ' + goal);
-    this.linesvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate);
+    this.linesvg.select('#ID').text('ID: ' + node.iid).attr("fill", color)
+    this.linesvg.select('#Age').text('Age: ' + node.age).attr("fill", color)
+    this.linesvg.select('#Sex').text('Sex: ' + gender).attr("fill", color)
+    this.linesvg.select('#Race').text('Race: ' + race).attr("fill", color)
+    this.linesvg.select('#Occupation').text('Occupation: ' + occupation).attr("fill", color)
+    this.linesvg.select('#Goal').text('Goal: ' + goal).attr("fill", color)
+    this.linesvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate).attr("fill", color)
 }
+
+
+
+NodeVis.prototype.updateInfo = function(node){
+    var gender = (node.gender == '0') ? 'Female' : 'Male';
+    var race = (node.race != '') ? that.race[node.race - 1]: 'Undisclosed';
+    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
+    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
+    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
+    var color = (node.gender == '0') ? '#E6A4AE': '#8DB3B8';
+
+
+    this.smallsvg.select('#ID').text('ID: ' + node.iid).attr("fill", color)
+    this.smallsvg.select('#Age').text('Age: ' + node.age).attr("fill", color)
+    this.smallsvg.select('#Sex').text('Sex: ' + gender).attr("fill", color)
+    this.smallsvg.select('#Race').text('Race: ' + race).attr("fill", color)
+    this.smallsvg.select('#Occupation').text('Occupation: ' + occupation).attr("fill", color)
+    this.smallsvg.select('#Goal').text('Goal: ' + goal).attr("fill", color)
+    this.smallsvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate).attr("fill", color)
+
+};
 
 /**
  * Helper Functions
