@@ -22,8 +22,8 @@ MParVis = function(_parentElement, _data, _eventHandler){
 
     this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    this.margin = {top: 100, right: 5, bottom: 10, left: 10};
-    this.width = this.w/3;
+    this.margin = {top: 60, right: 5, bottom: 10, left: 10};
+    this.width = this.w/3 - 50;
     this.height = 250;
 
 
@@ -69,7 +69,7 @@ MParVis.prototype.initVis = function(){
         .enter().append("g")
         .attr("class", "legend")
         .attr("transform", function(d, i) {
-            return "translate(" + ((i * -70) - 350) + ", -45)";
+            return "translate(" + ((i * -70) - 300) + ", -45)";
         });
 
     legend.append("rect")
