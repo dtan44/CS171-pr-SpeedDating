@@ -1,23 +1,103 @@
 /*
+ * Page Layout CSS
+ */
+.title {
+    height:300px;
+    width:100%;
+}
+
+#title-left {
+    margin-left: 150px;
+}
+
+#title-right {
+  margin-left: -150px;
+  margin-right: 0px;
+}
+
+.horz_divider {
+    width: 90%;
+    height: 50px;
+    border-top: 2px dashed crimson;
+    font-size: 0;
+    margin: 0 auto;
+}
+
+.left_column {
+    height: 1800px;
+    width: 30%;
+    float: left;
+    margin-left: 4%;
+}
+
+.vert_divider {
+    border-right: 2px dashed crimson;
+    width: 50px;
+    height: 90%;
+    font-size: 0;
+    margin-right: 50px;
+    float: right;
+}
+
+.right_column {
+    height: 1800px;
+    width: 65%;
+    float: left
+}
+
+#wrapper {
+  min-height:100%;
+  position:relative;
+}
+
+.legendbox {
+  display: inline-block;
+  padding-right: 14px;  
+  padding-left: 14px;  
+}
+
+div #preferences {
+  height: 38%;
+}
+
+div #nodes {
+  margin-top: 10px;
+  height: 25%;
+}
+
+div #parallel {
+  margin-top: 35px;
+  height: 15%;
+}
+
+text {
+  font: 9.5px "Lucida Grande", Tahoma, Verdana, sans-serif;
+}
+
+html,
+body {
+  font: 12px/18px "Lucida Grande", Tahoma, Verdana, sans-serif;
+  background-color: #FFFEFE;
+  height:100%;
+}
+
+/*
  * Parallel Coordinates CSS
  */
+.parcoordleft {
+    width: 50%;
+    float: left;
+    margin: 0 auto;
+}
+
+.parcoordright {
+    width: 50%;
+    float: left;
+    margin: 0 auto;
+}
 
 svg {
     font: 10px sans-serif;
-}
-
-.background path {
-    fill: none;
-    stroke: powderblue;
-    shape-rendering: crispEdges;
-    stroke-width: 2;
-    stroke-opacity: .8;
-}
-
-.foreground path {
-    fill: none;
-    stroke: midnightblue;
-    stroke-width: 2;
 }
 
 .axis line,
@@ -27,73 +107,89 @@ svg {
     shape-rendering: crispEdges;
 }
 
-.node:hover {
-  fill: green;
-
+.foreground:hover {
+    stroke-opacity: 1;
+    stroke: gold;
 }
 
-.node:hover,
-.node--source,
-.node--target {
-  font-weight: 700;
-}
+/*
+ * Node and Links CSS
+ */
 
-.node--source {
-  fill: #2ca02c;
-}
-
-.node--target {
-  fill: #d62728;
+#nodevis {
+  height: 25%;
 }
 
 .link {
-  stroke: black;
+  stroke: #999999;
   stroke-width: 1.5px;
 }
 
 .link--source,
 .link--target {
   stroke-opacity: 1;
-  stroke-width: 4px;
+  stroke-width: 3px;
 }
 
 .link--source {
-  stroke: #d62728;
+  stroke: #9ECACF;
 }
 
 .link--target {
-  stroke: #2ca02c;
+  stroke: #E6A4AE;
 }
 
 .position {
   font-family: Arial;
-
 }
 
-div.tooltip {   
-  position: absolute;           
-  text-align: center;           
-  width: 110px;                  
-  height: 20px;                 
-  padding: 2px;             
-  font: 12px sans-serif;        
-  background: lightgrey; 
-  border: 0px;      
-  border-radius: 8px;           
-  pointer-events: none;         
+/*
+ *  Tool Tip / Personal Box CSS
+*/
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 110px;
+    height: 20px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightgrey;
+    border: 0px;
+    border-radius: 5px;
+    pointer-events: none;
+}
+
+.personinfo {
+    height: 22%;
+    width: 20%;
+    float: left;
 }
 
 #personalbox {
-  display: inline-block;
-  height: 483px;
-  width: 200px;
-  background: black;
+    display: inline-block;
+    height: 50%;
+    width: 100%;
+    border-style: dashed;
+    border-radius: 10px;
+}
+
+#linebox {
+    display: inline-block;
+    height: 50%;
+    width: 100%;
+    border-style:dashed;
+    border-radius: 10px;
 }
 
 .information {
     margin-left: auto;
     margin-right: auto;
     width: 6em
+}
+
+#nodelegend {
+  display: inline-block;
 }
 
 /*
@@ -104,10 +200,6 @@ div.tooltip {
  * Sass/SCSS source: http://goo.gl/qEV26
  * PSD by Hemn Chawroka: http://goo.gl/nXZHJ
  */
-
-body {
-  font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
-}
 
 .container {
   margin: 80px auto;
@@ -121,11 +213,11 @@ body {
 }
 
 .dropdown {
-  display: block;
+  display: inline-block;;
   position: relative;
   overflow: hidden;
   height: 28px;
-  width: 150px;
+  width: 180px;
   background: #f2f2f2;
   border: 1px solid;
   border-color: white #f7f7f7 whitesmoke;

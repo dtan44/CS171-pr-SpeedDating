@@ -7,9 +7,9 @@ PrefVis = function(_parentElement, _data, _selectionElement){
         wave: null
     };
 
-    this.margin = {top: 20, right: 30, bottom: 200, left: 120},
-    this.width = 700 - this.margin.left - this.margin.right,
-    this.height = 500 - this.margin.top - this.margin.bottom;
+    this.margin = {top: 50, right: 30, bottom: 100, left: 80},
+    this.width = 900 - this.margin.left - this.margin.right,
+    this.height = 600 - this.margin.top - this.margin.bottom;
 
     this.initVis();
 
@@ -85,23 +85,53 @@ PrefVis.prototype.updateVis = function(){
         "what women THINK men want", "what men ACTUALLY want"];
 
     var color = d3.scale.ordinal()
-                        .domain(headers)
-                        .range(["pink", "red", "#87CEFA", "blue"]);
+        .domain(headers)
+        .range(["lightpink", "crimson", "powderblue", "midnightblue"]);
 
     this.displayData.forEach(function(d) {
       d.ratings = headers.map(function(name) { return {name: name, value: +d[name]}; });
     });               
 
+    // Updates scales for axis and bars
     this.x0.domain(this.displayData.map(function(d) { return d.attribute; }));
     this.x1.domain(headers).rangeRoundBands([0, this.x0.rangeBand()]);
 
     var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
 
-    if (ymax > 50)
+    if (ymax > 45)
       this.y.domain([0, ymax]);
     else 
-      this.y.domain([0, 50]);
+      this.y.domain([0, 45]);
 
+    // Creates Bars
+    var attr = this.svg.selectAll(".attr")
+                   .data(this.displayData)
+                   
+    var attr_enter = attr.enter().append("g");
+
+    attr.attr("class", "attr")
+        .attr("transform", function(d) { return "translate(" + that.x0(d.attribute) + ", 0)"; });
+
+    attr.exit().remove();
+
+    var bar = attr.selectAll(".bar")
+        .data(function(d) { return d.ratings; });
+
+    var bar_enter = bar.enter()
+        .append("rect")
+        .attr("class", "bar")
+        .style("stroke", function(d) {return color(d.name)})
+        .style("stroke-width", 2)
+        .style("stroke-opacity", 1);
+
+    bar.attr("width", this.x1.rangeBand())
+        .attr("x", function(d) { return that.x1(d.name); })
+        .style("fill", function(d) {return color(d.name); })
+        .style("fill-opacity", .5);
+
+    bar.exit().remove();
+
+    // Creates axises
     this.svg.select(".x_axis")
         .call(this.xAxis)
         .selectAll("text")
@@ -113,55 +143,35 @@ PrefVis.prototype.updateVis = function(){
 
     this.svg.select(".y_axis")
         .call(this.yAxis)
-        .append("text")//SAM: keep in mind that you will add a text element per updateVis call
+        .append("text")
         .attr("transform", "rotate(-90)")
         .attr({"x": -110, "y": -70})
         .attr("dy", ".75em")
         .style("text-anchor", "end")
         .text("# of Points");
 
-    var attr = this.svg.selectAll(".attr")
-                   .data(this.displayData)
-                   
-    var attr_enter = attr.enter().append("g");
-
-    attr.attr("class", "attr")
-        .attr("transform", function(d) { return "translate(" + that.x0(d.attribute) + ",0)"; });
-
-    attr.exit().remove();
-
-    var bar = attr.selectAll(".bar")
-                  .data(function(d) { return d.ratings; });
-
-    var bar_enter = bar.enter()
-                       .append("rect")
-                       .attr("class", "bar");
-
-    bar.attr("width", this.x1.rangeBand())
-       .attr("x", function(d) { return that.x1(d.name); })
-       .style("fill", function(d) {return color(d.name); });
-
-    bar.exit().remove();
-
-    //SAM a selectAll creates a nested data-join. which may be initialized implicitly but not updated
     bar.transition()
        .duration(500)
        .attr("y", function(d) { return that.y(d.value); })
        .attr("height", function(d) { return that.height - that.y(d.value); });
 
+    // Create legend
     var legend = this.svg.selectAll(".legend")
-                     .data(categories)
-                     .enter().append("g")
-                     .attr("class", "legend")
-                     .attr("transform", function(d, i) { 
-                        return "translate(-20,"+i*20+")"; 
-                      });
+        .data(categories)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d, i) {
+            return "translate(-20,"+i*20+")";
+        });
 
     legend.append("rect")
-          .attr("x", this.width - 18)
-          .attr("width", 18)
-          .attr("height", 18)
-          .style("fill", color);
+        .attr("x", this.width - 18)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", color)
+        .style("fill-opacity", .5)
+        .style("stroke", color)
+        .style("stroke-width", 2);
 
     legend.append("text")
           .attr("x", this.width - 24)
@@ -186,7 +196,6 @@ PrefVis.prototype.onSelectionChange= function (wave){
 }
 
 PrefVis.prototype.onRaceChange= function (races){
-
     this.filter.races = [];
     for (var i = 0; i < races.length; i++)
       if (races[i] != "")
@@ -215,6 +224,10 @@ PrefVis.prototype.onGoalChange= function (goals){
 PrefVis.prototype.refilter = function() {
     var that = this;
     this.wrangleData(function(d) {
+
+      if (that.filter.wave == "0") {
+        return true;
+      }
       //check all filter properties if they are set and if the value doesn't abort and return false
       if (that.filter.wave != null && d.wave != that.filter.wave) {
         return false;
@@ -345,11 +358,12 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       return false;
     }
 
-    this.data
-        .filter(filter)
-        .filter(filter_race)
-        .filter(filter_career)
-        .filter(filter_goal)
+    var filtered_data = this.data.filter(filter)
+                                 .filter(filter_race)
+                                 .filter(filter_career)
+                                 .filter(filter_goal)
+
+    filtered_data
         .forEach(function(c) {
           if (c.wave < 6 || c.wave > 9) {
             // female
