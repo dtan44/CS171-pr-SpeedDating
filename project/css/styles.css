@@ -24,7 +24,7 @@
 }
 
 .left_column {
-    height: 1800px;
+    height: 1600px;
     width: 30%;
     float: left;
 }
@@ -39,9 +39,9 @@
 }
 
 .right_column {
-    height: 1800px;
+    height: 1600px;
     width: 65%;
-    float: left
+    float: left;
 }
 
 /*
