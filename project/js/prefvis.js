@@ -169,8 +169,9 @@ PrefVis.prototype.updateVis = function(){
         .attr("width", 18)
         .attr("height", 18)
         .style("fill", color)
-        .style("opacity",.5)
-        .style("stroke", color);
+        .style("fill-opacity", .5)
+        .style("stroke", color)
+        .style("stroke-width", 2);
 
     legend.append("text")
           .attr("x", this.width - 24)
@@ -394,8 +395,6 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
         attr[d] = attr[d]/count_men;
       });
     });
-
-    console.log(filtered_data)
 
     this.selectionElement.html(count_men+count_women+" out of 449 people");
 

@@ -5,10 +5,11 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.eventHandler = _eventHandler;
     this.displayData = [];
 
-
-    this.width = 800;
-    this.height = 450;
-    this.smallwidth = 200;
+    this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    this.width = this.w/2.2;
+    this.height = this.h/2;
+    this.smallwidth = this.w*0.125;
     this.smallheight = 200;
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
@@ -28,7 +29,10 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.goal_check = false;
     this.gSize = 40;
     this.bSize = 40;
-    this.textcolor = "black"
+    this.textcolor = "black";
+    this.categories = ["Male Participant", "Female Participant", "Filtered Male Participant", "Filtered Female Participant", "Selected Male Participant", "Selected Female Participant"]
+    this.imageLink = ["image/boy.png", "image/girl.png", "image/boy_glow.png", "image/girl_glow.png", "image/boy_glow_green.png", "image/girl_glow_green.png"];
+
 
     this.tick = function(e) {
         that.graph_update(40);
@@ -63,12 +67,12 @@ NodeVis = function(_parentElement, _data, _eventHandler){
         if (d.gender == '0') {
             that.link
                 .transition()
-                .style("stroke-opacity", function(l) { if (l.target !== d) return 0.5; })
+                .style("stroke-opacity", function(l) { if (l.target !== d) return 0.2; })
         }
         else {
             that.link
                 .transition()
-                .style("stroke-opacity", function(l) { if (l.source !== d) return 0.5; })
+                .style("stroke-opacity", function(l) { if (l.source !== d) return 0.2; })
         }
 
         that.node
@@ -190,12 +194,33 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 NodeVis.prototype.initVis = function(){
 
     that = this; // read about the this
-
+console.log(this.w, this.h)
     this.svg = this.parentElement.append('svg')
                     .attr('width', that.width)
                     .attr('height', that.height);
 
-    this.bundle = d3.layout.bundle();
+    // Create legend
+    var legend = this.svg.selectAll(".legend")
+        .data(that.categories)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d, i) {
+            return "translate(-20,"+i*20+")";
+        });
+
+    legend.append("image")
+        .attr("xlink:href", function(d,i){console.log(this);return that.imageLink[i]})
+        .attr("x", -18)
+        .attr("y", 0)
+        .attr("width", that.gSize)
+        .attr("height", that.gSize);
+
+    legend.append("text")
+          .attr("x", this.width - 24)
+          .attr("y", 9)
+          .attr("dy", ".35em")
+          .style("text-anchor", "end")
+          .text(function(d) { return d; });
 
     this.force = d3.layout.force()
         .size([that.width, that.height])
@@ -229,7 +254,7 @@ NodeVis.prototype.initVis = function(){
         .append('text')
             .attr('fill', that.textcolor)
             .text(function(d){return d})
-            .attr('y', function(d, i){return i*30+80})
+            .attr('y', function(d, i){return i*20+40})
             .attr('x', 16)
             .attr('text-anchor', "start")
             .attr('id', function(d){return d})
@@ -378,13 +403,13 @@ NodeVis.prototype.updateVis = function(){
                 that.posMale.push(parseInt(positin))
                 d.positin = positin
             }
-            d.y = that.height/4;
+            d.y = that.height/2;
             d.x = that.widthScale(d.positin);
         }
         else {
             that.posFemale.push(parseInt(d.position));
             d.positin = parseInt(d.position);
-            d.y = that.height/4*3;
+            d.y = that.height/5*4;
             d.x = that.widthScale(parseInt(d.position));
         }
     })

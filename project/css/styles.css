@@ -79,8 +79,12 @@ svg {
  * Node and Links CSS
  */
 
+#nodevis {
+  height: 25%;
+}
+
 .link {
-  stroke: lightgrey;
+  stroke: #999999;
   stroke-width: 1.5px;
 }
 
@@ -121,14 +125,14 @@ div.tooltip {
 }
 
 .personinfo {
-    height: 400px;
+    height: 22%;
     width: 20%;
     float: left;
 }
 
 #personalbox {
     display: inline-block;
-    height: 200px;
+    height: 50%;
     width: 100%;
     border-style: dashed;
     border-radius: 10px;
@@ -136,7 +140,7 @@ div.tooltip {
 
 #linebox {
     display: inline-block;
-    height: 200px;
+    height: 50%;
     width: 100%;
     border-style:dashed;
     border-radius: 10px;
@@ -177,7 +181,7 @@ body {
   position: relative;
   overflow: hidden;
   height: 28px;
-  width: 150px;
+  width: 180px;
   background: #f2f2f2;
   border: 1px solid;
   border-color: white #f7f7f7 whitesmoke;

@@ -12,7 +12,9 @@ FParVis = function(_parentElement, _data, _eventHandler){
     this.displayData = [];
     this.highlightData;
 
-    this.selected_races = ["","","","",""];
+    this.selected_races = [];
+    this.selected_careers = [];
+    this.selected_goals = [];
 
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
@@ -102,7 +104,6 @@ FParVis.prototype.updateVis = function() {
         .attr("class", "foreground")
         .attr("stroke", function (d) {
             if (that.selected_races.indexOf(d.race) != -1 && d.iid != that.highlightData.iid) {
-                console.log("hi")
                 return "greenyellow"
             }
             else {
@@ -214,11 +215,43 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
     this.updateVis();
 };
 
+/*
+ * Updates selected races and parcoords chart
+ * @param races -- array of the selected races
+ */
 FParVis.prototype.onRaceChange= function (races) {
 
     var that = this;
 
     that.selected_races = races;
+
+    this.updateVis();
+};
+
+/*
+ * Updates selected careers and parcoords chart
+ * @param careers -- array of the selected careers
+ */
+FParVis.prototype.onCareerChange= function (careers) {
+
+    var that = this;
+
+    that.selected_careers = careers;
+
+    console.log(careers)
+
+    this.updateVis();
+};
+
+/*
+ * Updates selected goals and parcoords chart
+ * @param goals -- array of selected goals
+ */
+FParVis.prototype.onGoalChange= function (goals) {
+
+    var that = this;
+
+    that.selected_goals = goals;
 
     this.updateVis();
 };
