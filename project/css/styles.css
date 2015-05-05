@@ -6,6 +6,15 @@
     width:100%;
 }
 
+#title-left {
+    margin-left: 150px;
+}
+
+#title-right {
+  margin-left: -150px;
+  margin-right: 0px;
+}
+
 .horz_divider {
     width: 80%;
     height: 50px;
