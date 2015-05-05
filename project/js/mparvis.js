@@ -106,13 +106,14 @@ MParVis.prototype.updateVis = function() {
 
     this.path_enter = this.peeplines.data(that.displayData)
         .enter()
-        .append("path")
+        .append("path");
 
     this.path_enter.attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            if ((that.selected_races.indexOf(d.race) != -1 || that.selected_careers.indexOf(d.career) != -1 ||
-                that.selected_goals.indexOf(d.goal) != -1) && d.iid != that.highlightData.iid) {
+            if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
+                (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
+                (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
                 return "greenyellow"
             }
             else {
@@ -263,6 +264,8 @@ MParVis.prototype.onGoalChange= function (goals) {
     var that = this;
 
     that.selected_goals = goals;
+
+    console.log(that.highlightData.iid, that.selected_goals)
 
     this.updateVis();
 };

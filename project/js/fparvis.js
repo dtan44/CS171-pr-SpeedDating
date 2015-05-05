@@ -87,7 +87,7 @@ FParVis.prototype.updateVis = function() {
 
     // Extract the list of dimensions and create a scale for each
     that.x.domain(dimensions = d3.keys(that.displayData[0]).filter(function(d) {
-        return d != "iid" && d != "gender" && d != "race" && (that.y[d] = d3.scale.linear()
+        return d != "iid" && d != "gender" && d != "race" && d != "career" && d != "goal" && (that.y[d] = d3.scale.linear()
                 .domain([0,10]))
                 .range([that.height, 0]);
     }));
@@ -106,7 +106,9 @@ FParVis.prototype.updateVis = function() {
         .attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            if (that.selected_races.indexOf(d.race) != -1 && d.iid != that.highlightData.iid) {
+            if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
+                (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
+                (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
                 return "greenyellow"
             }
             else {
@@ -181,6 +183,8 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
                     "iid": wave_peep[i]["iid"],
                     "gender": wave_peep[i]["gender"],
                     "race": wave_peep[i]["race"],
+                    "career": wave_peep[i]["career_c"],
+                    "goal": wave_peep[i]["goal"],
                     "attractive": wave_peep[i]["people"][j]["attr"],
                     "sincere": wave_peep[i]["people"][j]["sinc"],
                     "intelligent": wave_peep[i]["people"][j]["intel"],
@@ -201,6 +205,8 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
                 "iid": wave_peep[i]["iid"],
                 "gender": wave_peep[i]["gender"],
                 "race": wave_peep[i]["race"],
+                "career": wave_peep[i]["career_c"],
+                "goal": wave_peep[i]["goal"],
                 "attractive": wave_peep[i]["start_pref"]["attr3_1"],
                 "sincere": wave_peep[i]["start_pref"]["sinc3_1"],
                 "intelligent": wave_peep[i]["start_pref"]["intel3_1"],
@@ -241,7 +247,7 @@ FParVis.prototype.onCareerChange= function (careers) {
 
     that.selected_careers = careers;
 
-    console.log(careers)
+    console.log(careers);
 
     this.updateVis();
 };
@@ -255,6 +261,8 @@ FParVis.prototype.onGoalChange= function (goals) {
     var that = this;
 
     that.selected_goals = goals;
+
+    console.log(that.selected_goals);
 
     this.updateVis();
 };
