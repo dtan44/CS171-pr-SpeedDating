@@ -45,6 +45,20 @@
 }
 
 /*
+ * Bar Charts CSS
+ */
+
+#prefVis {
+  width: 75%;
+  float: left;
+}
+
+#matchVis {
+  width: 25%;
+  float: right;
+}
+
+/*
  * Parallel Coordinates CSS
  */
 .parcoordleft {

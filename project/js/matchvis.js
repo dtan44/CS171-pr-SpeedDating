@@ -1,15 +1,15 @@
-PrefVis = function(_parentElement, _data, _selectionElement){
+MatchVis = function(_parentElement, _data){
     this.parentElement = _parentElement;
-    this.selectionElement = _selectionElement;
+    
     this.data = _data;
     this.displayData = [];
     this.filter = {
         wave: null
     };
 
-    this.margin = {top: 50, right: 0, bottom: 100, left: 80},
-    this.width = 500 - this.margin.left - this.margin.right,
-    this.height = 500 - this.margin.top - this.margin.bottom;
+    this.margin = {top: 50, right: 30, bottom: 100, left: 80},
+    this.width = 400 - this.margin.left - this.margin.right,
+    this.height = 550 - this.margin.top - this.margin.bottom;
 
     this.initVis();
 
@@ -19,7 +19,7 @@ PrefVis = function(_parentElement, _data, _selectionElement){
 /**
  * Method that sets up the SVG and the variables
  */
-PrefVis.prototype.initVis = function(){
+MatchVis.prototype.initVis = function(){
 
     var that = this;
  
@@ -29,20 +29,20 @@ PrefVis.prototype.initVis = function(){
       .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-    this.x0 = d3.scale.ordinal()
-    	.rangeRoundBands([0, this.width], .2);
+    this.x = d3.scale.linear()
+      .range([0, this.width]);
 
-    this.x1 = d3.scale.ordinal();
+    this.y0 = d3.scale.ordinal()
+    	.rangeRoundBands([0, this.height], .25);
 
-    this.y = d3.scale.linear()
-      .range([this.height, 0]);
+    this.y1 = d3.scale.ordinal();
 
     this.xAxis = d3.svg.axis()
-      .scale(this.x0)
+      .scale(this.x)
       .orient("bottom");
 
     this.yAxis = d3.svg.axis()
-      .scale(this.y)
+      .scale(this.y0)
       .orient("left");
 
     this.svg.append("g")
@@ -65,7 +65,7 @@ PrefVis.prototype.initVis = function(){
  * Method to wrangle the data. In this case it takes an options object
  * @param _filterFunction - a function that filters data or "null" if none
  */
-PrefVis.prototype.wrangleData= function(_filterFunction){
+MatchVis.prototype.wrangleData= function(_filterFunction){
 
     // displayData should hold the data which is visualized
     this.displayData = this.filterAndAggregate(_filterFunction);
@@ -75,47 +75,52 @@ PrefVis.prototype.wrangleData= function(_filterFunction){
 /**
  * the drawing function - should use the D3 selection, enter, exit
  */
-PrefVis.prototype.updateVis = function(){
+MatchVis.prototype.updateVis = function(){
 
     var that = this;
 
-    var headers = d3.keys(this.displayData[0]).filter(function(key) { return key !== "attribute"; });
+    var headers = d3.keys(this.displayData[0]).filter(function(key) { return key !== "match"; });
 
-    var categories = ["what men THINK women want", "what women ACTUALLY want", 
-        "what women THINK men want", "what men ACTUALLY want"];
+    var categories = ["Women", "Men"]
 
     var color = d3.scale.ordinal()
         .domain(headers)
-        .range(["lightpink", "crimson", "powderblue", "midnightblue"]);
-
+        .range(["crimson", "midnightblue"]);
+    
     this.displayData.forEach(function(d) {
-      d.ratings = headers.map(function(name) { return {name: name, value: +d[name]}; });
-    });               
+      d.count = headers.map(function(name) { return {name: name, value: +d[name]}; });
+    }); 
 
-    // Updates scales for axis and bars
-    this.x0.domain(this.displayData.map(function(d) { return d.attribute; }));
-    this.x1.domain(headers).rangeRoundBands([0, this.x0.rangeBand()]);
+    console.log(this.displayData)
 
-    var ymax = d3.max(this.displayData, function(d) { return d3.max(d.ratings, function(c) { return c.value; }); })
+    var xmax = d3.max(this.displayData, function(d) { return d3.max(d.count, function(c) { return c.value; }); })
 
-    if (ymax > 45)
-      this.y.domain([0, ymax]);
-    else 
-      this.y.domain([0, 45]);
+    this.x.domain([0, xmax]);
 
-    // Creates Bars
-    var attr = this.svg.selectAll(".attr")
-                   .data(this.displayData)
-                   
-    var attr_enter = attr.enter().append("g");
+    this.y0.domain(this.displayData.map(function(d) { return d.match; }));
+    this.y1.domain(headers).rangeRoundBands([0, this.y0.rangeBand()]);
 
-    attr.attr("class", "attr")
-        .attr("transform", function(d) { return "translate(" + that.x0(d.attribute) + ", 0)"; });
+    var match = this.svg.selectAll(".match")
+                       .data(this.displayData);
 
-    attr.exit().remove();
+    var match_enter = match.enter().append("g");
 
-    var bar = attr.selectAll(".bar")
-        .data(function(d) { return d.ratings; });
+    match.attr("class", "match")
+         .attr("transform", function(d) { return "translate(0," + that.y0(d.match) + ")"; });
+
+    match.exit().remove();
+
+    var text = match.selectAll(".text")
+        .data(function(d) { return d.count; });
+
+    var text_enter = text.enter()
+        .append("text")
+        .attr("class", "text");
+
+    text.exit().remove();
+
+    var bar = match.selectAll(".bar")
+        .data(function(d) { return d.count; });
 
     var bar_enter = bar.enter()
         .append("rect")
@@ -124,23 +129,14 @@ PrefVis.prototype.updateVis = function(){
         .style("stroke-width", 2)
         .style("stroke-opacity", 1);
 
-    bar.attr("width", this.x1.rangeBand())
-        .attr("x", function(d) { return that.x1(d.name); })
+    bar.attr("height", this.y1.rangeBand())
+        .attr("y", function(d) { return that.y1(d.name); })
         .style("fill", function(d) {return color(d.name); })
         .style("fill-opacity", .5);
 
     bar.exit().remove();
 
     // Creates axises
-    this.svg.select(".x_axis")
-        .call(this.xAxis)
-        .selectAll("text")
-        .attr("class", "textname")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-60)");
-
     this.svg.select(".y_axis")
         .call(this.yAxis)
         .append("text")
@@ -148,12 +144,19 @@ PrefVis.prototype.updateVis = function(){
         .attr({"x": -110, "y": -70})
         .attr("dy", ".75em")
         .style("text-anchor", "end")
-        .text("# of Points");
+        .text("# of Matches");
 
     bar.transition()
        .duration(500)
-       .attr("y", function(d) { return that.y(d.value); })
-       .attr("height", function(d) { return that.height - that.y(d.value); });
+       .attr("x", function(d) { return 0; })
+       .attr("width", function(d) { return that.x(d.value); });
+
+    text.transition()
+        .duration(500)
+        .attr("x", function(d) { return that.x(d.value)+5; })
+        .attr("y", function(d) { return that.y1(d.name)+9; })
+        .attr("fill", "black")
+        .text(function(d) { if (d.value != 0) return d.value; })
 
     // Create legend
     var legend = this.svg.selectAll(".legend")
@@ -166,6 +169,7 @@ PrefVis.prototype.updateVis = function(){
 
     legend.append("rect")
         .attr("x", this.width - 18)
+        .attr("y", this.height - 60)
         .attr("width", 18)
         .attr("height", 18)
         .style("fill", color)
@@ -175,7 +179,7 @@ PrefVis.prototype.updateVis = function(){
 
     legend.append("text")
           .attr("x", this.width - 24)
-          .attr("y", 9)
+          .attr("y", this.height - 50)
           .attr("dy", ".35em")
           .style("text-anchor", "end")
           .text(function(d) { return d; });
@@ -189,13 +193,13 @@ PrefVis.prototype.updateVis = function(){
  * be defined here.
  * @param selection
  */
-PrefVis.prototype.onSelectionChange= function (wave){
+MatchVis.prototype.onSelectionChange= function (wave){
 
     this.filter.wave = wave;
     this.refilter();
 }
 
-PrefVis.prototype.onRaceChange= function (races){
+MatchVis.prototype.onRaceChange= function (races){
     this.filter.races = [];
     for (var i = 0; i < races.length; i++)
       if (races[i] != "")
@@ -203,7 +207,7 @@ PrefVis.prototype.onRaceChange= function (races){
     this.refilter();
 }
 
-PrefVis.prototype.onCareerChange= function (careers){
+MatchVis.prototype.onCareerChange= function (careers){
 
     this.filter.careers = [];
     for (var i = 0; i < careers.length; i++)
@@ -212,7 +216,7 @@ PrefVis.prototype.onCareerChange= function (careers){
     this.refilter();
 }
 
-PrefVis.prototype.onGoalChange= function (goals){
+MatchVis.prototype.onGoalChange= function (goals){
 
     this.filter.goals = [];
     for (var i = 0; i < goals.length; i++)
@@ -221,7 +225,7 @@ PrefVis.prototype.onGoalChange= function (goals){
     this.refilter();
 }
 
-PrefVis.prototype.refilter = function() {
+MatchVis.prototype.refilter = function() {
     var that = this;
     this.wrangleData(function(d) {
 
@@ -256,7 +260,7 @@ PrefVis.prototype.refilter = function() {
  * @param _filter - A filter can be, e.g.,  a function that is only true for data of a given time range
  * @returns {Array|*}
  */
-PrefVis.prototype.filterAndAggregate = function(_filter){
+MatchVis.prototype.filterAndAggregate = function(_filter){
 
     var filter = function(){return true;}
     if (_filter != null){
@@ -264,69 +268,6 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
     }
 
     var that = this;
-
-    var attr = {
-        attribute: "Attractive",
-        perc_women: 0.,
-        real_women: 0.,
-        perc_men: 0.,
-        real_men: 0,
-    };
-
-    var sinc = {
-        attribute: "Sincere",
-        perc_women: 0.,
-        real_women: 0.,
-        perc_men: 0.,
-        real_men: 0,
-    };
-
-    var intel = {
-        attribute: "Intelligent",
-        perc_women: 0.,
-        real_women: 0.,
-        perc_men: 0.,
-        real_men: 0,
-    };
-
-    var fun = {
-        attribute: "Fun",
-        perc_women: 0.,
-        real_women: 0.,
-        perc_men: 0.,
-        real_men: 0,
-    };
-
-    var amb = {
-        attribute: "Ambitious",
-        perc_women: 0.,
-        real_women: 0.,
-        perc_men: 0.,
-        real_men: 0,
-    };
-
-    var shar = {
-        attribute: "Shared Interests",
-        perc_women: 0.,
-        real_women: 0.,
-        perc_men: 0.,
-        real_men: 0,
-    };
-
-    var count_women = 0;
-    var count_men = 0;
-
-    var attrs = ['attr','sinc','intel','fun','amb','shar'];
-    var data = [attr, sinc, intel, fun, amb, shar];
-
-    function copy(source, category, prefix, suffix) {
-      attrs.forEach(function(attr, i) {
-        var key = attr+prefix+'_'+suffix;
-        if (!isNaN(parseFloat(source[key]))) {
-          data[i][category] += parseFloat(source[key]);
-        }
-      })
-    };
 
     function filter_race(d) {
       if (that.filter.races == null || that.filter.races.length == 0)
@@ -361,43 +302,43 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
     var filtered_data = this.data.filter(filter)
                                  .filter(filter_race)
                                  .filter(filter_career)
-                                 .filter(filter_goal)
+                                 .filter(filter_goal);
+
+    var data = [];
+    for (var i = 0; i < 15; i++) {
+      var temp = {
+        match: i,
+        matches_women: 0,
+        matches_men: 0
+      }
+
+      data.push(temp);
+    }
 
     filtered_data
         .forEach(function(c) {
           if (c.wave < 6 || c.wave > 9) {
             // female
             if (c.gender == 0) {
-              count_women++;
-              // what she wants
-              copy(c.start_pref, "real_women", 1, 1);
-              // what she thinks he wants
-              copy(c.start_pref, "perc_men", 2, 1);
+              var temp = 0;
+              c.people.forEach(function(d) {
+                if (d.match == 1)
+                  temp++;
+              })
+              data[temp]["matches_women"]++;
             }
-            // male 
+            // male
             else if (c.gender == 1) {
-              count_men++;
-              // what he wants
-              copy(c.start_pref, "real_men", 1, 1);
-              // what he thinks she wants
-              copy(c.start_pref, "perc_women", 2, 1);
+              var temp = 0;
+              c.people.forEach(function(d) {
+                if (d.match == 1) 
+                  temp++;
+              })
+              data[temp]["matches_men"]++;
             }
           }
         })
 
-    var women_categories = ["real_women", "perc_men"];
-    var men_categories = ["real_men", "perc_women"];
-    data.forEach(function(attr) {
-      women_categories.forEach(function(d) {
-        attr[d] = attr[d]/count_women;
-      });
-      men_categories.forEach(function(d) {
-        attr[d] = attr[d]/count_men;
-      });
-    });
-
-    this.selectionElement.html(count_men+count_women+" out of 449 people");
-
+    console.log(data)
     return data;
-
 }

@@ -209,7 +209,7 @@ console.log(this.w, this.h)
         });
 
     legend.append("image")
-        .attr("xlink:href", function(d,i){console.log(this);return that.imageLink[i]})
+        .attr("xlink:href", function(d,i){return that.imageLink[i]})
         .attr("x", -18)
         .attr("y", 0)
         .attr("width", that.gSize)
