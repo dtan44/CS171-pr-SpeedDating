@@ -193,7 +193,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
  */
 NodeVis.prototype.initVis = function(){
 
-    that = this; // read about the this
+    var that = this; // read about the this
 console.log(this.w, this.h)
     this.svg = this.parentElement.append('svg')
                     .attr('width', that.width)
@@ -243,10 +243,10 @@ console.log(this.w, this.h)
 
     this.toptext = that.smallsvg.append("text")
       .attr('fill', that.textcolor)
-      .text('Information')
+      .text('node info')
       .attr('y', 20)
       .attr('x', that.smallwidth/2)
-      .attr('text-anchor', "middle")
+      .attr('text-anchor', "middle");
 
     this.smallsvg.selectAll(".text")
         .data(that.info)
@@ -258,8 +258,30 @@ console.log(this.w, this.h)
             .attr('x', 16)
             .attr('text-anchor', "start")
             .attr('id', function(d){return d})
-            .attr('font-size', 9)
+            .attr('font-size', 9);
 
+    this.linesvg = d3.select("#linebox").append("svg")
+        .attr("width", that. smallwidth)
+        .attr("height", that.smallheight);
+
+    this.titletext = that.smallsvg.append("text")
+        .attr("fill", that.textcolor)
+        .text("line info")
+        .attr("y", 20)
+        .attr("x", that.smallwidth / 2)
+        .attr("text-anchor", "middle");
+
+    this.infotext = this.linesvg.selectAll(".text")
+        .data(that.info)
+        .enter()
+        .append("text")
+        .attr("fill", that.textcolor)
+        .text(function (d) {return d})
+        .attr("y", function (d, i) {return i * 20 + 40})
+        .attr("x", 16)
+        .attr("text-anchor", "start")
+        .attr("id", function (d) {return d})
+        .attr("font-size", 9);
 
     // filter, aggregate, modify data
     this.wrangleData(that.wave);
