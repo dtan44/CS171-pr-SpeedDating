@@ -11,16 +11,21 @@ MParVis = function(_parentElement, _data, _eventHandler){
     this.eventHandler = _eventHandler;
     this.displayData = [];
     this.highlightData;
+    this.wavenum = 0;
 
     this.selected_races = [];
     this.selected_careers = [];
     this.selected_goals = [];
 
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
+    this.legend_cats = ["hover", "filtered", "female", "male"];
 
-    this.margin = {top: 50, right: 5, bottom: 10, left: 10};
-    this.width = 550;
+    this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    this.margin = {top: 60, right: 5, bottom: 10, left: 10};
+    this.width = this.w/3 - 50;
     this.height = 250;
+
 
     this.initVis();
 };
@@ -50,32 +55,55 @@ MParVis.prototype.initVis = function(){
     this.line = d3.svg.line();
     this.axis = d3.svg.axis().orient("left");
 
-    // filter, aggregate, modify data
-    this.wrangleData();
+    // Creates the legend
+    var color = d3.scale.ordinal()
+        .domain(that.legend_cats)
+        .range(["gold", "greenyellow", "lightpink", "powderblue"]);
 
-    // call the update method
-    this.updateVis();
+    var stroke = d3.scale.ordinal()
+        .domain(that.legend_cats)
+        .range(["gold", "greenyellow", "crimson", "midnightblue"]);
+
+    var legend = this.svg.selectAll("#parcoordlegend")
+        .data(that.legend_cats)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d, i) {
+            return "translate(" + ((i * -70) - 300) + ", -45)";
+        });
+
+    legend.append("rect")
+        .attr("x", this.width - 18)
+        .attr("width", 15)
+        .attr("height", 15)
+        .style("fill", color)
+        .style("fill-opacity", .5)
+        .style("stroke", stroke)
+        .style("stroke-width", 4);
+
+    legend.append("text")
+        .attr("x", this.width - 24)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text(function(d) { return d; });
+
+    // filter, aggregate, modify data
+    this.wrangleData(that.wavenum);
 };
 
 /**
- * Method to set up the initial visualization data.
+ * Method to set up the initial visualization data for each wave.
+ * @param wave_num -- index of selected wave
  */
-MParVis.prototype.wrangleData= function () {
+MParVis.prototype.wrangleData= function (wave_num) {
 
     var that = this;
 
     // displayData should hold the data which is visualized
     // pretty simple in this case -- no modifications needed
 
-    that.displayData = [
-        {"iid": 1, "gender": 0, "attractive": 25, "sincere": 38, "intelligent": 26, "fun": 14, "ambitious": 13, "share_int": 10},
-        {"iid": 2, "gender": 1, "attractive": 16, "sincere": 45, "intelligent": 18, "fun": 25, "ambitious": 40, "share_int": 5},
-        {"iid": 3, "gender": 1, "attractive": 50, "sincere": 13, "intelligent": 36, "fun": 32, "ambitious": 30, "share_int": 50},
-        {"iid": 4, "gender": 0, "attractive": 10, "sincere": 40, "intelligent": 40, "fun": 30, "ambitious": 20, "share_int": 28}
-    ];
-
-    that.highlightData = {"iid": 2, "gender": 1, "attractive": 16, "sincere": 45, "intelligent": 18, "fun": 25, "ambitious": 40, "share_int": 5}
-
+    this.onSelectionChange(that.data[0].values[wave_num].iid, that.data[wave_num].values, wave_num);
 };
 
 /**
@@ -98,17 +126,18 @@ MParVis.prototype.updateVis = function() {
 
     // Add lines representing each individual person
     this.peeplines = that.svg.append("g")
-        .selectAll("path")
-        .data(that.displayData);
+        .selectAll("path");
 
-    this.peeplines.enter()
-        .append("path")
-        .attr("d", path)
+    this.path_enter = this.peeplines.data(that.displayData)
+        .enter()
+        .append("path");
+
+    this.path_enter.attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            console.log(that.selected_careers.indexOf(d.career) != -1, that.selected_careers, d.career)
-            if ((that.selected_races.indexOf(d.race) != -1 || that.selected_careers.indexOf(d.career) != -1 ||
-                that.selected_goals.indexOf(d.goal) != -1) && d.iid != that.highlightData.iid) {
+            if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
+                (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
+                (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
                 return "greenyellow"
             }
             else {
@@ -133,12 +162,11 @@ MParVis.prototype.updateVis = function() {
             else return .5
         })
         .attr("fill", "none")
-        .attr("stroke-width", 4);
+        .attr("stroke-width", 4)
 
-    // Send out event to update nodes when clicked
-    this.peeplines.on("click", function (d) {
-        $(that.eventHandler).trigger("lineclick", [d.iid])
-    });
+    this.path_enter.on("click", function (d) {
+            $(that.eventHandler).trigger("lineclick", d.iid);
+        });
 
     // Add a group element for each dimension.
     this.g = that.svg.selectAll(".dimension")
@@ -166,13 +194,16 @@ MParVis.prototype.updateVis = function() {
  * Gets called by event handler and should create new displayData
  * @param node_id -- the ID of the node clicked
  * @param wave_peep -- data for the entire wave
+ * @param wave_num -- number of the wave
  */
-MParVis.prototype.onSelectionChange= function (node_id, wave_peep){
+MParVis.prototype.onSelectionChange= function (node_id, wave_peep, wave_num){
 
     var that = this;
 
     // Clears the old data from memory
     this.displayData = [];
+
+    that.wavenum = wave_num;
 
     // Stores the relevant data for selected node
     for (var i = 0; i <wave_peep.length; i++) {
@@ -258,15 +289,20 @@ MParVis.prototype.onGoalChange= function (goals) {
 
     that.selected_goals = goals;
 
+    console.log(that.highlightData.iid, that.selected_goals)
+
     this.updateVis();
 };
 
 /*
  * Updates parcoords when a wave changes
- * @param index -- index of selected wave
+ * @param wave_num -- index of selected wave
  */
-MParVis.prototype.onWaveChange= function (value) {
+MParVis.prototype.onWaveChange= function (wave_num) {
 
     var that = this;
 
+    that.wavenum = wave_num;
+
+    this.wrangleData(that.wavenum);
 };

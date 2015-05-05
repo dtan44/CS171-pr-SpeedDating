@@ -1,14 +1,16 @@
 
 NodeVis = function(_parentElement, _data, _eventHandler){
+    // global variables passed in
     this.parentElement = _parentElement;
     this.data = _data;
     this.eventHandler = _eventHandler;
     this.displayData = [];
 
+    // 
     this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     this.width = this.w/2.2;
-    this.height = this.h/2;
+    this.height = 500;
     this.smallwidth = this.w*0.125;
     this.smallheight = 200;
     this.graph = {nodes: [], links: []};
@@ -30,8 +32,8 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.gSize = 40;
     this.bSize = 40;
     this.textcolor = "black";
-    this.categories = ["Male Participant", "Female Participant", "Filtered Male Participant", "Filtered Female Participant", "Selected Male Participant", "Selected Female Participant"]
-    this.imageLink = ["image/boy.png", "image/girl.png", "image/boy_glow.png", "image/girl_glow.png", "image/boy_glow_green.png", "image/girl_glow_green.png"];
+    this.maleX = this.height*.2
+    this.femaleX = this.height*.6
 
 
     this.tick = function(e) {
@@ -53,7 +55,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
             .attr("transform", function(d) { 
                 return "translate("+d.x+","+d.y+")"; 
           });
-    }
+    };
 
     // run when node is mouse-overed
     this.mouseover = function(d) {
@@ -67,12 +69,12 @@ NodeVis = function(_parentElement, _data, _eventHandler){
         if (d.gender == '0') {
             that.link
                 .transition()
-                .style("stroke-opacity", function(l) { if (l.target !== d) return 0.2; })
+                .style("stroke-opacity", function(l) { if (l.target !== d) return 0.1; })
         }
         else {
             that.link
                 .transition()
-                .style("stroke-opacity", function(l) { if (l.source !== d) return 0.2; })
+                .style("stroke-opacity", function(l) { if (l.source !== d) return 0.1; })
         }
 
         that.node
@@ -87,7 +89,6 @@ NodeVis = function(_parentElement, _data, _eventHandler){
         that.link
           .classed("link--target", false)
           .classed("link--source", false)
-          .style("stroke-opacity", 1)
 
         that.node
           .classed("node--target", false)
@@ -96,7 +97,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 
     // run when node clicked
     this.nodeclick = function(node) {
-        var pass = [node.iid, that.displayData, node];
+        var pass = [node.iid, that.displayData, node, that.wave];
         $(that.eventHandler).trigger('nodeclick', pass);
 
         var array = (node.gender=='1'?that.posFemale:that.posMale);
@@ -151,6 +152,11 @@ NodeVis = function(_parentElement, _data, _eventHandler){
             }
         });
 
+        var selector = d3.selectAll('.node')
+            .filter(function(d) {if (parseInt(d.iid) == node.iid){return true}})
+
+        that.updateNode(selector)
+
         that.graph_update(500)
     };
 
@@ -194,33 +200,10 @@ NodeVis = function(_parentElement, _data, _eventHandler){
 NodeVis.prototype.initVis = function(){
 
     that = this; // read about the this
-console.log(this.w, this.h)
+
     this.svg = this.parentElement.append('svg')
                     .attr('width', that.width)
                     .attr('height', that.height);
-
-    // Create legend
-    var legend = this.svg.selectAll(".legend")
-        .data(that.categories)
-        .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", function(d, i) {
-            return "translate(-20,"+i*20+")";
-        });
-
-    legend.append("image")
-        .attr("xlink:href", function(d,i){return that.imageLink[i]})
-        .attr("x", -18)
-        .attr("y", 0)
-        .attr("width", that.gSize)
-        .attr("height", that.gSize);
-
-    legend.append("text")
-          .attr("x", this.width - 24)
-          .attr("y", 9)
-          .attr("dy", ".35em")
-          .style("text-anchor", "end")
-          .text(function(d) { return d; });
 
     this.force = d3.layout.force()
         .size([that.width, that.height])
@@ -233,7 +216,7 @@ console.log(this.w, this.h)
         .friction(0.4)
         .start();
     
-    this.div = d3.select("body").append("div")
+    this.div = d3.select("body").insert("div", "div")
         .attr("class", "tooltip")
         .style("opacity", 1e-6);
 
@@ -243,10 +226,10 @@ console.log(this.w, this.h)
 
     this.toptext = that.smallsvg.append("text")
       .attr('fill', that.textcolor)
-      .text('Information')
+      .text('node info')
       .attr('y', 20)
       .attr('x', that.smallwidth/2)
-      .attr('text-anchor', "middle")
+      .attr('text-anchor', "middle");
 
     this.smallsvg.selectAll(".text")
         .data(that.info)
@@ -258,8 +241,30 @@ console.log(this.w, this.h)
             .attr('x', 16)
             .attr('text-anchor', "start")
             .attr('id', function(d){return d})
-            .attr('font-size', 9)
+            .attr('font-size', 9);
 
+    this.linesvg = d3.select("#linebox").append("svg")
+        .attr("width", that. smallwidth)
+        .attr("height", that.smallheight);
+
+    this.titletext = that.linesvg.append("text")
+        .attr("fill", that.textcolor)
+        .text("line info")
+        .attr("y", 20)
+        .attr("x", that.smallwidth / 2)
+        .attr("text-anchor", "middle");
+
+    this.infotext = this.linesvg.selectAll(".text")
+        .data(that.info)
+        .enter()
+        .append("text")
+        .attr("fill", that.textcolor)
+        .text(function (d) {return d})
+        .attr("y", function (d, i) {return i * 20 + 40})
+        .attr("x", 16)
+        .attr("text-anchor", "start")
+        .attr("id", function (d) {return d})
+        .attr("font-size", 9);
 
     // filter, aggregate, modify data
     this.wrangleData(that.wave);
@@ -403,13 +408,13 @@ NodeVis.prototype.updateVis = function(){
                 that.posMale.push(parseInt(positin))
                 d.positin = positin
             }
-            d.y = that.height/2;
+            d.y = that.maleX;
             d.x = that.widthScale(d.positin);
         }
         else {
             that.posFemale.push(parseInt(d.position));
             d.positin = parseInt(d.position);
-            d.y = that.height/5*4;
+            d.y = that.femaleX;
             d.x = that.widthScale(parseInt(d.position));
         }
     })
@@ -432,28 +437,10 @@ NodeVis.prototype.updateVis = function(){
         .attr('y', '58')
         .text(function(d){return d.iid;});
     
-    this.graph_update(300)
+    this.graph_update(300);
 
     this.updateNode()
-
-}
-
-NodeVis.prototype.updateInfo = function(node){
-    var gender = (node.gender == '0') ? 'Female' : 'Male';
-    var race = that.race[node.race - 1];
-    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
-    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
-    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
-
-    this.smallsvg.select('#ID').text('ID: ' + node.iid)
-    this.smallsvg.select('#Age').text('Age: ' + node.age)
-    this.smallsvg.select('#Sex').text('Sex: ' + gender)
-    this.smallsvg.select('#Race').text('Race: ' + race)
-    this.smallsvg.select('#Occupation').text('Occupation: ' + occupation)
-    this.smallsvg.select('#Goal').text('Goal: ' + goal)
-    this.smallsvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate)
-
-}
+};
 
 NodeVis.prototype.onRaceChange = function(races){
 
@@ -512,7 +499,11 @@ NodeVis.prototype.updateNode = function(selector){
 
     if (that.race_check == true) {
         filter = filter
-            .filter(function(d, i) {if (that.update_race.indexOf(d.race)>=0){return true}})
+            .filter(function(d, i) {if (that.update_race.indexOf(d.race)>=0){
+                if (d.race != "") {
+                    return true
+                }
+            }})
     }
     if (that.occupation_check == true) {
         filter = filter
@@ -524,7 +515,11 @@ NodeVis.prototype.updateNode = function(selector){
     }
     if (that.goal_check == true) {
         filter = filter
-            .filter(function(d, i) {if (that.update_goal.indexOf(d.goal)>=0){return true}})
+            .filter(function(d, i) {if (that.update_goal.indexOf(d.goal)>=0){
+                if (d.goal != "") {
+                    return true
+                } 
+        }})
     }
     
     var filtered = d3.selectAll('.node')
@@ -534,7 +529,7 @@ NodeVis.prototype.updateNode = function(selector){
             .filter(function(d) {if (d.gender == '0'){return true}})
             .classed('filter', true)
             .select('image')
-            .attr("xlink:href", "image/girl_glow.png")
+            .attr("xlink:href", "image/girl_glow_green.png")
             .attr("width", that.gSize)
             .attr("height", that.gSize)
             filtered = d3.selectAll('.node:not(.filter)')
@@ -542,7 +537,7 @@ NodeVis.prototype.updateNode = function(selector){
             .filter(function(d) {if (d.gender == '1'){return true}})
             .classed('filter', true)
             .select('image')
-            .attr("xlink:href", "image/boy_glow.png")
+            .attr("xlink:href", "image/boy_glow_green.png")
             .attr("width", that.bSize)
             .attr("height", that.bSize)
             filtered = d3.selectAll('.node:not(.filter)')
@@ -566,12 +561,12 @@ NodeVis.prototype.updateNode = function(selector){
         selector
             .filter(function(d) {if (d.gender == '0'){return true}})
             .select('image')
-            .attr("xlink:href", "image/girl_glow_green.png")
+            .attr("xlink:href", "image/girl_glow.png")
 
         selector
             .filter(function(d) {if (d.gender == '1'){return true}})
             .select('image')
-            .attr("xlink:href", "image/boy_glow_green.png")
+            .attr("xlink:href", "image/boy_glow.png")
     }
 }
 
@@ -585,12 +580,58 @@ NodeVis.prototype.filter = function(wave){
 }
 
 NodeVis.prototype.linkClick = function(iid){
+
+    var that = this;
+
+    var node =  [];
+
     var selector = d3.selectAll('.node')
         .filter(function(d) {if (parseInt(d.iid) == iid){return true}})
 
-    this.updateNode(selector)
+    this.updateNode(selector);
 
+    for (var i = 0; i < that.graph.nodes.length; i++) {
+        if (that.graph.nodes[i].iid == iid) {
+            node = that.graph.nodes[i];
+        }
+    }
+
+    var gender = (node.gender == '0') ? 'Female' : 'Male';
+    var race = that.race[node.race - 1];
+    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
+    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
+    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
+    var color = (node.gender == '0') ? '#E6A4AE': '#8DB3B8';
+
+    this.linesvg.select('#ID').text('ID: ' + node.iid).attr("fill", color)
+    this.linesvg.select('#Age').text('Age: ' + node.age).attr("fill", color)
+    this.linesvg.select('#Sex').text('Sex: ' + gender).attr("fill", color)
+    this.linesvg.select('#Race').text('Race: ' + race).attr("fill", color)
+    this.linesvg.select('#Occupation').text('Occupation: ' + occupation).attr("fill", color)
+    this.linesvg.select('#Goal').text('Goal: ' + goal).attr("fill", color)
+    this.linesvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate).attr("fill", color)
 }
+
+
+
+NodeVis.prototype.updateInfo = function(node){
+    var gender = (node.gender == '0') ? 'Female' : 'Male';
+    var race = (node.race != '') ? that.race[node.race - 1]: 'Undisclosed';
+    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
+    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
+    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
+    var color = (node.gender == '0') ? '#E6A4AE': '#8DB3B8';
+
+
+    this.smallsvg.select('#ID').text('ID: ' + node.iid).attr("fill", color)
+    this.smallsvg.select('#Age').text('Age: ' + node.age).attr("fill", color)
+    this.smallsvg.select('#Sex').text('Sex: ' + gender).attr("fill", color)
+    this.smallsvg.select('#Race').text('Race: ' + race).attr("fill", color)
+    this.smallsvg.select('#Occupation').text('Occupation: ' + occupation).attr("fill", color)
+    this.smallsvg.select('#Goal').text('Goal: ' + goal).attr("fill", color)
+    this.smallsvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate).attr("fill", color)
+
+};
 
 /**
  * Helper Functions

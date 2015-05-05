@@ -11,6 +11,8 @@ FParVis = function(_parentElement, _data, _eventHandler){
     this.eventHandler = _eventHandler;
     this.displayData = [];
     this.highlightData;
+    this.wavenum = 0;
+
 
     this.selected_races = [];
     this.selected_careers = [];
@@ -18,9 +20,12 @@ FParVis = function(_parentElement, _data, _eventHandler){
 
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
 
-    this.margin = {top: 50, right: 10, bottom: 10, left: 5};
-    this.width = 550;
+    this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    this.margin = {top: 60, right: 10, bottom: 10, left: 5};
+    this.width = this.w/3 - 50;
     this.height = 250;
+
 
     this.initVis();
 };
@@ -48,31 +53,24 @@ FParVis.prototype.initVis = function(){
     this.axis = d3.svg.axis().orient("left");
 
     // filter, aggregate, modify data
-    this.wrangleData();
+    this.wrangleData(that.wavenum);
 
     // call the update method
     this.updateVis();
 };
 
 /**
- * Method to set up the initial visualization data.
+ * Method to set up the initial visualization data for each wave.
+ * @param wave_num -- index of selected wave
  */
-FParVis.prototype.wrangleData= function (filter) {
+FParVis.prototype.wrangleData= function (wave_num) {
 
     var that = this;
 
     // displayData should hold the data which is visualized
     // pretty simple in this case -- no modifications needed
 
-    that.displayData = [
-        {"iid": 1, "gender": 0, "race": "1", "attractive": 5, "sincere": 10, "intelligent": 6, "fun": 7, "ambitious": 10, "share_int": 9},
-        {"iid": 2, "gender": 1, "race": "2", "attractive": 10, "sincere": 7, "intelligent": 8, "fun": 4, "ambitious": 5, "share_int": 2},
-        {"iid": 3, "gender": 1, "race": "3", "attractive": 5, "sincere": 3, "intelligent": 6, "fun": 9, "ambitious": 8, "share_int": 5},
-        {"iid": 4, "gender": 0, "race": "4", "attractive": 10, "sincere": 4, "intelligent": 7, "fun": 3, "ambitious": 2, "share_int": 8}
-    ];
-
-    that.highlightData = {"iid": 2, "gender": 1, "race": "2", "attractive": 10, "sincere": 7, "intelligent": 8, "fun": 4, "ambitious": 5, "share_int": 2}
-
+    this.onSelectionChange(that.data[0].values[wave_num].iid, that.data[wave_num].values, wave_num);
 };
 
 /**
@@ -84,7 +82,7 @@ FParVis.prototype.updateVis = function() {
 
     // Extract the list of dimensions and create a scale for each
     that.x.domain(dimensions = d3.keys(that.displayData[0]).filter(function(d) {
-        return d != "iid" && d != "gender" && d != "race" && (that.y[d] = d3.scale.linear()
+        return d != "iid" && d != "gender" && d != "race" && d != "career" && d != "goal" && (that.y[d] = d3.scale.linear()
                 .domain([0,10]))
                 .range([that.height, 0]);
     }));
@@ -103,7 +101,9 @@ FParVis.prototype.updateVis = function() {
         .attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            if (that.selected_races.indexOf(d.race) != -1 && d.iid != that.highlightData.iid) {
+            if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
+                (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
+                (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
                 return "greenyellow"
             }
             else {
@@ -178,6 +178,8 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
                     "iid": wave_peep[i]["iid"],
                     "gender": wave_peep[i]["gender"],
                     "race": wave_peep[i]["race"],
+                    "career": wave_peep[i]["career_c"],
+                    "goal": wave_peep[i]["goal"],
                     "attractive": wave_peep[i]["people"][j]["attr"],
                     "sincere": wave_peep[i]["people"][j]["sinc"],
                     "intelligent": wave_peep[i]["people"][j]["intel"],
@@ -198,6 +200,8 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
                 "iid": wave_peep[i]["iid"],
                 "gender": wave_peep[i]["gender"],
                 "race": wave_peep[i]["race"],
+                "career": wave_peep[i]["career_c"],
+                "goal": wave_peep[i]["goal"],
                 "attractive": wave_peep[i]["start_pref"]["attr3_1"],
                 "sincere": wave_peep[i]["start_pref"]["sinc3_1"],
                 "intelligent": wave_peep[i]["start_pref"]["intel3_1"],
@@ -238,7 +242,7 @@ FParVis.prototype.onCareerChange= function (careers) {
 
     that.selected_careers = careers;
 
-    console.log(careers)
+    console.log(careers);
 
     this.updateVis();
 };
@@ -254,4 +258,17 @@ FParVis.prototype.onGoalChange= function (goals) {
     that.selected_goals = goals;
 
     this.updateVis();
+};
+
+/*
+ * Updates parcoords when a wave changes
+ * @param wave_num -- index of selected wave
+ */
+FParVis.prototype.onWaveChange= function (wave_num) {
+
+    var that = this;
+
+    that.wavenum = wave_num;
+
+    this.wrangleData(that.wavenum);
 };

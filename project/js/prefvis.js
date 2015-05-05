@@ -81,6 +81,7 @@ PrefVis.prototype.updateVis = function(){
 
     var headers = d3.keys(this.displayData[0]).filter(function(key) { return key !== "attribute"; });
 
+    console.log(this.displayData[0])
     var categories = ["what men THINK women want", "what women ACTUALLY want", 
         "what women THINK men want", "what men ACTUALLY want"];
 
