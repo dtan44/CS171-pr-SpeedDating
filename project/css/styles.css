@@ -71,7 +71,8 @@ div #parallel {
 }
 
 text {
-  font: 9.5px "Lucida Grande", Tahoma, Verdana, sans-serif;
+  font: 9px "Lucida Grande", Tahoma, Verdana, sans-serif;
+  font-weight: bold;
 }
 
 html,
