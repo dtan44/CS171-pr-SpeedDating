@@ -4,6 +4,7 @@
 .title {
     height:300px;
     width:100%;
+    margin-top: 80px;
 }
 
 #title-left {
@@ -55,7 +56,7 @@
   padding-left: 14px;  
 }
 
-.topbar {
+#topbar {
   position:fixed;
   z-index: 1;
   top: 0;
@@ -63,6 +64,9 @@
   padding: 20;
   height: 12%;
   width: 100%;
+  margin-left: 1px;
+  margin-bottom: 2px;
+  margin-top: 1px;
 }
 
 div #preferences {
