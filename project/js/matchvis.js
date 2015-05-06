@@ -317,8 +317,10 @@ MatchVis.prototype.filterAndAggregate = function(_filter){
       data.push(temp);
     }
 
-    var people = 0;
-    var num_matches = 0;
+    var women = 0;
+    var women_matches = 0;
+    var men = 0;
+    var men_matches = 0;
 
     filtered_data
         .forEach(function(c) {
@@ -331,8 +333,8 @@ MatchVis.prototype.filterAndAggregate = function(_filter){
                   temp++;
               })
               if (temp != 0) 
-                num_matches++;
-              people++;
+                women_matches++;
+              women++;
               data[temp]["matches_women"]++;
             }
             // male
@@ -342,12 +344,21 @@ MatchVis.prototype.filterAndAggregate = function(_filter){
                 if (d.match == 1) 
                   temp++;
               })
+              if (temp != 0)
+                men_matches++;
+              men++;
               data[temp]["matches_men"]++;
             }
           }
         })
 
-    this.matchElement.html(num_matches+"/"+people+" people got a least one match"+"\n("+d3.round(num_matches/people*100,1)+"%)");
+    var matches = women_matches+men_matches;
+    var people = women+men
+
+    this.matchElement.html(matches+"/"+people+" people got at least one match "+
+      "("+d3.round(matches/people*100,1)+"%); "+women_matches+"/"+women+
+      " women ("+d3.round(women_matches/women*100,1)+"%); "+men_matches+
+      "/"+men+ " men ("+d3.round(men_matches/men*100,1)+"%)");
 
     return data;
 }
