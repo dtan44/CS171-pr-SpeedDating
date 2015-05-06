@@ -112,9 +112,8 @@
                 Participants were asked to distribute 100 points among 6 attributes, giving more points to those
                 attributes that were more important to them in a potential date. On average, <mark onclick="text_click()">
                 women weighted the attributes relatively evenly</mark>, with intelligence the most and ambition the least.
-                Men weighted attractive
-                the most and ambition the least. Interestingly, both genders thought the opposite gender would weight
-                attractive more heavily and sincere and intelligent less.
+                <mark onclick="text_click()">Men weighted attractive the most and ambition the least</mark>. Interestingly,
+                both genders thought the opposite gender would weight attractive more heavily and sincere and intelligent less.
             </p>
             <p>
                 Among these speed daters, <mark onclick="lawyers()">lawyers seem to have the highest overall success rate</mark>.
@@ -429,61 +428,100 @@
     }
 
     function text_click() {
-        d3.selectAll("input").attr("checked", "");
+        $("input:checkbox").attr('checked', false);
         race_change()
         goal_change()
         career_change()
     }
 
     function wave_success() {
+        $("input:checkbox").attr('checked', false);
         wave_change(14)
+        race_change()
+        goal_change()
+        career_change()
     }
 
     function wave_fail() {
+        $("input:checkbox").attr('checked', false);
         wave_change(18)
+        race_change()
+        goal_change()
+        career_change()
     }
 
     function high_esteem() {
+        $("input:checkbox").attr('checked', false);
         wave_change(11)
+        race_change()
+        goal_change()
+        career_change()
     }
 
     function forgiving() {
+        $("input:checkbox").attr('checked', false);
         wave_change(19)
+        race_change()
+        goal_change()
+        career_change()
     }
 
     function sess_10() {
+        $("input:checkbox").attr('checked', false);
         wave_change(14);
+        race_change()
+        goal_change()
+        career_change()
         node_vis.nodePass(347, 13);
     }
 
     function sess_11() {
+        $("input:checkbox").attr('checked', false);
         wave_change(15);
+        race_change()
+        goal_change()
+        career_change()
         node_vis.nodePass(405, 14);
     }
 
     function lawyers() {
+        $("input:checkbox").attr('checked', false);
         document.getElementById("Lawyers").checked = true;
         career_change();
+        race_change()
+        goal_change()
     }
 
     function asian() {
+        $("input:checkbox").attr('checked', false);
         document.getElementById("Asian").checked = true;
         race_change();
+        goal_change()
+        career_change()
     }
 
     function others() {
+        $("input:checkbox").attr('checked', false);
         document.getElementById("Other").checked = true;
         race_change();
+        goal_change()
+        career_change()
     }
 
     function have_fun() {
+        $("input:checkbox").attr('checked', false);
         document.getElementById("Fun").checked = true;
         goal_change();
+        race_change()
+        career_change()
     }
 
     function meet_people() {
+        $("input:checkbox").attr('checked', false);
         document.getElementById("Meet").checked = true;
         goal_change();
+        race_change()
+        career_change()
     }
 
 	</script>
