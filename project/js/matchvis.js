@@ -1,14 +1,16 @@
-MatchVis = function(_parentElement, _data){
+MatchVis = function(_parentElement, _data, _matchElement){
     this.parentElement = _parentElement;
-    
+    this.matchElement = _matchElement
     this.data = _data;
     this.displayData = [];
     this.filter = {
         wave: null
     };
 
+    this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     this.margin = {top: 50, right: 30, bottom: 100, left: 80},
-    this.width = 400 - this.margin.left - this.margin.right,
+    this.width = this.w*.25 - this.margin.left - this.margin.right,
     this.height = 550 - this.margin.top - this.margin.bottom;
 
     this.initVis();
@@ -315,6 +317,11 @@ MatchVis.prototype.filterAndAggregate = function(_filter){
       data.push(temp);
     }
 
+    var women = 0;
+    var women_matches = 0;
+    var men = 0;
+    var men_matches = 0;
+
     filtered_data
         .forEach(function(c) {
           if (c.wave < 6 || c.wave > 9) {
@@ -325,6 +332,9 @@ MatchVis.prototype.filterAndAggregate = function(_filter){
                 if (d.match == 1)
                   temp++;
               })
+              if (temp != 0) 
+                women_matches++;
+              women++;
               data[temp]["matches_women"]++;
             }
             // male
@@ -334,11 +344,21 @@ MatchVis.prototype.filterAndAggregate = function(_filter){
                 if (d.match == 1) 
                   temp++;
               })
+              if (temp != 0)
+                men_matches++;
+              men++;
               data[temp]["matches_men"]++;
             }
           }
         })
 
-    console.log(data)
+    var matches = women_matches+men_matches;
+    var people = women+men
+
+    this.matchElement.html(matches+"/"+people+" people got at least one match "+
+      "("+d3.round(matches/people*100,1)+"%); "+women_matches+"/"+women+
+      " women ("+d3.round(women_matches/women*100,1)+"%); "+men_matches+
+      "/"+men+ " men ("+d3.round(men_matches/men*100,1)+"%)");
+
     return data;
 }

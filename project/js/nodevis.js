@@ -11,7 +11,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     this.width = this.w/2.2;
     this.height = 500;
-    this.smallwidth = this.w*0.125;
+    this.smallwidth = this.w*0.14;
     this.smallheight = 200;
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
@@ -226,7 +226,7 @@ NodeVis.prototype.initVis = function(){
 
     this.toptext = that.smallsvg.append("text")
       .attr('fill', that.textcolor)
-      .text('node info')
+      .text('individual information')
       .attr('y', 20)
       .attr('x', that.smallwidth/2)
       .attr('text-anchor', "middle");
@@ -260,7 +260,7 @@ NodeVis.prototype.initVis = function(){
         .append("text")
         .attr("fill", that.textcolor)
         .text(function (d) {return d})
-        .attr("y", function (d, i) {return i * 20 + 40})
+        .attr("y", function (d, i) {return i * 20 + 38})
         .attr("x", 16)
         .attr("text-anchor", "start")
         .attr("id", function (d) {return d})

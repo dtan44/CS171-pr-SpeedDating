@@ -4,6 +4,7 @@
 .title {
     height:350px;
     width:100%;
+    margin-top: 8%;
 }
 
 #title-left {
@@ -53,16 +54,20 @@
   display: inline-block;
   padding-right: 14px;  
   padding-left: 14px;  
+  border-radius: 25px;
+  margin-top: 5%
 }
 
-.topbar {
+#topbar {
   position:fixed;
   z-index: 1;
   top: 0;
-  background-color: #FFF6F8;
+  background-color: #FFD3DA;
   padding: 20;
-  height: 12%;
-  width: 100%;
+  height: 16%;
+  width: 110%;
+  padding-left: 10px;
+  margin-bottom: 2px;
 }
 
 div #preferences {
@@ -70,13 +75,23 @@ div #preferences {
 }
 
 div #nodes {
-  margin-top: 80px;
+  margin-top: 40px;
   height: 25%;
 }
 
 div #parallel {
   margin-top: 35px;
   height: 15%;
+}
+
+div .selection {
+  display: inline-block;
+  margin-left: 15px;
+  margin-right: 20px;
+}
+
+div .topwrapper {
+
 }
 
 text {
@@ -194,7 +209,7 @@ div.tooltip {
 
 .personinfo {
     height: 22%;
-    width: 20%;
+    width: 23%;
     float: left;
 }
 
@@ -222,6 +237,7 @@ div.tooltip {
 
 #nodelegend {
   display: inline-block;
+  margin-left: 20%
 }
 
 /*
@@ -245,11 +261,11 @@ div.tooltip {
 }
 
 .dropdown {
-  display: inline-block;;
+  display: block;;
   position: relative;
   overflow: hidden;
-  height: 28px;
-  width: 180px;
+  height: 26px;
+  width: 150px;
   background: #f2f2f2;
   border: 1px solid;
   border-color: white #f7f7f7 whitesmoke;
@@ -260,6 +276,8 @@ div.tooltip {
   background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.06));
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  margin-left: 12px;
+  margin-top: 5px;
 }
 
 .dropdown:before, .dropdown:after {
@@ -290,10 +308,10 @@ div.tooltip {
   position: relative;
   width: 130%;
   margin: 0;
-  padding: 6px 8px 6px 10px;
+  padding: 2px 8px 6px 10px;
   height: 28px;
   line-height: 14px;
-  font-size: 12px;
+  font-size: 10px;
   color: #62717a;
   text-shadow: 0 1px white;
   background: #f2f2f2; /* Fallback for IE 8 */

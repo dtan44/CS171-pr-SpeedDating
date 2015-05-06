@@ -7,8 +7,10 @@ PrefVis = function(_parentElement, _data, _selectionElement){
         wave: null
     };
 
+    this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     this.margin = {top: 50, right: 0, bottom: 100, left: 80},
-    this.width = 700 - this.margin.left - this.margin.right,
+    this.width = this.w*.4 - this.margin.left - this.margin.right,
     this.height = 500 - this.margin.top - this.margin.bottom;
 
     this.initVis();
@@ -397,7 +399,7 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       });
     });
 
-    this.selectionElement.html(count_men+count_women+" out of 449 people");
+    this.selectionElement.html(count_men+count_women+"/449 people");
 
     return data;
 
