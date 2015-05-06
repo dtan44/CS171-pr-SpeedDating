@@ -11,6 +11,7 @@ FParVis = function(_parentElement, _data, _eventHandler){
     this.eventHandler = _eventHandler;
     this.displayData = [];
     this.highlightData;
+    this.wavenum = 0;
 
     this.selected_races = [];
     this.selected_careers = [];
@@ -20,8 +21,8 @@ FParVis = function(_parentElement, _data, _eventHandler){
 
     this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-    this.margin = {top: 50, right: 10, bottom: 10, left: 5};
-    this.width = this.w/3;
+    this.margin = {top: 60, right: 10, bottom: 10, left: 5};
+    this.width = this.w/3 - 50;
     this.height = 250;
 
 
@@ -51,31 +52,24 @@ FParVis.prototype.initVis = function(){
     this.axis = d3.svg.axis().orient("left");
 
     // filter, aggregate, modify data
-    this.wrangleData();
+    this.wrangleData(that.wavenum);
 
     // call the update method
     this.updateVis();
 };
 
 /**
- * Method to set up the initial visualization data.
+ * Method to set up the initial visualization data for each wave.
+ * @param wave_num -- index of selected wave
  */
-FParVis.prototype.wrangleData= function (filter) {
+FParVis.prototype.wrangleData= function (wave_num) {
 
     var that = this;
 
     // displayData should hold the data which is visualized
     // pretty simple in this case -- no modifications needed
 
-    that.displayData = [
-        {"iid": 1, "gender": 0, "race": "1", "attractive": 5, "sincere": 10, "intelligent": 6, "fun": 7, "ambitious": 10, "share_int": 9},
-        {"iid": 2, "gender": 1, "race": "2", "attractive": 10, "sincere": 7, "intelligent": 8, "fun": 4, "ambitious": 5, "share_int": 2},
-        {"iid": 3, "gender": 1, "race": "3", "attractive": 5, "sincere": 3, "intelligent": 6, "fun": 9, "ambitious": 8, "share_int": 5},
-        {"iid": 4, "gender": 0, "race": "4", "attractive": 10, "sincere": 4, "intelligent": 7, "fun": 3, "ambitious": 2, "share_int": 8}
-    ];
-
-    that.highlightData = {"iid": 2, "gender": 1, "race": "2", "attractive": 10, "sincere": 7, "intelligent": 8, "fun": 4, "ambitious": 5, "share_int": 2}
-
+    this.onSelectionChange(that.data[wave_num].values[0].iid, that.data[wave_num].values);
 };
 
 /**
@@ -106,23 +100,28 @@ FParVis.prototype.updateVis = function() {
         .attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
-                (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
-                (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
-                return "greenyellow"
+            if (d.iid == 600) {
+                return "indigo"
             }
             else {
-                if (d.iid == that.highlightData.iid) {
-                    if (d.gender == 1) {
-                        return "midnightblue"
-                    }
-                    else return "crimson"
+                if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
+                    (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
+                    (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
+                    return "greenyellow"
                 }
                 else {
-                    if (d.gender == 1) {
-                        return "powderblue"
+                    if (d.iid == that.highlightData.iid) {
+                        if (d.gender == 1) {
+                            return "midnightblue"
+                        }
+                        else return "crimson"
                     }
-                    else return "lightpink"
+                    else {
+                        if (d.gender == 1) {
+                            return "powderblue"
+                        }
+                        else return "lightpink"
+                    }
                 }
             }
         })
@@ -198,6 +197,36 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
         }
     }
 
+    // Calculates average line
+    var avg_attr = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].attractive)})
+        .reduce(function (x,y) {return x + y});
+    var avg_sinc = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].sincere)})
+        .reduce(function (x,y) {return x + y});
+    var avg_intel = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].intelligent)})
+        .reduce(function (x,y) {return x + y});
+    var avg_fun = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].fun)})
+        .reduce(function (x,y) {return x + y});
+    var avg_amb = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].ambitious)})
+        .reduce(function (x,y) {return x + y});
+    var avg_shar = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].shared_interests)})
+        .reduce(function (x,y) {return x + y});
+
+    var average = {
+        "iid": 600,
+        "gender": 0,
+        "race": "",
+        "career": "",
+        "goal": "",
+        "attractive": avg_attr / that.displayData.length,
+        "sincere": avg_sinc / that.displayData.length,
+        "intelligent": avg_intel / that.displayData.length,
+        "fun": avg_fun / that.displayData.length,
+        "ambitious": avg_amb / that.displayData.length,
+        "shared_interests": avg_shar / that.displayData.length
+    };
+
+    that.displayData.push(average);
+
     // Creates line data for the selected node
     for (var i = 0; i <wave_peep.length; i++) {
         if (wave_peep[i]["iid"] == node_id) {
@@ -262,7 +291,18 @@ FParVis.prototype.onGoalChange= function (goals) {
 
     that.selected_goals = goals;
 
-    console.log(that.selected_goals);
-
     this.updateVis();
 };
+
+/*
+ * Updates parcoords when a wave changes
+ * @param wave_num -- index of selected wave
+ */
+FParVis.prototype.onWaveChange= function (wave_num) {
+
+    var that = this;
+
+    that.wavenum = wave_num;
+
+    this.wrangleData(that.wavenum);
+}

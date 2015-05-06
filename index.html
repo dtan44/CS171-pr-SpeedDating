@@ -18,85 +18,49 @@
 
     <!-- vis classes-->
     <script src = "js/prefvis.js"></script>
+    <script src = "js/matchvis.js"></script>
     <script src = "js/nodevis.js"></script>
     <script src = "js/mparvis.js"></script>
     <script src = "js/fparvis.js"></script>
 
 </head>
 <body>
-    <!-- Title block -->
-    <div class="title">
-        <div class="col-md-4" id="title-left">
-            <h1> Speed Dating </h1>
-            <img src="image/couple.png" alt="Couple" style="width:200px; height:200px">
-        </div>
-        <div class="col-md-6 highlight" id="title-right">
-            <br><br>
-            <p> Still single? Haven't been successful in getting a match at a speed dating event? Learn the secrets to success in speed dating here. Find out what the opposite gender is looking for and explore why some people get matches and others don't. Become a master at speed dating, and INSERT SOMETHING CORNY HERE.
-            </p>
-            <p> The first visualization shows you what people look for in the opposite gender and what people think the opposite gender looks for. (You can filter by race, occupation, and goal and the people who fit the criteria will be highlighted in the subsequent visualizations.) The second visualization shows you successful matches in a particular wave. (You can click on specific people and information about the person will appear on the side.) And the third visualizaiton shows you (1) preferences of the selected person from the second visualization compared to people of the same gender and (2) how that person views him/herself compared to how people of the opposite gender view him/her. (Clicking on a line and will highlighted the person in the second visualization.) Follow our narrative and click on the highlighted words to explore the relationships.
-        </div>
-    </div>
-
-    <div class="horz_divider">
-    </div>
-
-    <!-- Narrative block -->
-    <div class="left_column">
-        <div class="vert_divider"></div>
-
-        <div class="col-md-9" id='preferences'>
-            <p> Participants were asked to distribute 100 points among 6 attributes, giving more points to those attributes that were more important to them in a potential date. On average, women weighted the attributes relatively evenly, with intelligence the most and ambition the least. Men weighted attractive the most and ambition the least. Interesting, both genders thought the opposite gender would weight attractive more heavily and sincere and intelligent less.
-            </p>
-        </div>
-        <div class="col-md-9" id='nodes'>
-            <p> There were 17 total speed dating sessions beginning from October 2002 and ending on April 2004. In each session, males rotated through the stations while females stayed stationary.
-            </p>
-        </div>
-        <div class="col-md-9" id='parallel'>
-            <p>
-            </p>
-        </div>
-    </div>
-
-    <!-- Visualization block -->
-    <div class="right_column">
-        <div class ="row">
+    <div class ="row" id="topbar">
+        <div class="topwrapper">
             <div class="col-md-12">
                 Filter by Race:
-                <label><input class="filter_race" type="checkbox" name="Black" value="1"></input> African American </label>
-                <label><input class="filter_race" type="checkbox" name="European" value="2"></input> Caucasian-American </label>
-                <label><input class="filter_race" type="checkbox" name="Latino" value="3"></input> Latino/Hispanic </label>
-                <label><input class="filter_race" type="checkbox" name="Asian" value="4"></input> Asian </label>
-                <label><input class="filter_race" type="checkbox" name="Other" value="6"></input> Other </label>
+                <label><input class="filter_race" type="checkbox" name="Black" id="Black" value="1"> African American </label>
+                <label><input class="filter_race" type="checkbox" name="European" value="2"> Caucasian-American </label>
+                <label><input class="filter_race" type="checkbox" name="Latino" value="3"> Latino/Hispanic </label>
+                <label><input class="filter_race" type="checkbox" name="Asian" value="4"> Asian </label>
+                <label><input class="filter_race" type="checkbox" name="Other" value="6"> Other </label>
+            
             <br>
 
             Filter by Occupation:
-                <label><input class="filter_career" type="checkbox" name="Lawyer" value="1"></input> Lawyer </label>
-                <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2"></input> Academia </label>
-                <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4"></input> Medicine </label>
-                <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"></input> Entertainment </label>
-                <label><input class="filter_career" type="checkbox" name="Business" value="7"></input> Business </label>
-                <label><input class="filter_career" type="checkbox" name="International" value="9"></input> Humanitarian Affairs </label>
+                <label><input class="filter_career" type="checkbox" name="Lawyer" value="1">Lawyer </label>
+                <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2">Academia </label>
+                <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4">Medicine </label>
+                <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"> Entertainment </label>
+                <label><input class="filter_career" type="checkbox" name="Business" value="7">Business </label>
+                <label><input class="filter_career" type="checkbox" name="International" value="9"> Humanitarian Affairs </label>
+            
             <br>
 
             Filter by Goal:
-                <label><input class="filter_goal" type="checkbox" name="Fun" value="1"></input> For Fun </label>
-                <label><input class="filter_goal" type="checkbox" name="Meet" value="2"></input> Meet new people </label>
-                <label><input class="filter_goal" type="checkbox" name="Date" value="3"></input> Get a date </label>
-                <label><input class="filter_goal" type="checkbox" name="Serious" value="4"></input> Find serious relationship </label>
-                <label><input class="filter_goal" type="checkbox" name="Say" value="5"></input> To say I did it </label>
-                <label><input class="filter_goal" type="checkbox" name="Other" value="6"></input> Other </label>
+                <label><input class="filter_goal" type="checkbox" name="Fun" value="1"> For Fun </label>
+                <label><input class="filter_goal" type="checkbox" name="Meet" value="2"> Meet new people </label>
+                <label><input class="filter_goal" type="checkbox" name="Date" value="3"> Get a date </label>
+                <label><input class="filter_goal" type="checkbox" name="Serious" value="4"> Find serious relationship </label>
+                <label><input class="filter_goal" type="checkbox" name="Say" value="5"> To say I did it </label>
+                <label><input class="filter_goal" type="checkbox" name="Other" value="6"> Other </label>
             </div>
-
-            <div class="col-md-8">
+            <div class="selection">
                 <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
             </div>
-        </div>
-
-        <div id="prefVis"></div>
-
-        <div class="col-md-9" id="nodevis">
+            <div class="selection">
+                <b>success rate:</b> <span id="matchInfo" style="background-color: lightgray"></span>
+            </div>
             <div class="dropdown dropdown-dark">
                 <select name="two" class="dropdown-select" onchange="changewave(value)">
                     <option value="0">Select a Dating Session</option>
@@ -119,6 +83,100 @@
                     <option value="21">17</option>
                 </select>
             </div>
+        </div>
+    </div>
+
+    <!-- Title block -->
+    <div class="title">
+        <div class="col-md-4" id="title-left">
+            <h1> Speed Dating </h1>
+            <img src="image/couple.png" alt="Couple" style="width:200px; height:200px">
+        </div>
+        <div class="col-md-6 highlight" id="title-right">
+            <br><br>
+            <p> Still single? Haven't been successful in getting a match at a speed dating event? Learn the secrets to success in speed dating here. Find out what the opposite gender is looking for and explore why some people get matches and others don't. Become a master at speed dating, and INSERT SOMETHING CORNY HERE.
+            </p>
+            <p> The first visualization shows you what people look for in the opposite gender and what people think the opposite gender looks for. (You can filter by race, occupation, and goal and the people who fit the criteria will be highlighted in the subsequent visualizations.) The second visualization shows you successful matches in a particular wave. (You can click on specific people and information about the person will appear on the side.) And the third visualizaiton shows you (1) preferences of the selected person from the second visualization compared to people of the same gender and (2) how that person views him/herself compared to how people of the opposite gender view him/her. (Clicking on a line and will highlighted the person in the second visualization.) Follow our narrative and click on the highlighted words to explore the relationships.
+        </div>
+    </div>
+
+    <div class="horz_divider">
+    </div>
+
+    <!-- Narrative block -->
+    <div class="left_column">
+        <div class="vert_divider"></div>
+
+        <div class="col-md-9" id='preferences'>
+            <p>
+                Participants were asked to distribute 100 points among 6 attributes, giving more points to those
+                attributes that were more important to them in a potential date. On average, <mark onclick="text_click()">
+                women weighted the attributes relatively evenly</mark>, with intelligence the most and ambition the least.
+                Men weighted attractive
+                the most and ambition the least. Interestingly, both genders thought the opposite gender would weight
+                attractive more heavily and sincere and intelligent less.
+            </p>
+            <p>
+                Among these speed daters, lawyers seem to have the highests overall success rate. Surpringly enough, a majority of the lawyers are here just "for fun". What does that imply?
+            </p>
+            <p>
+                As for the different races, Asians and "Others" have the lowest success rates. However, a plurality of Asians do work in academia... Are more implications arising?
+            </p>
+            <p>
+                In general, most people came to speed dating just to have fun or meet new people. Nevertheless, that's not necessarily a bad thing for people looking for love as those that came with the intention of getting a date or finding a serious relationship have the highest success rates!
+            </p>
+            <p>
+                There were 17 total speed dating sessions beginning from October 2002 and ending on April 2004.
+                In each session, males rotated through the stations while females stayed stationary. Some sessions were
+                <mark onclick="wave_success()">highly successful</mark> while in comparison, other waves were
+                <mark onclick="wave_fail()">total misses</mark>.
+            </p>
+            <p>
+                Looking at individual preferences, there does not seem to be a discernible pattern to how individuals
+                compare to others within their own speed dating session. While one person may value one trait higher than
+                others, it forces them to weight other traits less. However, looking at an individual's opinions about
+                themselves leads to some interesting results.
+
+                <br><br>
+                Individuals who attend speed dating events
+                <mark onclick="high_esteem()">tend to have high self esteem</mark> rarely rating themselves below 5.
+                People are also <mark onclick="forgiving()">very forgiving of others</mark>, rarely rating others below
+                5 as well.
+
+                <br><br>
+                Also of note, is that individual's who receive no matches often rate themselves much higher than what
+                their fellow speed daters rated him or her. Take for example the
+                <mark onclick="sess_10()">one person in session 10</mark> who got no matches or the
+                <mark onclick="sess_11()">only dater in session 11</mark> who didn't get a match. Unlucky or unlikable?
+                
+                <br><br>
+                Of course, the biggest question we are asking is, who got the most matches? And the winner is
+                <mark onclick="female524()">female #524</mark> of session 17, who successfully matched with 14 other
+                participants! What did she value the most? Intelligence! And what did other guys think of her? Most
+                liked her, though 1 rated her 0 for every trait, while another didn't believe in her sincerity or
+                ambition... I guess you getting 14 matches isn't ambitious enough.
+            </p>
+
+        </div>
+    </div>
+
+    <!-- Visualization block -->
+    <div class="right_column">
+        <div id="barcharts">
+            <div id="prefVis">
+                <h6 align="center">What One Looks for in the Opposite Gender</h6>
+                <h6 align="center">vs What One Thinks the Opposite Gender Looks for</h6>
+                <br>
+            </div>
+            <div id="matchVis">
+                <h6 align="center">Number of Matches</h6>
+                <br>
+            </div>
+        </div>
+        
+        <h4 style="text-align:center;"><b>Participants in Each Dating Sessions</b></h4>
+
+        <div class="col-md-9" id="nodevis">
             <section id="nodelegend">
                 <div class="legendbox">
                     <img src="image/boy.png" height="30" width="30">
@@ -139,14 +197,13 @@
         </div>
 
         <div class="personinfo">
-            <div class="text" align="center">Personal Info</div>
             <div id="personalbox"></div>
             <div id="linebox"></div>
         </div>
 
         <div class="inner_row">
-            <div class="parcoordleft" id="mparVis"></div>
-            <div class="parcoordright" id="fparVis"></div>
+            <div class="parcoordleft" id="mparVis"><center>Personal Preferences vs Others of the Same Gender</center></div>
+            <div class="parcoordright" id="fparVis"><center>Opinion of Self vs Impression Left on Others</center></div>
         </div>
     </div>
 	<script>
@@ -162,14 +219,15 @@
       	var MyEventHandler = new Object();
 
 	     	pref_vis = new PrefVis(d3.select("#prefVis"), prefData, d3.select("#selectionInfo"));
+            match_vis = new MatchVis(d3.select("#matchVis"), prefData, d3.select("#matchInfo"));
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
             mpar_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
             fpar_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
 
 	     	$(MyEventHandler).bind("nodeclick", function(event, id, wave_peep, node, wavenum){
 				node_vis.updateInfo(node);
-                mpar_vis.onSelectionChange(id,wave_peep, wavenum);
-                fpar_vis.onSelectionChange(id,wave_peep, wavenum)
+                mpar_vis.onSelectionChange(id, wave_peep, wavenum);
+                fpar_vis.onSelectionChange(id, wave_peep, wavenum);
 	     	});
 
             $(MyEventHandler).bind("lineclick", function (event, iid) {
@@ -307,43 +365,93 @@
 
     // update chart if filter race button is changed
     d3.selectAll(".filter_race").on("change", function() {
-        update_races();
-        pref_vis.onRaceChange(races);
-        node_vis.onRaceChange(races);
-        mpar_vis.onRaceChange(races);
-        fpar_vis.onRaceChange(races);
+        race_change();
     });
 
     // update chart if filter career button is changed
     d3.selectAll(".filter_career").on("change", function() {
-    	update_careers();
-      	pref_vis.onCareerChange(careers);
-      	node_vis.onCareerChange(careers);
-        mpar_vis.onCareerChange(careers);
-        fpar_vis.onCareerChange(careers);
+    	career_change();
     });
 
 		// update chart if filter goal button is changed
     d3.selectAll(".filter_goal").on("change", function() {
-    	update_goals();
-      	pref_vis.onGoalChange(goals);
-      	node_vis.onGoalChange(goals);
-        mpar_vis.onGoalChange(goals);
-        fpar_vis.onGoalChange(goals);
+    	goal_change();
     });
 
 	function changewave(value) {
-		
-		pref_vis.onSelectionChange(value);
-
-		value = parseInt(value) - 1;
-
-		if (value !== -1) {
-			node_vis.wrangleData(value);
-			node_vis.updateVis();
-            mpar_vis.onWaveChange(value)
-		}
+	    wave_change(value);
 	}
+
+    function race_change() {
+        update_races();
+        pref_vis.onRaceChange(races);
+        match_vis.onRaceChange(races);
+        node_vis.onRaceChange(races);
+        mpar_vis.onRaceChange(races);
+        fpar_vis.onRaceChange(races);
+    }
+
+    function career_change() {
+        update_careers();
+        pref_vis.onCareerChange(careers);
+        match_vis.onCareerChange(careers);
+        node_vis.onCareerChange(careers);
+        mpar_vis.onCareerChange(careers);
+        fpar_vis.onCareerChange(careers);
+    }
+
+    function goal_change() {
+        update_goals();
+        pref_vis.onGoalChange(goals);
+        match_vis.onGoalChange(goals);
+        node_vis.onGoalChange(goals);
+        mpar_vis.onGoalChange(goals);
+        fpar_vis.onGoalChange(goals);
+    }
+
+    function wave_change(value) {
+        pref_vis.onSelectionChange(value);
+        match_vis.onSelectionChange(value);
+
+        value = parseInt(value) - 1;
+
+        if (value !== -1) {
+            node_vis.wrangleData(value);
+            node_vis.updateVis();
+            mpar_vis.onWaveChange(value);
+            fpar_vis.onWaveChange(value);
+        }
+    }
+
+    function text_click() {
+        document.getElementById("Black").checked = true;
+    }
+
+    function wave_success() {
+        wave_change(14)
+    }
+
+    function wave_fail() {
+        wave_change(18)
+    }
+
+    function high_esteem() {
+        wave_change(11)
+    }
+
+    function forgiving() {
+        wave_change(19)
+    }
+
+    function sess_10() {
+        wave_change(14);
+        node_vis.nodePass(347, 13);
+    }
+
+    function sess_11() {
+        wave_change(15);
+        node_vis.nodePass(405, 14);
+    }
 
 	</script>
 </body>

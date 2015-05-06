@@ -11,7 +11,7 @@ NodeVis = function(_parentElement, _data, _eventHandler){
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     this.width = this.w/2.2;
     this.height = 500;
-    this.smallwidth = this.w*0.125;
+    this.smallwidth = this.w*0.14;
     this.smallheight = 200;
     this.graph = {nodes: [], links: []};
     this.nb_nodes = this.data.length;
@@ -226,7 +226,7 @@ NodeVis.prototype.initVis = function(){
 
     this.toptext = that.smallsvg.append("text")
       .attr('fill', that.textcolor)
-      .text('node info')
+      .text('individual information')
       .attr('y', 20)
       .attr('x', that.smallwidth/2)
       .attr('text-anchor', "middle");
@@ -260,7 +260,7 @@ NodeVis.prototype.initVis = function(){
         .append("text")
         .attr("fill", that.textcolor)
         .text(function (d) {return d})
-        .attr("y", function (d, i) {return i * 20 + 40})
+        .attr("y", function (d, i) {return i * 20 + 38})
         .attr("x", 16)
         .attr("text-anchor", "start")
         .attr("id", function (d) {return d})
@@ -442,23 +442,6 @@ NodeVis.prototype.updateVis = function(){
     this.updateNode()
 };
 
-NodeVis.prototype.updateInfo = function(node){
-    var gender = (node.gender == '0') ? 'Female' : 'Male';
-    var race = (node.race != '') ? that.race[node.race - 1]: 'Undisclosed';
-    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
-    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
-    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
-
-    this.smallsvg.select('#ID').text('ID: ' + node.iid)
-    this.smallsvg.select('#Age').text('Age: ' + node.age)
-    this.smallsvg.select('#Sex').text('Sex: ' + gender)
-    this.smallsvg.select('#Race').text('Race: ' + race)
-    this.smallsvg.select('#Occupation').text('Occupation: ' + occupation)
-    this.smallsvg.select('#Goal').text('Goal: ' + goal)
-    this.smallsvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate)
-
-};
-
 NodeVis.prototype.onRaceChange = function(races){
 
     var that = this;
@@ -596,6 +579,17 @@ NodeVis.prototype.filter = function(wave){
     return this.data[wave]['values'];
 }
 
+NodeVis.prototype.nodePass = function(id, wavenum){
+    var peeps = this.data[wavenum]['values']
+    var node = [];
+    peeps.forEach(function(d,i){;if (parseInt(d.iid) == id) {node.push(d)}})
+    node_vis.wrangleData(wavenum);
+    node_vis.updateVis();
+
+    this.nodeclick(node[0])
+
+}
+
 NodeVis.prototype.linkClick = function(iid){
 
     var that = this;
@@ -618,15 +612,37 @@ NodeVis.prototype.linkClick = function(iid){
     var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
     var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
     var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
+    var color = (node.gender == '0') ? '#E6A4AE': '#8DB3B8';
 
-    this.linesvg.select('#ID').text('ID: ' + node.iid);
-    this.linesvg.select('#Age').text('Age: ' + node.age);
-    this.linesvg.select('#Sex').text('Sex: ' + gender);
-    this.linesvg.select('#Race').text('Race: ' + race);
-    this.linesvg.select('#Occupation').text('Occupation: ' + occupation);
-    this.linesvg.select('#Goal').text('Goal: ' + goal);
-    this.linesvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate);
+    this.linesvg.select('#ID').text('ID: ' + node.iid).attr("fill", color)
+    this.linesvg.select('#Age').text('Age: ' + node.age).attr("fill", color)
+    this.linesvg.select('#Sex').text('Sex: ' + gender).attr("fill", color)
+    this.linesvg.select('#Race').text('Race: ' + race).attr("fill", color)
+    this.linesvg.select('#Occupation').text('Occupation: ' + occupation).attr("fill", color)
+    this.linesvg.select('#Goal').text('Goal: ' + goal).attr("fill", color)
+    this.linesvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate).attr("fill", color)
 }
+
+
+
+NodeVis.prototype.updateInfo = function(node){
+    var gender = (node.gender == '0') ? 'Female' : 'Male';
+    var race = (node.race != '') ? that.race[node.race - 1]: 'Undisclosed';
+    var occupation = (node.career_c != '') ? that.occupation[node.career_c - 1]: 'Undisclosed';
+    var goal = (node.goal != '') ? that.goal[node.goal - 1]: 'Undisclosed';
+    var undergraduate = (node.undergra != '') ? node.undergra: 'Undisclosed';
+    var color = (node.gender == '0') ? '#E6A4AE': '#8DB3B8';
+
+
+    this.smallsvg.select('#ID').text('ID: ' + node.iid).attr("fill", color)
+    this.smallsvg.select('#Age').text('Age: ' + node.age).attr("fill", color)
+    this.smallsvg.select('#Sex').text('Sex: ' + gender).attr("fill", color)
+    this.smallsvg.select('#Race').text('Race: ' + race).attr("fill", color)
+    this.smallsvg.select('#Occupation').text('Occupation: ' + occupation).attr("fill", color)
+    this.smallsvg.select('#Goal').text('Goal: ' + goal).attr("fill", color)
+    this.smallsvg.select('#Alma-Mater').text('Alma Mater: ' + undergraduate).attr("fill", color)
+
+};
 
 /**
  * Helper Functions
