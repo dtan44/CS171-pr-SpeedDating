@@ -198,18 +198,35 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
     }
 
     // Calculates average line
-    var avg_attr = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].attractive)})
-        .reduce(function (x,y) {return x + y});
-    var avg_sinc = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].sincere)})
-        .reduce(function (x,y) {return x + y});
-    var avg_intel = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].intelligent)})
-        .reduce(function (x,y) {return x + y});
-    var avg_fun = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].fun)})
-        .reduce(function (x,y) {return x + y});
-    var avg_amb = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].ambitious)})
-        .reduce(function (x,y) {return x + y});
-    var avg_shar = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].shared_interests)})
-        .reduce(function (x,y) {return x + y});
+    var avg_attr = [];
+    var avg_sinc = [];
+    var avg_intel = [];
+    var avg_fun = [];
+    var avg_amb = [];
+    var avg_shar = [];
+
+    for (var i = 0; i<that.displayData.length; i++) {
+        if (that.displayData[i].attractive != "") {
+            avg_attr.push(parseInt(that.displayData[i].attractive))
+        }
+        if (that.displayData[i].sincere != "") {
+            avg_sinc.push(parseInt(that.displayData[i].sincere))
+        }
+        if (that.displayData[i].intelligent != "") {
+            avg_intel.push(parseInt(that.displayData[i].intelligent))
+        }
+        if (that.displayData[i].fun != "") {
+            avg_fun.push(parseInt(that.displayData[i].fun))
+        }
+        if (that.displayData[i].ambitious != "") {
+            avg_amb.push(parseInt(that.displayData[i].ambitious))
+        }
+        if (that.displayData[i].shared_interests != "") {
+            avg_shar.push(parseInt(that.displayData[i].shared_interests))
+        }
+    }
+
+    console.log(avg_attr,avg_sinc,avg_intel,avg_fun,avg_amb,avg_shar)
 
     var average = {
         "iid": 600,
@@ -217,15 +234,17 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
         "race": "",
         "career": "",
         "goal": "",
-        "attractive": avg_attr / that.displayData.length,
-        "sincere": avg_sinc / that.displayData.length,
-        "intelligent": avg_intel / that.displayData.length,
-        "fun": avg_fun / that.displayData.length,
-        "ambitious": avg_amb / that.displayData.length,
-        "shared_interests": avg_shar / that.displayData.length
+        "attractive": avg_attr.reduce(function (x,y) {return x + y}) / avg_attr.length,
+        "sincere": avg_sinc.reduce(function (x,y) {return x + y}) / avg_sinc.length,
+        "intelligent": avg_intel.reduce(function (x,y) {return x + y}) / avg_intel.length,
+        "fun": avg_fun.reduce(function (x,y) {return x + y}) / avg_fun.length,
+        "ambitious": avg_amb.reduce(function (x,y) {return x + y}) / avg_amb.length,
+        "shared_interests": avg_shar.reduce(function (x,y) {return x + y}) / avg_shar.length
     };
 
     that.displayData.push(average);
+
+    console.log(average)
 
     // Creates line data for the selected node
     for (var i = 0; i <wave_peep.length; i++) {
