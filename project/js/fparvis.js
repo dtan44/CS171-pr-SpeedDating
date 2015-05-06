@@ -70,7 +70,7 @@ FParVis.prototype.wrangleData= function (wave_num) {
     // displayData should hold the data which is visualized
     // pretty simple in this case -- no modifications needed
 
-    this.onSelectionChange(that.data[0].values[wave_num].iid, that.data[wave_num].values, wave_num);
+    this.onSelectionChange(that.data[wave_num].values[0].iid, that.data[wave_num].values);
 };
 
 /**
@@ -101,23 +101,28 @@ FParVis.prototype.updateVis = function() {
         .attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
-                (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
-                (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
-                return "greenyellow"
+            if (d.iid == 600) {
+                return "indigo"
             }
             else {
-                if (d.iid == that.highlightData.iid) {
-                    if (d.gender == 1) {
-                        return "midnightblue"
-                    }
-                    else return "crimson"
+                if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
+                    (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
+                    (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
+                    return "greenyellow"
                 }
                 else {
-                    if (d.gender == 1) {
-                        return "powderblue"
+                    if (d.iid == that.highlightData.iid) {
+                        if (d.gender == 1) {
+                            return "midnightblue"
+                        }
+                        else return "crimson"
                     }
-                    else return "lightpink"
+                    else {
+                        if (d.gender == 1) {
+                            return "powderblue"
+                        }
+                        else return "lightpink"
+                    }
                 }
             }
         })
@@ -192,6 +197,38 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
             }
         }
     }
+
+    // Calculates average line
+    var avg_attr = d3.range(that.displayData.length).map(function (d) {return if (parseInt(that.displayData[d].attractive)})
+        .reduce(function (x,y) {return x + y});
+    var avg_sinc = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].sincere)})
+        .reduce(function (x,y) {return x + y});
+    var avg_intel = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].intelligent)})
+        .reduce(function (x,y) {return x + y});
+    var avg_fun = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].fun)})
+        .reduce(function (x,y) {return x + y});
+    var avg_amb = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].ambitious)})
+        .reduce(function (x,y) {return x + y});
+    var avg_shar = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].shared_interests)})
+        .reduce(function (x,y) {return x + y});
+
+    var average = {
+        "iid": 600,
+        "gender": 0,
+        "race": "",
+        "career": "",
+        "goal": "",
+        "attractive": avg_attr / that.displayData.length,
+        "sincere": avg_sinc / that.displayData.length,
+        "intelligent": avg_intel / that.displayData.length,
+        "fun": avg_fun / that.displayData.length,
+        "ambitious": avg_amb / that.displayData.length,
+        "shared_interests": avg_shar / that.displayData.length
+    };
+
+    console.log(average, avg_shar)
+
+    that.displayData.push(average);
 
     // Creates line data for the selected node
     for (var i = 0; i <wave_peep.length; i++) {

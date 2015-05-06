@@ -2,7 +2,7 @@
  * Page Layout CSS
  */
 .title {
-    height:300px;
+    height:350px;
     width:100%;
 }
 
@@ -93,14 +93,13 @@ body {
 
 p {
   background-color: #FFD3DA;
-  border-radius: 25px;
+  border-radius: 10px;
   padding: 10px; 
 }
 
 /*
  * Bar Charts CSS
  */
-
 #prefVis {
   width: 60%;
   float: left;

@@ -18,7 +18,7 @@ MParVis = function(_parentElement, _data, _eventHandler){
     this.selected_goals = [];
 
     this.cats = ["Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests"];
-    this.legend_cats = ["hover", "filtered", "female", "male"];
+    this.legend_cats = ["average", "hover", "filtered", "female", "male"];
 
     this.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     this.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
@@ -58,11 +58,11 @@ MParVis.prototype.initVis = function(){
     // Creates the legend
     var color = d3.scale.ordinal()
         .domain(that.legend_cats)
-        .range(["gold", "greenyellow", "lightpink", "powderblue"]);
+        .range(["indigo", "gold", "greenyellow", "lightpink", "powderblue"]);
 
     var stroke = d3.scale.ordinal()
         .domain(that.legend_cats)
-        .range(["gold", "greenyellow", "crimson", "midnightblue"]);
+        .range(["indigo", "gold", "greenyellow", "crimson", "midnightblue"]);
 
     var legend = this.svg.selectAll("#parcoordlegend")
         .data(that.legend_cats)
@@ -135,23 +135,28 @@ MParVis.prototype.updateVis = function() {
     this.path_enter.attr("d", path)
         .attr("class", "foreground")
         .attr("stroke", function (d) {
-            if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
-                (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
-                (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
-                return "greenyellow"
+            if (d.iid == 600) {
+                return "indigo"
             }
             else {
-                if (d.iid == that.highlightData.iid) {
-                    if (d.gender == 1) {
-                        return "midnightblue"
-                    }
-                    else return "crimson"
+                if (((that.selected_races.indexOf(d.race) != -1 && d.race != "") ||
+                    (that.selected_careers.indexOf(d.career) != -1 && d.career != "") ||
+                    (that.selected_goals.indexOf(d.goal) != -1 && d.goal != "")) && d.iid != that.highlightData.iid) {
+                    return "greenyellow"
                 }
                 else {
-                    if (d.gender == 1) {
-                        return "powderblue"
+                    if (d.iid == that.highlightData.iid) {
+                        if (d.gender == 1) {
+                            return "midnightblue"
+                        }
+                        else return "crimson"
                     }
-                    else return "lightpink"
+                    else {
+                        if (d.gender == 1) {
+                            return "powderblue"
+                        }
+                        else return "lightpink"
+                    }
                 }
             }
         })
@@ -246,7 +251,37 @@ MParVis.prototype.onSelectionChange= function (node_id, wave_peep, wave_num){
         }
     }
 
-    that.displayData.push(that.highlightData);
+    // Calculates average line
+    var avg_attr = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].attractive)})
+        .reduce(function (x,y) {return x + y});
+    var avg_sinc = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].sincere)})
+        .reduce(function (x,y) {return x + y});
+    var avg_intel = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].intelligent)})
+        .reduce(function (x,y) {return x + y});
+    var avg_fun = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].fun)})
+        .reduce(function (x,y) {return x + y});
+    var avg_amb = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].ambitious)})
+        .reduce(function (x,y) {return x + y});
+    var avg_shar = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].shared_interests)})
+        .reduce(function (x,y) {return x + y});
+
+    var average = {
+        "iid": 600,
+        "gender": 0,
+        "race": "",
+        "career": "",
+        "goal": "",
+        "attractive": avg_attr / that.displayData.length,
+        "sincere": avg_sinc / that.displayData.length,
+        "intelligent": avg_intel / that.displayData.length,
+        "fun": avg_fun / that.displayData.length,
+        "ambitious": avg_amb / that.displayData.length,
+        "shared_interests": avg_shar / that.displayData.length
+    };
+
+    console.log(average)
+
+    that.displayData.push(that.highlightData, average);
 
     console.log(that.displayData, that.highlightData);
 
