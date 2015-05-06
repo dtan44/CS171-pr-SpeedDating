@@ -32,13 +32,13 @@
                 <label><input class="filter_race" type="checkbox" name="Black" id="Black" value="1"> African American </label>
                 <label><input class="filter_race" type="checkbox" name="European" value="2"> Caucasian-American </label>
                 <label><input class="filter_race" type="checkbox" name="Latino" value="3"> Latino/Hispanic </label>
-                <label><input class="filter_race" type="checkbox" name="Asian" value="4"> Asian </label>
-                <label><input class="filter_race" type="checkbox" name="Other" value="6"> Other </label>
+                <label><input class="filter_race" type="checkbox" name="Asian" id="Asian" value="4"> Asian </label>
+                <label><input class="filter_race" type="checkbox" name="Other" id="Other" value="6"> Other </label>
             
             <br>
 
             Filter by Occupation:
-                <label><input class="filter_career" type="checkbox" name="Lawyer" value="1">Lawyer </label>
+                <label><input class="filter_career" type="checkbox" name="Lawyer" id="Lawyers" value="1">Lawyer </label>
                 <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2">Academia </label>
                 <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4">Medicine </label>
                 <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"> Entertainment </label>
@@ -48,8 +48,8 @@
             <br>
 
             Filter by Goal:
-                <label><input class="filter_goal" type="checkbox" name="Fun" value="1"> For Fun </label>
-                <label><input class="filter_goal" type="checkbox" name="Meet" value="2"> Meet new people </label>
+                <label><input class="filter_goal" type="checkbox" name="Fun" id="Fun" value="1"> For Fun </label>
+                <label><input class="filter_goal" type="checkbox" name="Meet" id="Meet" value="2"> Meet new people </label>
                 <label><input class="filter_goal" type="checkbox" name="Date" value="3"> Get a date </label>
                 <label><input class="filter_goal" type="checkbox" name="Serious" value="4"> Find serious relationship </label>
                 <label><input class="filter_goal" type="checkbox" name="Say" value="5"> To say I did it </label>
@@ -94,7 +94,7 @@
         </div>
         <div class="col-md-6 highlight" id="title-right">
             <br><br>
-            <p> Still single? Haven't been successful in getting a match at a speed dating event? Learn the secrets to success in speed dating here. Find out what the opposite gender is looking for and explore why some people get matches and others don't. Become a master at speed dating, and INSERT SOMETHING CORNY HERE.
+            <p> Still single? Haven't been successful in getting a match at a speed dating event? Learn the secrets to success in speed dating here. Find out what the opposite gender is looking for and explore why some people get matches and others don't.
             </p>
             <p> The first visualization shows you what people look for in the opposite gender and what people think the opposite gender looks for. (You can filter by race, occupation, and goal and the people who fit the criteria will be highlighted in the subsequent visualizations.) The second visualization shows you successful matches in a particular wave. (You can click on specific people and information about the person will appear on the side.) And the third visualizaiton shows you (1) preferences of the selected person from the second visualization compared to people of the same gender and (2) how that person views him/herself compared to how people of the opposite gender view him/her. (Clicking on a line and will highlighted the person in the second visualization.) Follow our narrative and click on the highlighted words to explore the relationships.
         </div>
@@ -117,13 +117,18 @@
                 attractive more heavily and sincere and intelligent less.
             </p>
             <p>
-                Among these speed daters, lawyers seem to have the highests overall success rate. Surpringly enough, a majority of the lawyers are here just "for fun". What does that imply?
+                Among these speed daters, <mark onclick="lawyers()">lawyers seem to have the highest overall success rate</mark>.
+                Surprisingly enough, a majority of the lawyers are here just "for fun". What does that imply?
             </p>
             <p>
-                As for the different races, Asians and "Others" have the lowest success rates. However, a plurality of Asians do work in academia... Are more implications arising?
+                As for the different races, <mark onclick="asian()">Asians</mark> and <mark onclick="others()">"Others"</mark>
+                have the lowest success rates.
             </p>
             <p>
-                In general, most people came to speed dating just to have fun or meet new people. Nevertheless, that's not necessarily a bad thing for people looking for love as those that came with the intention of getting a date or finding a serious relationship have the highest success rates!
+                In general, most people came to speed dating <mark onclick="have_fun()">just to have fun</mark> or
+                <mark onclick="meet_people()">meet new people</mark>. Nevertheless, that's not necessarily a bad thing
+                for people looking for love as those that came with the intention of getting a date or finding a serious
+                relationship have the highest success rates!
             </p>
             <p>
                 There were 17 total speed dating sessions beginning from October 2002 and ending on April 2004.
@@ -148,7 +153,7 @@
                 their fellow speed daters rated him or her. Take for example the
                 <mark onclick="sess_10()">one person in session 10</mark> who got no matches or the
                 <mark onclick="sess_11()">only dater in session 11</mark> who didn't get a match. Unlucky or unlikable?
-                
+
                 <br><br>
                 Of course, the biggest question we are asking is, who got the most matches? And the winner is
                 <mark onclick="female524()">female #524</mark> of session 17, who successfully matched with 14 other
@@ -424,7 +429,10 @@
     }
 
     function text_click() {
-        document.getElementById("Black").checked = true;
+        d3.selectAll("input").attr("checked", "");
+        race_change()
+        goal_change()
+        career_change()
     }
 
     function wave_success() {
@@ -451,6 +459,31 @@
     function sess_11() {
         wave_change(15);
         node_vis.nodePass(405, 14);
+    }
+
+    function lawyers() {
+        document.getElementById("Lawyers").checked = true;
+        career_change();
+    }
+
+    function asian() {
+        document.getElementById("Asian").checked = true;
+        race_change();
+    }
+
+    function others() {
+        document.getElementById("Other").checked = true;
+        race_change();
+    }
+
+    function have_fun() {
+        document.getElementById("Fun").checked = true;
+        goal_change();
+    }
+
+    function meet_people() {
+        document.getElementById("Meet").checked = true;
+        goal_change();
     }
 
 	</script>
