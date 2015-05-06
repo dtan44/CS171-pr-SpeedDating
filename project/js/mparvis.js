@@ -69,7 +69,7 @@ MParVis.prototype.initVis = function(){
         .enter().append("g")
         .attr("class", "legend")
         .attr("transform", function(d, i) {
-            return "translate(" + ((i * -70) - 240) + ", -45)";
+            return "translate(" + ((i * -70) - 100) + ", -45)";
         });
 
     legend.append("rect")
