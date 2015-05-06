@@ -33,6 +33,7 @@
             <label><input class="filter_race" type="checkbox" name="Latino" value="3"> Latino/Hispanic </label>
             <label><input class="filter_race" type="checkbox" name="Asian" value="4"> Asian </label>
             <label><input class="filter_race" type="checkbox" name="Other" value="6"> Other </label>
+        
         <br>
 
         Filter by Occupation:
@@ -42,6 +43,7 @@
             <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"> Entertainment </label>
             <label><input class="filter_career" type="checkbox" name="Business" value="7">Business </label>
             <label><input class="filter_career" type="checkbox" name="International" value="9"> Humanitarian Affairs </label>
+        
         <br>
 
         Filter by Goal:
@@ -53,8 +55,11 @@
             <label><input class="filter_goal" type="checkbox" name="Other" value="6"> Other </label>
         </div>
 
-        <div class="col-md-8">
+        <div class="selection">
             <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
+        </div>
+        <div class="selection">
+            <b>success rate:</b> <span id="matchInfo" style="background-color: lightgray"></span>
         </div>
     </div>
 
@@ -100,12 +105,10 @@
                 <h6 align="center">What One Looks for in the Opposite Gender</h6>
                 <h6 align="center">vs What One Thinks the Opposite Gender Looks for</h6>
                 <br>
-                <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
             </div>
             <div id="matchVis">
                 <h6 align="center">Number of Matches</h6>
                 <br>
-                <b>success rate:</b> <span id="matchInfo" style="background-color: lightgray"></span>
             </div>
         </div>
         
