@@ -1,6 +1,6 @@
-MatchVis = function(_parentElement, _data){
+MatchVis = function(_parentElement, _data, _matchElement){
     this.parentElement = _parentElement;
-    
+    this.matchElement = _matchElement
     this.data = _data;
     this.displayData = [];
     this.filter = {
@@ -317,6 +317,9 @@ MatchVis.prototype.filterAndAggregate = function(_filter){
       data.push(temp);
     }
 
+    var people = 0;
+    var num_matches = 0;
+
     filtered_data
         .forEach(function(c) {
           if (c.wave < 6 || c.wave > 9) {
@@ -327,6 +330,9 @@ MatchVis.prototype.filterAndAggregate = function(_filter){
                 if (d.match == 1)
                   temp++;
               })
+              if (temp != 0) 
+                num_matches++;
+              people++;
               data[temp]["matches_women"]++;
             }
             // male
@@ -341,6 +347,7 @@ MatchVis.prototype.filterAndAggregate = function(_filter){
           }
         })
 
-    console.log(data)
+    this.matchElement.html(num_matches+"/"+people+" people got a least one match"+"\n("+d3.round(num_matches/people*100,1)+"%)");
+
     return data;
 }

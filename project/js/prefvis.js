@@ -399,7 +399,7 @@ PrefVis.prototype.filterAndAggregate = function(_filter){
       });
     });
 
-    this.selectionElement.html(count_men+count_women+" out of 449 people");
+    this.selectionElement.html(count_men+count_women+"/449 people");
 
     return data;
 
