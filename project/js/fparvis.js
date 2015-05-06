@@ -13,7 +13,6 @@ FParVis = function(_parentElement, _data, _eventHandler){
     this.highlightData;
     this.wavenum = 0;
 
-
     this.selected_races = [];
     this.selected_careers = [];
     this.selected_goals = [];
@@ -199,7 +198,7 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
     }
 
     // Calculates average line
-    var avg_attr = d3.range(that.displayData.length).map(function (d) {return if (parseInt(that.displayData[d].attractive)})
+    var avg_attr = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].attractive)})
         .reduce(function (x,y) {return x + y});
     var avg_sinc = d3.range(that.displayData.length).map(function (d) {return parseInt(that.displayData[d].sincere)})
         .reduce(function (x,y) {return x + y});
@@ -225,8 +224,6 @@ FParVis.prototype.onSelectionChange= function (node_id, wave_peep){
         "ambitious": avg_amb / that.displayData.length,
         "shared_interests": avg_shar / that.displayData.length
     };
-
-    console.log(average, avg_shar)
 
     that.displayData.push(average);
 
@@ -308,4 +305,4 @@ FParVis.prototype.onWaveChange= function (wave_num) {
     that.wavenum = wave_num;
 
     this.wrangleData(that.wavenum);
-};
+}

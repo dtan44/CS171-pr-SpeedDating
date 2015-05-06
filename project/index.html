@@ -29,7 +29,7 @@
         <div class="topwrapper">
             <div class="col-md-12">
                 Filter by Race:
-                <label><input class="filter_race" type="checkbox" name="Black" value="1"> African American </label>
+                <label><input class="filter_race" type="checkbox" name="Black" id="Black" value="1"> African American </label>
                 <label><input class="filter_race" type="checkbox" name="European" value="2"> Caucasian-American </label>
                 <label><input class="filter_race" type="checkbox" name="Latino" value="3"> Latino/Hispanic </label>
                 <label><input class="filter_race" type="checkbox" name="Asian" value="4"> Asian </label>
@@ -108,11 +108,22 @@
         <div class="vert_divider"></div>
 
         <div class="col-md-9" id='preferences'>
-            <p> Participants were asked to distribute 100 points among 6 attributes, giving more points to those attributes that were more important to them in a potential date. On average, women weighted the attributes relatively evenly, with intelligence the most and ambition the least. Men weighted attractive the most and ambition the least. Interestingly, both genders thought the opposite gender would weight attractive more heavily and sincere and intelligent less. 
+            <p>
+                Participants were asked to distribute 100 points among 6 attributes, giving more points to those
+                attributes that were more important to them in a potential date. On average, <mark onclick="text_click()">
+                women weighted the attributes relatively evenly</mark>, with intelligence the most and ambition the least.
+                Men weighted attractive
+                the most and ambition the least. Interestingly, both genders thought the opposite gender would weight
+                attractive more heavily and sincere and intelligent less.
             </p>
         </div>
         <div class="col-md-9" id='nodes'>
-            <p> There were 17 total speed dating sessions beginning from October 2002 and ending on April 2004. In each session, males rotated through the stations while females stayed stationary. 
+            <p>
+                There were 17 total speed dating sessions beginning from October 2002 and ending on April 2004.
+                In each session, males rotated through the stations while females stayed stationary. Some sessions were
+                <mark onclick="wave_success()">highly successful</mark> while in comparison, other waves were
+                <mark onclick="wave_fail()">total misses</mark>.
+            </p>
             </p>
         </div>
         <div class="col-md-9" id='parallel'>
@@ -326,48 +337,75 @@
 
     // update chart if filter race button is changed
     d3.selectAll(".filter_race").on("change", function() {
+        race_change();
+    });
+
+    // update chart if filter career button is changed
+    d3.selectAll(".filter_career").on("change", function() {
+    	career_change();
+    });
+
+		// update chart if filter goal button is changed
+    d3.selectAll(".filter_goal").on("change", function() {
+    	goal_change();
+    });
+
+	function changewave(value) {
+	    wave_change(value);
+	}
+
+    function race_change() {
         update_races();
         pref_vis.onRaceChange(races);
         match_vis.onRaceChange(races);
         node_vis.onRaceChange(races);
         mpar_vis.onRaceChange(races);
         fpar_vis.onRaceChange(races);
-    });
+    }
 
-    // update chart if filter career button is changed
-    d3.selectAll(".filter_career").on("change", function() {
-    	update_careers();
-      	pref_vis.onCareerChange(careers);
+    function career_change() {
+        update_careers();
+        pref_vis.onCareerChange(careers);
         match_vis.onCareerChange(careers);
-      	node_vis.onCareerChange(careers);
+        node_vis.onCareerChange(careers);
         mpar_vis.onCareerChange(careers);
         fpar_vis.onCareerChange(careers);
-    });
+    }
 
-		// update chart if filter goal button is changed
-    d3.selectAll(".filter_goal").on("change", function() {
-    	update_goals();
-      	pref_vis.onGoalChange(goals);
+    function goal_change() {
+        update_goals();
+        pref_vis.onGoalChange(goals);
         match_vis.onGoalChange(goals);
-      	node_vis.onGoalChange(goals);
+        node_vis.onGoalChange(goals);
         mpar_vis.onGoalChange(goals);
         fpar_vis.onGoalChange(goals);
-    });
+    }
 
-	function changewave(value) {
-		
-		pref_vis.onSelectionChange(value);
+    function wave_change(value) {
+        pref_vis.onSelectionChange(value);
         match_vis.onSelectionChange(value);
 
-		value = parseInt(value) - 1;
+        value = parseInt(value) - 1;
 
-		if (value !== -1) {
-			node_vis.wrangleData(value);
-			node_vis.updateVis();
+        if (value !== -1) {
+            node_vis.wrangleData(value);
+            node_vis.updateVis();
             mpar_vis.onWaveChange(value)
             fpar_vis.onWaveChange(value)
-		}
-	}
+        }
+    }
+
+    function text_click() {
+        document.getElementById("Black").checked = true;
+    }
+
+    function wave_success() {
+        wave_change(14)
+    }
+
+    function wave_fail() {
+        wave_change(18)
+    }
 
 	</script>
 </body>
