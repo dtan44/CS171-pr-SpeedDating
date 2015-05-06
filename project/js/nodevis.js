@@ -579,6 +579,17 @@ NodeVis.prototype.filter = function(wave){
     return this.data[wave]['values'];
 }
 
+NodeVis.prototype.nodePass = function(id, wavenum){
+    var peeps = this.data[wavenum]['values']
+    var node = [];
+    peeps.forEach(function(d,i){;if (parseInt(d.iid) == id) {node.push(d)}})
+    node_vis.wrangleData(wavenum);
+    node_vis.updateVis();
+
+    this.nodeclick(node[0])
+
+}
+
 NodeVis.prototype.linkClick = function(iid){
 
     var that = this;
