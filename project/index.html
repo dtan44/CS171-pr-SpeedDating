@@ -26,40 +26,63 @@
 </head>
 <body>
     <div class ="row" id="topbar">
-        <div class="col-md-12">
-            Filter by Race:
-            <label><input class="filter_race" type="checkbox" name="Black" value="1"> African American </label>
-            <label><input class="filter_race" type="checkbox" name="European" value="2"> Caucasian-American </label>
-            <label><input class="filter_race" type="checkbox" name="Latino" value="3"> Latino/Hispanic </label>
-            <label><input class="filter_race" type="checkbox" name="Asian" value="4"> Asian </label>
-            <label><input class="filter_race" type="checkbox" name="Other" value="6"> Other </label>
-        
-        <br>
+        <div class="topwrapper">
+            <div class="col-md-12">
+                Filter by Race:
+                <label><input class="filter_race" type="checkbox" name="Black" value="1"> African American </label>
+                <label><input class="filter_race" type="checkbox" name="European" value="2"> Caucasian-American </label>
+                <label><input class="filter_race" type="checkbox" name="Latino" value="3"> Latino/Hispanic </label>
+                <label><input class="filter_race" type="checkbox" name="Asian" value="4"> Asian </label>
+                <label><input class="filter_race" type="checkbox" name="Other" value="6"> Other </label>
+            
+            <br>
 
-        Filter by Occupation:
-            <label><input class="filter_career" type="checkbox" name="Lawyer" value="1">Lawyer </label>
-            <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2">Academia </label>
-            <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4">Medicine </label>
-            <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"> Entertainment </label>
-            <label><input class="filter_career" type="checkbox" name="Business" value="7">Business </label>
-            <label><input class="filter_career" type="checkbox" name="International" value="9"> Humanitarian Affairs </label>
-        
-        <br>
+            Filter by Occupation:
+                <label><input class="filter_career" type="checkbox" name="Lawyer" value="1">Lawyer </label>
+                <label><input class="filter_career" type="checkbox" name="Academic/Research" value="2">Academia </label>
+                <label><input class="filter_career" type="checkbox" name="Doctor/Medicine" value="4">Medicine </label>
+                <label><input class="filter_career" type="checkbox" name="Creative Arts/Entertainment" value="6"> Entertainment </label>
+                <label><input class="filter_career" type="checkbox" name="Business" value="7">Business </label>
+                <label><input class="filter_career" type="checkbox" name="International" value="9"> Humanitarian Affairs </label>
+            
+            <br>
 
-        Filter by Goal:
-            <label><input class="filter_goal" type="checkbox" name="Fun" value="1"> For Fun </label>
-            <label><input class="filter_goal" type="checkbox" name="Meet" value="2"> Meet new people </label>
-            <label><input class="filter_goal" type="checkbox" name="Date" value="3"> Get a date </label>
-            <label><input class="filter_goal" type="checkbox" name="Serious" value="4"> Find serious relationship </label>
-            <label><input class="filter_goal" type="checkbox" name="Say" value="5"> To say I did it </label>
-            <label><input class="filter_goal" type="checkbox" name="Other" value="6"> Other </label>
-        </div>
-
-        <div class="selection">
-            <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
-        </div>
-        <div class="selection">
-            <b>success rate:</b> <span id="matchInfo" style="background-color: lightgray"></span>
+            Filter by Goal:
+                <label><input class="filter_goal" type="checkbox" name="Fun" value="1"> For Fun </label>
+                <label><input class="filter_goal" type="checkbox" name="Meet" value="2"> Meet new people </label>
+                <label><input class="filter_goal" type="checkbox" name="Date" value="3"> Get a date </label>
+                <label><input class="filter_goal" type="checkbox" name="Serious" value="4"> Find serious relationship </label>
+                <label><input class="filter_goal" type="checkbox" name="Say" value="5"> To say I did it </label>
+                <label><input class="filter_goal" type="checkbox" name="Other" value="6"> Other </label>
+            </div>
+            <div class="selection">
+                <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
+            </div>
+            <div class="selection">
+                <b>success rate:</b> <span id="matchInfo" style="background-color: lightgray"></span>
+            </div>
+            <div class="dropdown dropdown-dark">
+                <select name="two" class="dropdown-select" onchange="changewave(value)">
+                    <option value="0">Select a Dating Session</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="10">6</option>
+                    <option value="11">7</option>
+                    <option value="12">8</option>
+                    <option value="13">9</option>
+                    <option value="14">10</option>
+                    <option value="15">11</option>
+                    <option value="16">12</option>
+                    <option value="17">13</option>
+                    <option value="18">14</option>
+                    <option value="19">15</option>
+                    <option value="20">16</option>
+                    <option value="21">17</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -115,28 +138,6 @@
         <h4 style="text-align:center;"><b>Participants in Each Dating Sessions</b></h4>
 
         <div class="col-md-9" id="nodevis">
-            <div class="dropdown dropdown-dark">
-                <select name="two" class="dropdown-select" onchange="changewave(value)">
-                    <option value="0">Select a Dating Session</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="10">6</option>
-                    <option value="11">7</option>
-                    <option value="12">8</option>
-                    <option value="13">9</option>
-                    <option value="14">10</option>
-                    <option value="15">11</option>
-                    <option value="16">12</option>
-                    <option value="17">13</option>
-                    <option value="18">14</option>
-                    <option value="19">15</option>
-                    <option value="20">16</option>
-                    <option value="21">17</option>
-                </select>
-            </div>
             <section id="nodelegend">
                 <div class="legendbox">
                     <img src="image/boy.png" height="30" width="30">
