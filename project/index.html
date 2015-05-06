@@ -89,15 +89,20 @@
                 <label><input class="filter_goal" type="checkbox" name="Say" value="5"> To say I did it </label>
                 <label><input class="filter_goal" type="checkbox" name="Other" value="6"> Other </label>
             </div>
-
-            <div class="col-md-8">
-                <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
-            </div>
         </div>
 
         <div id="barcharts">
-            <div id="prefVis"></div>
-            <div id="matchVis"></div>
+            <div id="prefVis">
+                <h6 align="center">What One Looks for in the Opposite Gender</h6>
+                <h6 align="center">and What One Thinks the Opposite Gender Looks for</h6>
+                <br>
+                <b>current selection:</b> <span id="selectionInfo" style="background-color: lightgray"></span>
+            </div>
+            <div id="matchVis">
+                <h6 align="center">Number of Matches</h6>
+                <br>
+                <b>success rate:</b> <span id="matchInfo" style="background-color: lightgray"></span>
+            </div>
         </div>
 
         <div class="col-md-9" id="nodevis">
@@ -165,7 +170,7 @@
       	var MyEventHandler = new Object();
 
 	     	pref_vis = new PrefVis(d3.select("#prefVis"), prefData, d3.select("#selectionInfo"));
-            match_vis = new MatchVis(d3.select("#matchVis"), prefData);
+            match_vis = new MatchVis(d3.select("#matchVis"), prefData, d3.select("#matchInfo"));
 	     	node_vis = new NodeVis(d3.select("#nodevis"), allData, MyEventHandler);
             mpar_vis = new MParVis(d3.select("#mparVis"), allData, MyEventHandler);
             fpar_vis = new FParVis(d3.select("#fparVis"), allData, MyEventHandler);
